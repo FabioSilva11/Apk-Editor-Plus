@@ -31,49 +31,11 @@
             android:id="@+id/editorView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <com.gmail.heagoo.neweditor.ObScrollView
-                android:id="@+id/editorScrollview"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:fillViewport="true"
-                android:layout_weight="1">
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:id="@+id/editorLayout"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <EditText
-                        android:textSize="14sp"
-                        android:typeface="monospace"
-                        android:gravity="top|right"
-                        android:id="@+id/lineNumbers"
-                        android:padding="2dp"
-                        android:focusable="false"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:maxLength="1000000"/>
-                    <View
-                        android:id="@+id/divider"
-                        android:layout_width="1px"
-                        android:layout_height="match_parent"/>
-                    <com.gmail.heagoo.neweditor.ObEditText
-                        android:textSize="12sp"
-                        android:typeface="monospace"
-                        android:gravity="top|left"
-                        android:id="@+id/editor"
-                        android:padding="2dp"
-                        android:nextFocusRight="@+id/editor"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:maxLength="1000000"
-                        android:inputType="textNoSuggestions"
-                        android:imeOptions="flagNoExtractUi"
-                        android:textCursorDrawable="@null"/>
-                </LinearLayout>
-            </com.gmail.heagoo.neweditor.ObScrollView>
+        <io.github.rosemoe.sora.widget.CodeEditor
+            android:id="@+id/editor"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/menu_layout"

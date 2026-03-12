@@ -23,5 +23,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Apk Editor PLus"
+rootProject.name = "Apk Editor Plus"
 include(":app")

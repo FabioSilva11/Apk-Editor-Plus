@@ -42,7 +42,11 @@ dependencies {
     implementation(libs.bouncycastle.pkix)
     implementation(libs.gson)
     implementation(libs.axml)
+    implementation(platform(libs.sora.editor.bom))
+    implementation(libs.sora.editor.core)
+    implementation(libs.sora.editor.language.textmate)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+   androidTestImplementation(libs.androidx.espresso.core)
 }

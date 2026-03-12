@@ -12,6 +12,9 @@ constraintlayout = "2.2.1"
 apksig = "9.1.0"
 bouncycastle = "1.79"
 gson = "2.11.0"
+soraEditor = "0.24.4"
+
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,6 +30,10 @@ bouncycastle-prov = { group = "org.bouncycastle", name = "bcprov-jdk18on", versi
 bouncycastle-pkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 axml = { module = "com.github.apk-editor:aXML", version.ref = "aXMLVersion" }
+sora-editor-bom = { group = "io.github.rosemoe", name = "editor-bom", version.ref = "soraEditor" }
+sora-editor-core = { group = "io.github.rosemoe", name = "editor" }
+sora-editor-language-textmate = { group = "io.github.rosemoe", name = "language-textmate" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

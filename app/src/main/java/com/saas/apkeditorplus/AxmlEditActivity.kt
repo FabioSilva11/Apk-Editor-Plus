@@ -16,8 +16,11 @@ class AxmlEditActivity : BaseActivity() {
     private lateinit var listView: ListView
     private lateinit var progressBar: ProgressBar
     private lateinit var apkPath: String
-    private val xmlFiles = mutableListOf<String>()
+    private var currentPath: String = "" // Caminho relativo dentro do APK (ex: "res/layout/")
+    private val displayList = mutableListOf<FileItem>()
     private val modifiedFiles = mutableMapOf<String, String>() // ZipEntry -> Path to modified temp file
+
+    data class FileItem(val name: String, val fullPath: String, val isDirectory: Boolean)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +35,7 @@ class AxmlEditActivity : BaseActivity() {
         progressBar = findViewById(R.id.progress_bar)
         
         loadApkInfo()
-        loadXmlFiles()
+        loadFiles()
 
         findViewById<Button>(R.id.btn_close).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_save).setOnClickListener { startApkCreate() }
@@ -60,23 +63,55 @@ class AxmlEditActivity : BaseActivity() {
         }
     }
 
-    private fun loadXmlFiles() {
+    private fun loadFiles() {
         progressBar.visibility = View.VISIBLE
         Thread {
             try {
                 val zipFile = ZipFile(apkPath)
                 val entries = zipFile.entries()
-                xmlFiles.clear()
+                displayList.clear()
+
+                // Adicionar ".." se não estiver na raiz
+                if (currentPath.isNotEmpty()) {
+                    displayList.add(FileItem("..", getParentPath(currentPath), true))
+                }
+
+                val folders = mutableSetOf<String>()
+                val files = mutableListOf<FileItem>()
+
                 while (entries.hasMoreElements()) {
                     val entry = entries.nextElement()
-                    if (entry.name.endsWith(".xml") && !entry.isDirectory) {
-                        xmlFiles.add(entry.name)
+                    val name = entry.name
+
+                    if (name.startsWith(currentPath)) {
+                        val relativeName = name.substring(currentPath.length)
+                        if (relativeName.isEmpty()) continue
+
+                        val parts = relativeName.split("/")
+                        if (parts.size > 1) {
+                            // É um diretório ou arquivo dentro de um subdiretório
+                            val folderName = parts[0]
+                            folders.add(folderName)
+                        } else if (!entry.isDirectory) {
+                            // É um arquivo no diretório atual
+                            files.add(FileItem(relativeName, name, false))
+                        }
                     }
                 }
-                xmlFiles.sort()
+
+                // Adiciona pastas à lista
+                folders.sorted().forEach { folderName ->
+                    displayList.add(FileItem(folderName, currentPath + folderName + "/", true))
+                }
+                
+                // Adiciona arquivos à lista, ordenados
+                files.sortBy { it.name.lowercase() }
+                displayList.addAll(files)
+
                 zipFile.close()
                 runOnUiThread {
                     updateList()
+                    findViewById<TextView>(R.id.tv_filepath).text = if (currentPath.isEmpty()) apkPath else "$apkPath/$currentPath"
                     progressBar.visibility = View.GONE
                 }
             } catch (e: Exception) {
@@ -89,10 +124,17 @@ class AxmlEditActivity : BaseActivity() {
         }.start()
     }
 
+    private fun getParentPath(path: String): String {
+        if (path.isEmpty()) return ""
+        val p = path.removeSuffix("/")
+        val lastSlash = p.lastIndexOf("/")
+        return if (lastSlash == -1) "" else p.substring(0, lastSlash + 1)
+    }
+
     private fun updateList() {
         listView.adapter = object : BaseAdapter() {
-            override fun getCount(): Int = xmlFiles.size
-            override fun getItem(position: Int): Any = xmlFiles[position]
+            override fun getCount(): Int = displayList.size
+            override fun getItem(position: Int): Any = displayList[position]
             override fun getItemId(position: Int): Long = position.toLong()
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -102,18 +144,34 @@ class AxmlEditActivity : BaseActivity() {
                 val textView = view.findViewById<TextView>(R.id.filename)
                 val iconView = view.findViewById<ImageView>(R.id.file_icon)
                 
-                textView.text = xmlFiles[position]
-                iconView.setImageResource(R.drawable.ic_file_xml)
+                // Ocultar os ícones do lado direito conforme solicitado
+                view.findViewById<View>(R.id.menu_edit)?.visibility = View.GONE
+                view.findViewById<View>(R.id.menu_save)?.visibility = View.GONE
+                
+                val item = displayList[position]
+                textView.text = item.name
+                
+                when {
+                    item.isDirectory -> iconView.setImageResource(resources.getIdentifier("appdm_files_blue", "drawable", packageName).let { if (it != 0) it else android.R.drawable.ic_menu_directions })
+                    item.name.endsWith(".xml") -> iconView.setImageResource(R.drawable.ic_file_xml)
+                    item.name.endsWith(".dex") -> iconView.setImageResource(resources.getIdentifier("appdm_db_blue", "drawable", packageName).let { if (it != 0) it else android.R.drawable.ic_menu_agenda })
+                    else -> iconView.setImageResource(android.R.drawable.ic_menu_agenda)
+                }
                 
                 view.setOnClickListener {
-                    openXmlFile(xmlFiles[position])
+                    if (item.isDirectory) {
+                        currentPath = item.fullPath
+                        loadFiles()
+                    } else {
+                        openFile(item.fullPath)
+                    }
                 }
                 return view
             }
         }
     }
 
-    private fun openXmlFile(entryName: String) {
+    private fun openFile(entryName: String) {
         progressBar.visibility = View.VISIBLE
         Thread {
             try {
@@ -127,11 +185,30 @@ class AxmlEditActivity : BaseActivity() {
                 
                 val outputStream = FileOutputStream(tempFile)
                 
-                // Tenta decodificar como AXML
-                val decoder = AxmlDecoder()
-                val success = decoder.decode(inputStream, outputStream)
+                var success = false
+                var errorLog: String? = null
                 
-                zipFile.close()
+                try {
+                    if (entryName.endsWith(".xml")) {
+                        // Tenta decodificar como AXML
+                        val decoder = AxmlDecoder()
+                        success = decoder.decode(inputStream, outputStream)
+                        if (!success) {
+                            errorLog = "AxmlDecoder retornou falso (formato inválido ou corrompido)"
+                        }
+                    } else {
+                        // Copia direta para arquivos não-XML
+                        inputStream.copyTo(outputStream)
+                        success = true
+                    }
+                } catch (e: Exception) {
+                    success = false
+                    errorLog = e.stackTraceToString()
+                } finally {
+                    outputStream.close()
+                    inputStream.close()
+                    zipFile.close()
+                }
                 
                 runOnUiThread {
                     progressBar.visibility = View.GONE
@@ -143,17 +220,34 @@ class AxmlEditActivity : BaseActivity() {
                         
                         modifiedFiles[entryName] = tempFile.absolutePath
                     } else {
-                        Toast.makeText(this, "Falha ao decodificar arquivo", Toast.LENGTH_SHORT).show()
+                        showErrorDialog("Falha ao processar arquivo", errorLog ?: "Erro desconhecido")
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 runOnUiThread {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
+                    showErrorDialog("Erro de I/O", e.stackTraceToString())
                 }
             }
         }.start()
+    }
+
+    private fun showErrorDialog(title: String, log: String) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(log)
+            .setPositiveButton("Fechar", null)
+            .show()
+    }
+
+    override fun onBackPressed() {
+        if (currentPath.isNotEmpty()) {
+            currentPath = getParentPath(currentPath)
+            loadFiles()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

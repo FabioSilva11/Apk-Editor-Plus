@@ -75,16 +75,6 @@
                 android:layout_weight="1"/>
             <ImageView
                 android:layout_gravity="center_vertical"
-                android:id="@+id/openFindBtn"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_search"
-                android:scaleType="centerInside"
-                android:tint="?attr/iconPrimary"
-                android:layout_weight="1"/>
-            <ImageView
-                android:layout_gravity="center_vertical"
                 android:id="@+id/moreBtn"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"

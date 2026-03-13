@@ -21,6 +21,7 @@ class AxmlEditActivity : BaseActivity() {
     private val displayList = mutableListOf<FileItem>()
     private val modifiedFiles = mutableMapOf<String, String>() // ZipEntry -> Path to modified temp file
     private var resourceEntries: List<*>? = null
+    private var lastOpenedEntryName: String? = null
 
     data class FileItem(val name: String, val fullPath: String, val isDirectory: Boolean)
 
@@ -179,15 +180,14 @@ class AxmlEditActivity : BaseActivity() {
                             iconView.setImageResource(R.drawable.ic_file_folder)
                         }
                     }
-                    item.name.endsWith(".xml") -> iconView.setImageResource(R.drawable.ic_file_xml)
-                    item.name.endsWith(".dex") -> iconView.setImageResource(R.drawable.ic_file_dex)
-                    item.name.endsWith(".smali") -> iconView.setImageResource(R.drawable.ic_file_smali)
-                    item.name.endsWith(".htm") || item.name.endsWith(".html") -> iconView.setImageResource(R.drawable.ic_file_html)
-                    item.name.endsWith(".rar") || item.name.endsWith(".zip") -> iconView.setImageResource(R.drawable.ic_file_zip)
-                    item.name.endsWith(".properties") || item.name.endsWith(".css") || item.name.endsWith(".java") || item.name.endsWith(".js") || item.name.endsWith(".MF") || item.name.endsWith(".SF") || item.name.endsWith(".txt") -> iconView.setImageResource(R.drawable.ic_file_text)
-                    item.name.endsWith(".apk") -> iconView.setImageResource(R.drawable.ic_file_apk)
-                    item.name.endsWith(".ttf") -> iconView.setImageResource(R.drawable.ic_file_ttf)
-                    else -> iconView.setImageResource(R.drawable.ic_file_unknown)
+                    isImageFile(item.name) -> {
+                        // In the future, load thumbnails. For now, use unknown or generic image icon
+                        iconView.setImageResource(R.drawable.ic_file_unknown)
+                    }
+                    else -> {
+                        // Pro version uses ic_file_unknown for most files in this list
+                        iconView.setImageResource(R.drawable.ic_file_unknown)
+                    }
                 }
                 
                 view.setOnClickListener {
@@ -203,43 +203,53 @@ class AxmlEditActivity : BaseActivity() {
         }
     }
 
+    private fun isImageFile(name: String): Boolean {
+        val lower = name.lowercase()
+        return lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".gif")
+    }
+
     private fun openFile(entryName: String) {
+        lastOpenedEntryName = entryName
         progressBar.visibility = View.VISIBLE
         Thread {
             try {
-                val zipFile = ZipFile(apkPath)
-                val entry = zipFile.getEntry(entryName)
-                val inputStream = zipFile.getInputStream(entry)
-                
                 val tempDir = File(cacheDir, "xml_edit")
                 if (!tempDir.exists()) tempDir.mkdirs()
                 val tempFile = File(tempDir, entryName.replace("/", "_"))
-                
-                val outputStream = FileOutputStream(tempFile)
-                
+
                 var success = false
                 var errorLog: String? = null
-                
-                try {
-                    if (entryName.endsWith(".xml")) {
-                        // Tenta decodificar como AXML usando os recursos se disponíveis
-                        val decoder = AxmlDecoder()
-                        success = decoder.decodeWithResources(inputStream, outputStream, resourceEntries)
-                        if (!success) {
-                            errorLog = "AxmlDecoder retornou falso (formato inválido ou corrompido)"
+
+                // Se o arquivo já foi modificado e o arquivo temporário existe, não extraímos de novo
+                if (modifiedFiles.containsKey(entryName) && tempFile.exists()) {
+                    success = true
+                } else {
+                    val zipFile = ZipFile(apkPath)
+                    val entry = zipFile.getEntry(entryName)
+                    val inputStream = zipFile.getInputStream(entry)
+                    val outputStream = FileOutputStream(tempFile)
+
+                    try {
+                        if (entryName.endsWith(".xml")) {
+                            // Tenta decodificar como AXML usando os recursos se disponíveis
+                            val decoder = AxmlDecoder()
+                            success = decoder.decodeWithResources(inputStream, outputStream, resourceEntries)
+                            if (!success) {
+                                errorLog = "AxmlDecoder retornou falso (formato inválido ou corrompido)"
+                            }
+                        } else {
+                            // Copia direta para arquivos não-XML
+                            inputStream.copyTo(outputStream)
+                            success = true
                         }
-                    } else {
-                        // Copia direta para arquivos não-XML
-                        inputStream.copyTo(outputStream)
-                        success = true
+                    } catch (e: Exception) {
+                        success = false
+                        errorLog = e.stackTraceToString()
+                    } finally {
+                        outputStream.close()
+                        inputStream.close()
+                        zipFile.close()
                     }
-                } catch (e: Exception) {
-                    success = false
-                    errorLog = e.stackTraceToString()
-                } finally {
-                    outputStream.close()
-                    inputStream.close()
-                    zipFile.close()
                 }
                 
                 runOnUiThread {
@@ -250,8 +260,6 @@ class AxmlEditActivity : BaseActivity() {
                         intent.putExtra("filePath", tempFile.absolutePath)
                         intent.putExtra("fileName", entryName)
                         startActivityForResult(intent, 100)
-                        
-                        modifiedFiles[entryName] = tempFile.absolutePath
                     } else {
                         showErrorDialog("Falha ao processar arquivo", errorLog ?: "Erro desconhecido")
                     }
@@ -287,6 +295,15 @@ class AxmlEditActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 100 && resultCode == RESULT_OK) {
             findViewById<Button>(R.id.btn_save).visibility = View.VISIBLE
+            
+            // Registra o arquivo como modificado apenas após salvar com sucesso
+            lastOpenedEntryName?.let { entryName ->
+                val tempDir = File(cacheDir, "xml_edit")
+                val tempFile = File(tempDir, entryName.replace("/", "_"))
+                if (tempFile.exists()) {
+                    modifiedFiles[entryName] = tempFile.absolutePath
+                }
+            }
         }
     }
 

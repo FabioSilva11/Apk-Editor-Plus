@@ -1464,6 +1464,8 @@
     <style name="MD.Dark.NoActionBar" parent="@style/Theme.AppCompat">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/dark_window</item>
         <item name="android:windowAnimationStyle">@style/MD.Q.Animation</item>
         <item name="android:listDivider">@null</item>

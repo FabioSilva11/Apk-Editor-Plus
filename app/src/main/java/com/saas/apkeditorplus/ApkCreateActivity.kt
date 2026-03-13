@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.saas.apkeditorplus.utils.AxmlEncoder
 import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipEntry
@@ -135,7 +136,19 @@ class ApkCreateActivity : BaseActivity() {
 
             val modifiedPath = modifiedFiles.getString(entry.name)
             if (modifiedPath != null) {
-                File(modifiedPath).inputStream().use { it.copyTo(zos) }
+                if (isAxmlFile(entry.name)) {
+                    val xmlString = File(modifiedPath).readText()
+                    val encoder = AxmlEncoder()
+                    val binaryData = encoder.encode(xmlString, this)
+                    if (binaryData != null) {
+                        zos.write(binaryData as ByteArray)
+                    } else {
+                        // Se falhar na codificação, tenta copiar o original ou o texto (risco de app quebrar)
+                        File(modifiedPath).inputStream().use { it.copyTo(zos) }
+                    }
+                } else {
+                    File(modifiedPath).inputStream().use { it.copyTo(zos) }
+                }
             } else {
                 zipFile.getInputStream(entry).use { it.copyTo(zos) }
             }
@@ -143,6 +156,10 @@ class ApkCreateActivity : BaseActivity() {
         }
         zos.close()
         zipFile.close()
+    }
+
+    private fun isAxmlFile(name: String): Boolean {
+        return name == "AndroidManifest.xml" || (name.startsWith("res/") && name.endsWith(".xml"))
     }
 
     private fun updateProgress(message: String) {

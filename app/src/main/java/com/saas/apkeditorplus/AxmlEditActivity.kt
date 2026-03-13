@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.saas.apkeditorplus.utils.AxmlDecoder
+import com.apk.axml.ResourceTableParser
 import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipFile
@@ -19,6 +20,7 @@ class AxmlEditActivity : BaseActivity() {
     private var currentPath: String = "" // Caminho relativo dentro do APK (ex: "res/layout/")
     private val displayList = mutableListOf<FileItem>()
     private val modifiedFiles = mutableMapOf<String, String>() // ZipEntry -> Path to modified temp file
+    private var resourceEntries: List<*>? = null
 
     data class FileItem(val name: String, val fullPath: String, val isDirectory: Boolean)
 
@@ -35,10 +37,28 @@ class AxmlEditActivity : BaseActivity() {
         progressBar = findViewById(R.id.progress_bar)
         
         loadApkInfo()
+        loadResources() 
         loadFiles()
 
         findViewById<Button>(R.id.btn_close).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_save).setOnClickListener { startApkCreate() }
+    }
+
+    private fun loadResources() {
+        Thread {
+            try {
+                val zipFile = ZipFile(apkPath)
+                val entry = zipFile.getEntry("resources.arsc")
+                if (entry != null) {
+                    val inputStream = zipFile.getInputStream(entry)
+                    resourceEntries = ResourceTableParser(inputStream).parse()
+                    inputStream.close()
+                }
+                zipFile.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     private fun loadApkInfo() {
@@ -152,10 +172,22 @@ class AxmlEditActivity : BaseActivity() {
                 textView.text = item.name
                 
                 when {
-                    item.isDirectory -> iconView.setImageResource(resources.getIdentifier("appdm_files_blue", "drawable", packageName).let { if (it != 0) it else android.R.drawable.ic_menu_directions })
+                    item.isDirectory -> {
+                        if (item.name == "..") {
+                            iconView.setImageResource(R.drawable.ic_file_up)
+                        } else {
+                            iconView.setImageResource(R.drawable.ic_file_folder)
+                        }
+                    }
                     item.name.endsWith(".xml") -> iconView.setImageResource(R.drawable.ic_file_xml)
-                    item.name.endsWith(".dex") -> iconView.setImageResource(resources.getIdentifier("appdm_db_blue", "drawable", packageName).let { if (it != 0) it else android.R.drawable.ic_menu_agenda })
-                    else -> iconView.setImageResource(android.R.drawable.ic_menu_agenda)
+                    item.name.endsWith(".dex") -> iconView.setImageResource(R.drawable.ic_file_dex)
+                    item.name.endsWith(".smali") -> iconView.setImageResource(R.drawable.ic_file_smali)
+                    item.name.endsWith(".htm") || item.name.endsWith(".html") -> iconView.setImageResource(R.drawable.ic_file_html)
+                    item.name.endsWith(".rar") || item.name.endsWith(".zip") -> iconView.setImageResource(R.drawable.ic_file_zip)
+                    item.name.endsWith(".properties") || item.name.endsWith(".css") || item.name.endsWith(".java") || item.name.endsWith(".js") || item.name.endsWith(".MF") || item.name.endsWith(".SF") || item.name.endsWith(".txt") -> iconView.setImageResource(R.drawable.ic_file_text)
+                    item.name.endsWith(".apk") -> iconView.setImageResource(R.drawable.ic_file_apk)
+                    item.name.endsWith(".ttf") -> iconView.setImageResource(R.drawable.ic_file_ttf)
+                    else -> iconView.setImageResource(R.drawable.ic_file_unknown)
                 }
                 
                 view.setOnClickListener {
@@ -190,9 +222,9 @@ class AxmlEditActivity : BaseActivity() {
                 
                 try {
                     if (entryName.endsWith(".xml")) {
-                        // Tenta decodificar como AXML
+                        // Tenta decodificar como AXML usando os recursos se disponíveis
                         val decoder = AxmlDecoder()
-                        success = decoder.decode(inputStream, outputStream)
+                        success = decoder.decodeWithResources(inputStream, outputStream, resourceEntries)
                         if (!success) {
                             errorLog = "AxmlDecoder retornou falso (formato inválido ou corrompido)"
                         }
@@ -213,7 +245,8 @@ class AxmlEditActivity : BaseActivity() {
                 runOnUiThread {
                     progressBar.visibility = View.GONE
                     if (success) {
-                        val intent = Intent(this, EditorActivity::class.java)
+                        val activityClass = if (entryName.endsWith(".xml")) TextEditBigActivity::class.java else TextEditNormalActivity::class.java
+                        val intent = Intent(this, activityClass)
                         intent.putExtra("filePath", tempFile.absolutePath)
                         intent.putExtra("fileName", entryName)
                         startActivityForResult(intent, 100)

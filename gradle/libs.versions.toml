@@ -12,7 +12,7 @@ constraintlayout = "2.2.1"
 apksig = "9.2.0-alpha04"
 bouncycastle = "1.83"
 gson = "2.13.2"
-soraEditor = "0.23.5"
+soraEditor = "0.24.4"
 desugar = "2.1.5"
 
 
@@ -32,9 +32,9 @@ bouncycastle-prov = { group = "org.bouncycastle", name = "bcprov-jdk18on", versi
 bouncycastle-pkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 axml = { module = "com.github.apk-editor:aXML", version.ref = "aXMLVersion" }
-sora-editor-bom = { group = "io.github.Rosemoe.sora-editor", name = "bom", version.ref = "soraEditor" }
-sora-editor-core = { group = "io.github.Rosemoe.sora-editor", name = "editor" }
-sora-editor-language-textmate = { group = "io.github.Rosemoe.sora-editor", name = "language-textmate" }
+sora-editor-bom = { group = "io.github.rosemoe", name = "editor-bom", version.ref = "soraEditor" }
+sora-editor-core = { group = "io.github.rosemoe", name = "editor" }
+sora-editor-language-textmate = { group = "io.github.rosemoe", name = "language-textmate" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugar" }
 
 

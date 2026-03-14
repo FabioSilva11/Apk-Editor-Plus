@@ -7,7 +7,7 @@
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorSurface"
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/simple_edit"
         app:titleTextAppearance="@style/MD.Toolbar.Title"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="horizontal"
-                android:background="?android:attr/colorPrimary"
+                android:background="?attr/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView

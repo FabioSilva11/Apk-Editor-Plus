@@ -2,8 +2,70 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/text_undo"
+        android:icon="@drawable/ic_undo"
+        android:title="@string/undo"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/text_redo"
+        android:icon="@drawable/ic_redo"
+        android:title="@string/redo"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_search_panel"
         android:icon="@drawable/ic_search"
-        android:title="@string/search"
+        android:title="@string/search_panel"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/edit_save"
+        android:title="@string/save"
+        app:showAsAction="ifRoom" />
+    <item android:title="@string/cursor_actions">
+        <menu>
+            <item
+                android:id="@+id/goto_end"
+                android:title="@string/go_to_end" />
+            <item
+                android:id="@+id/move_up"
+                android:title="@string/move_up" />
+            <item
+                android:id="@+id/move_down"
+                android:title="@string/move_down" />
+            <item
+                android:id="@+id/home"
+                android:title="@string/home" />
+            <item
+                android:id="@+id/end"
+                android:title="@string/end" />
+        </menu>
+    </item>
+    <item android:title="@string/feature_switches">
+        <menu>
+            <item
+                android:id="@+id/text_wordwrap"
+                android:checkable="true"
+                android:title="@string/wordwrap" />
+            <item
+                android:id="@+id/editor_line_number"
+                android:checkable="true"
+                android:checked="true"
+                android:title="@string/line_number_visibility" />
+            <item
+                android:id="@+id/pin_line_number"
+                android:checkable="true"
+                android:title="@string/pin_line_number" />
+            <item
+                android:id="@+id/magnifier"
+                android:checkable="true"
+                android:checked="true"
+                android:title="@string/magnifier" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/switch_language"
+        android:title="@string/switch_language" />
+    <item
+        android:id="@+id/switch_colors"
+        android:title="@string/switch_color_scheme" />
 </menu>

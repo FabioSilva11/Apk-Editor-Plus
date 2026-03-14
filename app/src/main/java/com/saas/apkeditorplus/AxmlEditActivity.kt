@@ -14,6 +14,7 @@ import java.util.zip.ZipFile
 
 class AxmlEditActivity : BaseActivity() {
 
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
     private lateinit var progressBar: ProgressBar
     private lateinit var apkPath: String
@@ -34,6 +35,9 @@ class AxmlEditActivity : BaseActivity() {
             finish()
         }
 
+        toolbar = findViewById(R.id.header_layout)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+        
         listView = findViewById(R.id.files_list)
         progressBar = findViewById(R.id.progress_bar)
         
@@ -69,18 +73,14 @@ class AxmlEditActivity : BaseActivity() {
             if (info != null) {
                 info.applicationInfo?.let { appInfo ->
                     appInfo.sourceDir = apkPath
-                    appInfo.publicSourceDir = apkPath
                     val label = appInfo.loadLabel(pm).toString()
-                    val icon = appInfo.loadIcon(pm)
-                    
-                    findViewById<TextView>(R.id.apk_label).text = label
-                    findViewById<ImageView>(R.id.apk_icon).setImageDrawable(icon)
-                    findViewById<TextView>(R.id.tv_filepath).text = apkPath
+                    toolbar.title = label
+                    toolbar.subtitle = apkPath
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            findViewById<TextView>(R.id.tv_filepath).text = apkPath
+            toolbar.subtitle = apkPath
         }
     }
 
@@ -132,7 +132,7 @@ class AxmlEditActivity : BaseActivity() {
                 zipFile.close()
                 runOnUiThread {
                     updateList()
-                    findViewById<TextView>(R.id.tv_filepath).text = if (currentPath.isEmpty()) apkPath else "$apkPath/$currentPath"
+                    toolbar.subtitle = if (currentPath.isEmpty()) apkPath else "$apkPath/$currentPath"
                     progressBar.visibility = View.GONE
                 }
             } catch (e: Exception) {

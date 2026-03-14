@@ -1,0 +1,31 @@
+{
+  "name": "Smali",
+  "scopeName": "source.smali",
+  "patterns": [
+    {
+      "match": "^\\s*\\.[a-zA-Z]+",
+      "name": "keyword.control.smali"
+    },
+    {
+      "match": "\\b(if-|goto|return|invoke-|move-|const-|check-|new-|instance-|array-|throw|fill-)\\b[a-zA-Z0-9-/]*",
+      "name": "keyword.other.smali"
+    },
+    {
+      "match": "#.*",
+      "name": "comment.line.number-sign.smali"
+    },
+    {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.smali"
+    },
+    {
+      "match": "v[0-9]+|p[0-9]+",
+      "name": "variable.parameter.smali"
+    },
+    {
+      "match": "L[a-zA-Z0-9/_$]+;",
+      "name": "entity.name.type.class.smali"
+    }
+  ]
+}

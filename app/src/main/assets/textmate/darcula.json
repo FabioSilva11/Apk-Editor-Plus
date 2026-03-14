@@ -1,0 +1,29 @@
+{
+  "name": "Darcula",
+  "colors": {
+    "editor.background": "#2B2B2B",
+    "editor.foreground": "#A9B7C6"
+  },
+  "tokenColors": [
+    {
+      "scope": ["entity.name.tag.xml", "punctuation.definition.tag.xml"],
+      "settings": { "foreground": "#E8BF6A" }
+    },
+    {
+      "scope": ["entity.other.attribute-name.xml"],
+      "settings": { "foreground": "#BABABA" }
+    },
+    {
+      "scope": ["string.quoted.double.xml", "string.quoted.single.xml"],
+      "settings": { "foreground": "#6A8759" }
+    },
+    {
+      "scope": ["comment.block.xml"],
+      "settings": { "foreground": "#808080", "fontStyle": "italic" }
+    },
+    {
+      "scope": ["meta.tag.preprocessor.xml"],
+      "settings": { "foreground": "#BBB529" }
+    }
+  ]
+}

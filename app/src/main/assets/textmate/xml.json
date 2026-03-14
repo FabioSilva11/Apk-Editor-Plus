@@ -1,0 +1,62 @@
+{
+  "name": "XML",
+  "scopeName": "text.xml",
+  "patterns": [
+    {
+      "begin": "<!--",
+      "end": "-->",
+      "name": "comment.block.xml"
+    },
+    {
+      "begin": "(<)([a-zA-Z0-9:]+)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.tag.xml" },
+        "2": { "name": "entity.name.tag.xml" }
+      },
+      "end": "(/?>)",
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.tag.xml" }
+      },
+      "patterns": [
+        {
+          "match": "([a-zA-Z0-9:]+)\\s*(=)\\s*(\"[^\"]*\")",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.xml" },
+            "2": { "name": "keyword.operator.assignment.xml" },
+            "3": { "name": "string.quoted.double.xml" }
+          }
+        },
+        {
+          "match": "([a-zA-Z0-9:]+)\\s*(=)\\s*('[^']*')",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.xml" },
+            "2": { "name": "keyword.operator.assignment.xml" },
+            "3": { "name": "string.quoted.single.xml" }
+          }
+        }
+      ]
+    },
+    {
+      "begin": "(</)([a-zA-Z0-9:]+)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.tag.xml" },
+        "2": { "name": "entity.name.tag.xml" }
+      },
+      "end": "(>)",
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.tag.xml" }
+      }
+    },
+    {
+      "begin": "<\\?",
+      "end": "\\?>",
+      "name": "meta.tag.preprocessor.xml",
+      "patterns": [
+        {
+           "match": "[a-zA-Z0-9:]+",
+           "name": "entity.other.attribute-name.xml"
+        }
+      ]
+    }
+  ]
+}

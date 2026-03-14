@@ -1,0 +1,37 @@
+{
+  "name": "Quiet Light",
+  "colors": {
+    "editor.background": "#F5F5F5",
+    "editor.foreground": "#333333"
+  },
+  "tokenColors": [
+    {
+      "scope": ["entity.name.tag.xml", "punctuation.definition.tag.xml"],
+      "settings": { "foreground": "#295F94" }
+    },
+    {
+      "scope": ["entity.other.attribute-name.xml"],
+      "settings": { "foreground": "#008080" }
+    },
+    {
+      "scope": ["string.quoted.double.xml", "string.quoted.single.xml"],
+      "settings": { "foreground": "#448C27" }
+    },
+    {
+      "scope": ["comment.block.xml"],
+      "settings": { "foreground": "#AAAAAA", "fontStyle": "italic" }
+    },
+    {
+      "scope": ["meta.tag.preprocessor.xml"],
+      "settings": { "foreground": "#D2A214" }
+    },
+    {
+      "scope": ["source.java", "keyword.control.java"],
+      "settings": { "foreground": "#000080", "fontStyle": "bold" }
+    },
+    {
+       "scope": ["string.quoted.double.java"],
+       "settings": { "foreground": "#008000" }
+    }
+  ]
+}

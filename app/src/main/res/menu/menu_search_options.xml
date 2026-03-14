@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/search_option_regex"
+        android:checkable="true"
+        android:title="@string/search_option_regex" />
+    <item
+        android:id="@+id/search_option_whole_word"
+        android:checkable="true"
+        android:title="@string/search_option_whole_word" />
+    <item
+        android:id="@+id/search_option_match_case"
+        android:checkable="true"
+        android:checked="true"
+        android:title="@string/search_option_match_case" />
+</menu>

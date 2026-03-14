@@ -3,35 +3,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:id="@+id/overview_layout"
-        android:background="?android:attr/colorPrimary"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="64dp">
-        <ImageView
-            android:gravity="center"
-            android:id="@+id/apk_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="24dp"/>
-        <TextView
-            android:ellipsize="end"
-            android:id="@+id/apk_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/search_results"
-            android:singleLine="true"
-            android:layout_weight="1"
-            style="@style/MD.Toolbar.Title"/>
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/common_edit"
+        app:titleTextAppearance="@style/MD.Toolbar.Title"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
     <ScrollView
-        android:background="?attr/fade"
+        android:background="?attr/colorSurface"
         android:fadingEdge="vertical"
         android:fadingEdgeLength="1dp"
         android:layout_width="match_parent"
@@ -59,7 +41,7 @@
                     android:scaleType="fitCenter"/>
                 <TextView
                     android:textSize="14dp"
-                    android:textColor="?attr/textMedium"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -89,7 +71,7 @@
                         android:text="@string/str_app_name"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_appname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -107,7 +89,7 @@
                         android:text="@string/package_name"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_pkgname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -149,7 +131,7 @@
                             android:layout_marginLeft="4dp"/>
                         <CheckBox
                             android:textSize="12dp"
-                            android:textColor="?attr/textMedium"
+                            android:textColor="?attr/colorOnSurface"
                             android:id="@+id/cb_rename_resource"
                             android:paddingLeft="8dp"
                             android:layout_width="match_parent"
@@ -161,7 +143,7 @@
                             android:text="@string/rename_in_resources"/>
                         <CheckBox
                             android:textSize="12dp"
-                            android:textColor="?attr/textMedium"
+                            android:textColor="?attr/colorOnSurface"
                             android:id="@+id/cb_rename_dex"
                             android:paddingLeft="8dp"
                             android:layout_width="match_parent"
@@ -212,7 +194,7 @@
                         android:text="@string/version_code"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_vercode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -231,7 +213,7 @@
                         android:text="@string/version_name"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_vername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -266,7 +248,7 @@
                         android:text="@string/min_sdk_version"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_minSdkVersion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -285,7 +267,7 @@
                         android:text="@string/target_sdk_version"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_targetSdkVersion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -305,7 +287,7 @@
                         android:text="@string/max_sdk_version"/>
                     <EditText
                         android:textSize="14dp"
-                        android:textColor="?attr/textMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:id="@+id/et_maxSdkVersion"
                         android:visibility="gone"
                         android:layout_width="match_parent"
@@ -332,14 +314,14 @@
             android:layout_height="wrap_content"
             android:text="@string/close"
             android:layout_weight="1"
-            style="@style/MD.Button.Google.Outline"/>
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
         <Button
             android:id="@+id/btn_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/save"
             android:layout_weight="1"
-            style="@style/MD.Button.Google"/>
+            style="@style/Widget.Material3.Button.TonalButton"/>
     </LinearLayout>
 </LinearLayout>
 

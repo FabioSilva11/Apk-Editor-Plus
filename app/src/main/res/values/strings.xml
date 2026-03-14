@@ -638,7 +638,7 @@
     <string name="action_app">Installed app</string>
     <string name="action_prj">Projects</string>
     <string name="action_odex">ODEX patcher</string>
-    <string name="action_info">Desenvolvedor</string>
+    <string name="action_info">Git Status</string>
     <string name="action_sett">Settings</string>
     <string name="action_exit">Exit</string>
     <string name="action_apk_desc">Select APK file to editing</string>

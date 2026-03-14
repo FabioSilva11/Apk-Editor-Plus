@@ -4,52 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
-    <!-- Barra de navegação superior (sem toolbar) -->
-    <LinearLayout
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:background="?attr/bottomBar"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
-        <RelativeLayout
-            android:id="@+id/btn_close"
-            android:background="@drawable/mtrl_ripple_action"
-            android:layout_width="40dp"
-            android:layout_height="40dp">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_back"
-                android:tint="?attr/iconPrimary"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-        <TextView
-            android:textSize="16sp"
-            android:ellipsize="start"
-            android:id="@+id/dirPath"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:singleLine="true"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:textColor="?attr/iconPrimary"/>
-        <RelativeLayout
-            android:id="@+id/menu_switch_card"
-            android:background="@drawable/mtrl_ripple_action"
-            android:layout_width="40dp"
-            android:layout_height="40dp">
-            <ImageView
-                android:id="@+id/imageView_extsdcard"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_sdcard_ext"
-                android:tint="?attr/iconPrimary"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        app:navigationIcon="@drawable/ic_back"
+        app:navigationIconTint="?attr/colorOnSurface"
+        app:titleTextAppearance="@style/MD.Toolbar.Title"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
     
     <!-- Lista de arquivos -->
     <ListView
@@ -58,7 +21,7 @@
         android:fadingEdgeLength="1dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:cacheColorHint="?attr/fade"
+        android:cacheColorHint="?attr/colorSurface"
         android:layout_weight="1"
         android:requiresFadingEdge="vertical"/>
     
@@ -86,7 +49,7 @@
         </RelativeLayout>
         <EditText
             android:textSize="14sp"
-            android:textColor="?attr/textMedium"
+            android:textColor="?attr/colorOnSurface"
             android:id="@+id/keyword_edit"
             android:background="@drawable/mtrl_search_box"
             android:paddingLeft="12dp"

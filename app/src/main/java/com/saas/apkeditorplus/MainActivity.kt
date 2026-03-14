@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -29,25 +30,25 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private val STORAGE_PERMISSION_CODE = 1
 
     private fun setupToolbar() {
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            val inflater = layoutInflater
-            val toolbarView = inflater.inflate(R.layout.mtrl_toolbar, null)
-            val params = androidx.appcompat.app.ActionBar.LayoutParams(
-                androidx.appcompat.app.ActionBar.LayoutParams.WRAP_CONTENT,
-                androidx.appcompat.app.ActionBar.LayoutParams.MATCH_PARENT,
-                android.view.Gravity.CENTER
-            )
-            
-            val titleView = toolbarView.findViewById<android.widget.TextView>(android.R.id.title)
-            titleView?.text = getString(R.string.app_name)
-            
-            actionBar.setCustomView(toolbarView, params)
-            actionBar.setDisplayShowCustomEnabled(true)
-            actionBar.setDisplayShowTitleEnabled(false)
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_theme)
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        
+        toolbar.setNavigationOnClickListener {
+            toggleTheme()
         }
+    }
+
+    private fun toggleTheme() {
+        val currentMode = AppCompatDelegate.getDefaultNightMode()
+        if (currentMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            prefs.edit().putInt("theme_mode", AppCompatDelegate.MODE_NIGHT_NO).apply()
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            prefs.edit().putInt("theme_mode", AppCompatDelegate.MODE_NIGHT_YES).apply()
+        }
+        recreate()
     }
 
     override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {

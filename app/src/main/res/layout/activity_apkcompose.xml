@@ -26,8 +26,7 @@
                 android:layout_height="20dp"
                 android:layout_marginTop="10dp"
                 android:indeterminate="true"
-                android:indeterminateTint="?attr/progressHorizontal"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+                android:indeterminateTint="?attr/colorPrimary" />
         </LinearLayout>
         <Button
             android:id="@+id/btn_bg"
@@ -38,7 +37,7 @@
             android:layout_marginRight="12dp"
             android:layout_marginBottom="4dp"
             android:text="@string/put_to_background"
-            style="@style/MD.Button.Google.Outline"/>
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
     </LinearLayout>
     <LinearLayout
         android:gravity="center"
@@ -59,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hide_warnings"
-            style="@style/MD.Button.Google"/>
+            style="@style/Widget.Material3.Button.TonalButton"/>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -71,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:listSelector="#00000000"
-                android:cacheColorHint="?attr/fade"
+                android:cacheColorHint="?attr/colorSurface"
                 android:requiresFadingEdge="vertical"/>
             <ScrollView
                 android:id="@+id/succeeded_view"
@@ -87,14 +86,14 @@
                         android:layout_height="match_parent">
                         <TextView
                             android:textSize="14dp"
-                            android:textColor="?attr/textMedium"
+                            android:textColor="?attr/colorOnSurface"
                             android:gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/succeed"/>
                         <TextView
                             android:textSize="14dp"
-                            android:textColor="?attr/textMedium"
+                            android:textColor="?attr/colorOnSurface"
                             android:id="@+id/result"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -121,7 +120,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:textSize="14dp"
-                android:textColor="?attr/textMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:gravity="center"
                 android:id="@+id/tv_fix_tip"
                 android:layout_width="wrap_content"
@@ -132,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fix"
-                style="@style/MD.Button.Google"/>
+                style="@style/Widget.Material3.Button.TonalButton"/>
         </LinearLayout>
         <LinearLayout
             android:gravity="center"
@@ -146,7 +145,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:textSize="14dp"
-                android:textColor="?attr/textMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:gravity="center"
                 android:id="@+id/tv_patch_tip"
                 android:layout_width="wrap_content"
@@ -158,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/patch"
-                style="@style/MD.Button.Google"/>
+                style="@style/Widget.Material3.Button.TonalButton"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -179,14 +178,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/remove"
                     android:layout_weight="1"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
                 <Button
                     android:id="@+id/btn_install"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/install"
                     android:layout_weight="1"
-                    style="@style/MD.Button.Google"/>
+                    style="@style/Widget.Material3.Button.TonalButton"/>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -199,14 +198,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/copy_error_msg"
                     android:layout_weight="1"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
                 <Button
                     android:id="@+id/btn_close"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/close"
                     android:layout_weight="1"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -14,7 +14,7 @@ import java.io.File
 
 class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private lateinit var dirPathText: TextView
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
     private lateinit var adapter: FileAdapter
     private var currentPath: String = Environment.getExternalStorageDirectory().path
@@ -24,8 +24,10 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         setContentView(R.layout.activity_listfile)
 
         // Inicializa as views
-        dirPathText = findViewById(R.id.dirPath)
+        toolbar = findViewById(R.id.header_layout)
         listView = findViewById(R.id.file_list)
+        
+        setupToolbar()
         
         // Configura o adaptador
         val initialDir = File(currentPath)
@@ -34,8 +36,6 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         listView.onItemClickListener = this
 
         // Configura os botões
-        findViewById<View>(R.id.btn_close).setOnClickListener(this)
-        findViewById<View>(R.id.menu_switch_card).setOnClickListener(this)
         findViewById<View>(R.id.menu_home).setOnClickListener(this)
         findViewById<View>(R.id.files_list).setOnClickListener(this)
         findViewById<View>(R.id.search_button).setOnClickListener(this)
@@ -43,8 +43,22 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         updatePathDisplay(initialDir.path)
     }
 
+    private fun setupToolbar() {
+        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.inflateMenu(R.menu.menu_filelist)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_switch_sd -> {
+                    Toast.makeText(this, "Alternar armazenamento não implementado", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun updatePathDisplay(path: String) {
-        dirPathText.text = path
+        toolbar.title = path
         currentPath = path
     }
 
@@ -96,11 +110,6 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.btn_close -> finish()
-            R.id.menu_switch_card -> {
-                // Alternar entre armazenamento interno e SD se possível
-                Toast.makeText(this, "Alternar armazenamento não implementado", Toast.LENGTH_SHORT).show()
-            }
             R.id.menu_home -> {
                 val homePath = Environment.getExternalStorageDirectory().path
                 adapter.setDir(homePath)

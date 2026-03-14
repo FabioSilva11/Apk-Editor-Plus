@@ -22,11 +22,11 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/MD.Dark.NoActionBar">
+        android:theme="@style/Theme.ApkEditorPlus.NoActionBar">
         
         <activity
             android:name=".MainActivity"
-            android:theme="@style/MD.Dark.NoActionBar"
+            android:theme="@style/Theme.ApkEditorPlus.Main"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

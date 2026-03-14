@@ -20,9 +20,8 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
     private var manifestInfo: ManifestInfo? = null
     
     // UI Components
-    private lateinit var ivApkIcon: ImageView
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var ivLauncherIcon: ImageView
-    private lateinit var tvApkLabel: TextView
     private lateinit var etAppName: EditText
     private lateinit var etPkgName: EditText
     private lateinit var etVerCode: EditText
@@ -52,9 +51,10 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun initViews() {
-        ivApkIcon = findViewById(R.id.apk_icon)
+        toolbar = findViewById(R.id.header_layout)
+        toolbar.setNavigationOnClickListener { finish() }
+        
         ivLauncherIcon = findViewById(R.id.launcher_icon)
-        tvApkLabel = findViewById(R.id.apk_label)
         etAppName = findViewById(R.id.et_appname)
         etPkgName = findViewById(R.id.et_pkgname)
         etVerCode = findViewById(R.id.et_vercode)
@@ -101,7 +101,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
 
     private fun updateUI() {
         manifestInfo?.let { info ->
-            tvApkLabel.text = info.label ?: "Sem nome"
+            toolbar.title = info.label ?: "Sem nome"
             etAppName.setText(info.label)
             etPkgName.setText(info.packageName)
             etVerCode.setText(info.versionCode.toString())
@@ -127,11 +127,10 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
                         val icon = it.loadIcon(pm)
                         val label = it.loadLabel(pm).toString()
                         
-                        ivApkIcon.setImageDrawable(icon)
                         ivLauncherIcon.setImageDrawable(icon)
                         
                         if (manifestInfo?.label.isNullOrEmpty()) {
-                            tvApkLabel.text = label
+                            toolbar.title = label
                             etAppName.setText(label)
                         }
                     }

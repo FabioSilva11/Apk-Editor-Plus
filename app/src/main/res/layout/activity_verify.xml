@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        app:navigationIcon="@drawable/ic_back"
+        app:navigationIconTint="?attr/colorOnSurface"
+        app:title="@string/action_verify"
+        app:titleTextAppearance="@style/MD.Toolbar.Title" />
+
+    <LinearLayout 
+        android:padding="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,16 +28,14 @@
             android:layout_height="match_parent">
             <TextView
                 android:textSize="14dp"
-                android:typeface="monospace"
-                android:textColor="?attr/textMedium"
+
+                android:textColor="?attr/colorOnSurface"
                 android:id="@+id/verify_text_view"
                 android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textIsSelectable="true"
-                android:fontFamily="monospace"/>
+                android:textIsSelectable="true"/>
         </HorizontalScrollView>
     </ScrollView>
 </LinearLayout>
-
-
+</LinearLayout>

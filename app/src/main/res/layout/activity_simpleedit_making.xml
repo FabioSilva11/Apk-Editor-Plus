@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
         <TextView
             android:textSize="14dp"
-            android:textColor="?attr/textMedium"
+            android:textColor="?attr/colorOnSurface"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/in_progress"/>
@@ -21,11 +21,10 @@
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
             android:indeterminate="true"
-            android:indeterminateTint="?attr/progressHorizontal"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+            android:indeterminateTint="?attr/colorPrimary" />
         <TextView
             android:textSize="14dp"
-            android:textColor="?attr/textMedium"
+            android:textColor="?attr/colorOnSurface"
             android:id="@+id/tv_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,14 +45,14 @@
             android:src="@drawable/ic_select"/>
         <TextView
             android:textSize="14dp"
-            android:textColor="?attr/textMedium"
+            android:textColor="?attr/colorOnSurface"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/succeed"/>
         <TextView
             android:textSize="14dp"
-            android:textColor="?attr/textMedium"
+            android:textColor="?attr/colorOnSurface"
             android:id="@+id/result"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -80,21 +79,21 @@
                     android:layout_height="wrap_content"
                     android:text="@string/remove"
                     android:layout_weight="1"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
                 <Button
                     android:id="@+id/button_reinstall"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/install"
                     android:layout_weight="1"
-                    style="@style/MD.Button.Google"/>
+                    style="@style/Widget.Material3.Button.TonalButton"/>
             </LinearLayout>
             <Button
                 android:id="@+id/button_close"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/close"
-                style="@style/MD.Button.Google.Outline"/>
+                style="@style/Widget.Material3.Button.OutlinedButton"/>
         </LinearLayout>
     </LinearLayout>
 </merge>

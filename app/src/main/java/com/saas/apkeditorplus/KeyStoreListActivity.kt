@@ -35,10 +35,8 @@ class KeyStoreListActivity : BaseActivity() {
     }
 
     private fun setupToolbar() {
-        supportActionBar?.apply {
-            setTitle(R.string.action_db)
-            setDisplayHomeAsUpEnabled(true)
-        }
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
     }
 
     private fun setupListView() {

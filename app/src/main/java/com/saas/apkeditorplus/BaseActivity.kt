@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -27,6 +28,10 @@ open class BaseActivity : AppCompatActivity() {
     open fun shouldHideActionBar(): Boolean = true
 
     private fun applyPersistedTheme() {
-        setTheme(R.style.MD_Dark_NoActionBar)
+        val themeMode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        if (AppCompatDelegate.getDefaultNightMode() != themeMode) {
+            AppCompatDelegate.setDefaultNightMode(themeMode)
+        }
+        setTheme(R.style.Theme_ApkEditorPlus_NoActionBar)
     }
 }

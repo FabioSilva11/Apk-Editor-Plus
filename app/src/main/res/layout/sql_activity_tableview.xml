@@ -37,14 +37,14 @@
             android:layout_height="wrap_content"
             android:text="@string/pre_page"
             android:layout_weight="1"
-            style="@style/MD.Button.Google"/>
+            style="@style/Widget.Material3.Button.TonalButton"/>
         <Button
             android:id="@+id/button_nextpage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/next_page"
             android:layout_weight="1"
-            style="@style/MD.Button.Google"/>
+            style="@style/Widget.Material3.Button.TonalButton"/>
     </LinearLayout>
 </LinearLayout>
 

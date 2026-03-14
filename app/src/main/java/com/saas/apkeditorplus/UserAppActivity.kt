@@ -17,6 +17,7 @@ import kotlin.concurrent.thread
 
 class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
 
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
     private lateinit var progressBar: ProgressBar
     private lateinit var searchEdit: EditText
@@ -29,19 +30,18 @@ class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItem
         setContentView(R.layout.activity_applist)
 
         // Inicializa as views
+        toolbar = findViewById(R.id.header_layout)
         listView = findViewById(R.id.application_list)
         progressBar = findViewById(R.id.progress_bar)
         searchEdit = findViewById(R.id.et_keyword)
         
-        updateTitle()
-
+        setupToolbar()
+        
         adapter = AppAdapter(this)
         listView.adapter = adapter
         listView.onItemClickListener = this
-
-        findViewById<View>(R.id.btn_close).setOnClickListener(this)
+        
         findViewById<View>(R.id.btn_search).setOnClickListener(this)
-        findViewById<View>(R.id.menu_more).setOnClickListener(this)
         
         // Configura a busca em tempo real
         searchEdit.addTextChangedListener(object : TextWatcher {
@@ -55,9 +55,28 @@ class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItem
         loadApps()
     }
 
+    private fun setupToolbar() {
+        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.inflateMenu(R.menu.menu_applist) // Vamos precisar criar este arquivo
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_user_apps -> {
+                    showSystemApps = false
+                    loadApps()
+                    true
+                }
+                R.id.action_system_apps -> {
+                    showSystemApps = true
+                    loadApps()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun updateTitle() {
-        val titleText = findViewById<TextView>(R.id.apptype)
-        titleText.text = "Select an application"
+        toolbar.title = if (showSystemApps) getString(R.string.system_apps) else getString(R.string.user_apps)
     }
 
     private fun loadApps() {
@@ -133,37 +152,10 @@ class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItem
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.btn_close -> finish()
             R.id.btn_search -> {
                 val query = searchEdit.text.toString()
                 filterApps(query)
             }
-            R.id.menu_more -> {
-                showMenu(v)
-            }
         }
-    }
-
-    private fun showMenu(v: View) {
-        val popup = androidx.appcompat.widget.PopupMenu(this, v)
-        popup.menu.add(0, 1, 0, "User App")
-        popup.menu.add(0, 2, 0, "System App")
-        
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                1 -> {
-                    showSystemApps = false
-                    loadApps()
-                    true
-                }
-                2 -> {
-                    showSystemApps = true
-                    loadApps()
-                    true
-                }
-                else -> false
-            }
-        }
-        popup.show()
     }
 }

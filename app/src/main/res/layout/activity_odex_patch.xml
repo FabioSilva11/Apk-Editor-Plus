@@ -22,14 +22,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_apk_file"
-            style="@style/MD.Button.Google.Outline"/>
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
     </LinearLayout>
     <Button
         android:id="@+id/btn_apply_patch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/patch"
-        style="@style/MD.Button.Google"/>
+        style="@style/Widget.Material3.Button.TonalButton"/>
 </LinearLayout>
 
 

@@ -63,7 +63,6 @@
                         android:layout_marginTop="-8dp"
                         android:layout_marginRight="4dp"
                         android:hint="@string/replace"
-                        android:maxLines="@integer/md_max_lines_field"
                         android:selectAllOnFocus="@bool/md_selected_all_text"
                         android:layout_weight="1"
                         android:imeOptions="flagNoExtractUi|actionNone"/>

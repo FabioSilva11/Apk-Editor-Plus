@@ -14,7 +14,7 @@ import java.io.File
 
 class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private lateinit var dirPathText: TextView
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
     private lateinit var adapter: FileAdapter
     private var currentPath: String = Environment.getExternalStorageDirectory().path
@@ -25,7 +25,11 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_file_activity)
 
-        dirPathText = findViewById(R.id.dirPath)
+        toolbar = findViewById(R.id.header_layout)
+        setSupportActionBar(toolbar)
+        
+        toolbar.setNavigationOnClickListener { finish() }
+        
         listView = findViewById(R.id.file_list)
         
         val initialDir = File(currentPath)
@@ -33,14 +37,13 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
         listView.adapter = adapter
         listView.onItemClickListener = this
 
-        findViewById<View>(R.id.btn_close).setOnClickListener(this)
         findViewById<View>(R.id.menu_home).setOnClickListener(this)
 
         updatePathDisplay(initialDir.path)
     }
 
     private fun updatePathDisplay(path: String) {
-        dirPathText.text = path
+        toolbar.title = path
         currentPath = path
     }
 
@@ -165,7 +168,6 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.btn_close -> finish()
             R.id.menu_home -> {
                 val homePath = Environment.getExternalStorageDirectory().path
                 adapter.setDir(homePath)

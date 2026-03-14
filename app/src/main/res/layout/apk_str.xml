@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:listSelector="@android:color/transparent"
-        android:cacheColorHint="?attr/fade"
+        android:cacheColorHint="?attr/colorSurface"
         android:divider="@null"
         android:layout_weight="1"
         android:requiresFadingEdge="vertical"/>
@@ -72,7 +72,7 @@
             android:elevation="0dp">
             <com.gmail.heagoo.apkeditor.ac.EditTextWithTip
                 android:textSize="12dp"
-                android:textColor="?attr/textMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:id="@+id/keyword_edit"
                 android:background="@null"
                 android:paddingLeft="16dp"

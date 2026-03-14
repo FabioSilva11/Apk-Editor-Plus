@@ -54,7 +54,7 @@
             style="@style/button"/>
     </LinearLayout>
     <FrameLayout
-        android:background="@color/white"
+        android:background="?attr/colorSurface"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -94,7 +94,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:id="@+id/layout_scanning"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

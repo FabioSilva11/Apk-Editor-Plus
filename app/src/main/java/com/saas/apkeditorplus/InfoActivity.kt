@@ -82,24 +82,10 @@ class InfoActivity : BaseActivity() {
     }
 
     private fun setupToolbar() {
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            val inflater = layoutInflater
-            val toolbarView = inflater.inflate(R.layout.mtrl_toolbar, null)
-            val params = androidx.appcompat.app.ActionBar.LayoutParams(
-                androidx.appcompat.app.ActionBar.LayoutParams.WRAP_CONTENT,
-                androidx.appcompat.app.ActionBar.LayoutParams.MATCH_PARENT,
-                android.view.Gravity.CENTER
-            )
-            
-            val titleView = toolbarView.findViewById<android.widget.TextView>(android.R.id.title)
-            titleView?.text = "Desenvolvedor"
-            
-            actionBar.setCustomView(toolbarView, params)
-            actionBar.setDisplayShowCustomEnabled(true)
-            actionBar.setDisplayShowTitleEnabled(false)
-            actionBar.setDisplayHomeAsUpEnabled(true)
-        }
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.header_layout)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { finish() }
     }
 
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {

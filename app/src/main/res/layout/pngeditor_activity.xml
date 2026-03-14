@@ -35,26 +35,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/remove_bg"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_replace_color"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/replace_color"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_resize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/resize"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_transparency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/transparency"
-                    style="@style/MD.Button.Google.Outline"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"/>
             </LinearLayout>
         </HorizontalScrollView>
         <LinearLayout
@@ -84,8 +84,7 @@
                     android:maxHeight="2dp"
                     android:max="99"
                     android:minHeight="2dp"
-                    android:thumbTint="?android:attr/colorAccent"
-                    style="@style/Widget.AppCompat.SeekBar"/>
+                    android:thumbTint="?android:attr/colorAccent" />
                 <TextView
                     android:textSize="12sp"
                     android:textColor="?android:attr/textColorPrimary"
@@ -98,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/remove"
-                style="@style/MD.Button.Google"/>
+                style="@style/Widget.Material3.Button.TonalButton"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -187,7 +186,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/resize"
-                style="@style/MD.Button.Google"/>
+                style="@style/Widget.Material3.Button.TonalButton"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -208,8 +207,7 @@
                     android:maxHeight="2dp"
                     android:max="255"
                     android:minHeight="2dp"
-                    android:thumbTint="?android:attr/colorAccent"
-                    style="@style/Widget.AppCompat.SeekBar"/>
+                    android:thumbTint="?android:attr/colorAccent" />
                 <TextView
                     android:textSize="12sp"
                     android:textColor="?android:attr/textColorPrimary"
@@ -222,7 +220,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/preview"
-                style="@style/MD.Button.Google"/>
+                style="@style/Widget.Material3.Button.TonalButton"/>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

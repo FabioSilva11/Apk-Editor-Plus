@@ -30,7 +30,7 @@
             style="@style/MD.Toolbar.Title"/>
         <TextView
             android:textSize="10dp"
-            android:textColor="?attr/textSmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:ellipsize="end"
             android:id="@+id/app_pkgpath"
             android:layout_width="match_parent"

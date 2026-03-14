@@ -10,7 +10,7 @@
         android:fadingEdgeLength="1dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:cacheColorHint="?attr/fade"
+        android:cacheColorHint="?attr/colorSurface"
         android:layout_weight="1"
         android:requiresFadingEdge="vertical"/>
     <FrameLayout
@@ -42,7 +42,7 @@
                 android:elevation="0dp">
                 <com.gmail.heagoo.apkeditor.ac.EditTextWithTip
                     android:textSize="12dp"
-                    android:textColor="?attr/textMedium"
+                    android:textColor="?attr/colorOnSurface"
                     android:id="@+id/mf_keyword"
                     android:background="@null"
                     android:paddingLeft="16dp"

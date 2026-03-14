@@ -31,7 +31,7 @@
             style="@style/MD.Toolbar.Title"/>
     </LinearLayout>
     <ScrollView
-        android:background="?attr/fade"
+        android:background="?attr/colorSurface"
         android:fadingEdge="vertical"
         android:fadingEdgeLength="1dp"
         android:layout_width="match_parent"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save"
-            style="@style/MD.Button.Google"/>
+            style="@style/Widget.Material3.Button.TonalButton"/>
     </LinearLayout>
 </LinearLayout>
 

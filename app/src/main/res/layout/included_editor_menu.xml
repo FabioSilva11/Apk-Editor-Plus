@@ -14,7 +14,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_characters"
-        android:tint="?attr/progressHorizontal"/>
+        android:tint="?attr/colorPrimary"/>
     <View
         android:id="@+id/separate_view"
         android:background="?attr/separator"

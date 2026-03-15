@@ -78,11 +78,11 @@ class ApkCreateActivity : BaseActivity() {
 
         Thread {
             try {
-                updateProgress("Reconstruindo APK...")
+                updateProgress(getString(R.string.rebuilding_apk))
                 val unsignedApk = File(cacheDir, "unsigned.apk")
                 rebuildApk(unsignedApk)
 
-                updateProgress("Assinando APK...")
+                updateProgress(getString(R.string.signing_apk))
                 val signedApk = File(getExternalFilesDir(null), "${targetPackageName ?: "modded"}_pro.apk")
                 
                 // Busca a primeira KeyStore do banco de dados (lógica simplificada da ApkEditor)
@@ -91,15 +91,15 @@ class ApkCreateActivity : BaseActivity() {
                 runOnUiThread {
                     if (success) {
                         outputApkFile = signedApk
-                        showResult(true, "APK gerado com sucesso em:\n${signedApk.absolutePath}")
+                        showResult(true, getString(R.string.apk_generated_success, signedApk.absolutePath))
                     } else {
-                        showResult(false, "Falha na assinatura. Verifique se você tem uma chave configurada em 'Chaves de Assinatura'.")
+                        showResult(false, getString(R.string.signing_failed_check_keys))
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 runOnUiThread {
-                    showResult(false, "Erro durante o build: ${e.message}")
+                    showResult(false, getString(R.string.error_during_build, e.message))
                 }
             }
         }.start()
@@ -236,7 +236,7 @@ class ApkCreateActivity : BaseActivity() {
             val intent = Intent(Intent.ACTION_DELETE)
             intent.data = Uri.parse("package:$pkg")
             startActivity(intent)
-        } ?: Toast.makeText(this, "Nome do pacote não identificado.", Toast.LENGTH_SHORT).show()
+        } ?: Toast.makeText(this, getString(R.string.package_name_not_identified), Toast.LENGTH_SHORT).show()
     }
 
     private fun installNewApk() {

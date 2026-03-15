@@ -138,7 +138,7 @@ class AxmlEditActivity : BaseActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 runOnUiThread {
-                    Toast.makeText(this, "Erro ao carregar arquivos: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_loading_files, e.message), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
             }
@@ -255,20 +255,28 @@ class AxmlEditActivity : BaseActivity() {
                 runOnUiThread {
                     progressBar.visibility = View.GONE
                     if (success) {
-                        val activityClass = if (entryName.endsWith(".xml")) TextEditBigActivity::class.java else TextEditNormalActivity::class.java
-                        val intent = Intent(this, activityClass)
-                        intent.putExtra("filePath", tempFile.absolutePath)
-                        intent.putExtra("fileName", entryName)
-                        startActivityForResult(intent, 100)
+                        if (entryName.endsWith(".xml")) {
+                            val intent = Intent(this, TextEditBigActivity::class.java)
+                            intent.putExtra("filePath", tempFile.absolutePath)
+                            intent.putExtra("fileName", entryName)
+                            startActivityForResult(intent, 100)
+                        } else {
+                            // Mostrar diálogo informando que apenas XML é suportado
+                            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                                .setTitle("Unsupported File")
+                                .setMessage("Only XML files can be edited in this section.")
+                                .setPositiveButton("OK", null)
+                                .show()
+                        }
                     } else {
-                        showErrorDialog("Falha ao processar arquivo", errorLog ?: "Erro desconhecido")
+                        showErrorDialog(getString(R.string.failed_to_process_file), errorLog ?: getString(R.string.unknown_error))
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 runOnUiThread {
                     progressBar.visibility = View.GONE
-                    showErrorDialog("Erro de I/O", e.stackTraceToString())
+                    showErrorDialog(getString(R.string.io_error), e.stackTraceToString())
                 }
             }
         }.start()
@@ -278,7 +286,7 @@ class AxmlEditActivity : BaseActivity() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(log)
-            .setPositiveButton("Fechar", null)
+            .setPositiveButton(R.string.close, null)
             .show()
     }
 

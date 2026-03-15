@@ -59,11 +59,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                Toast.makeText(this, "Esta função poderá ser disponibilizada em uma atualização futura", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.action_future_update), Toast.LENGTH_LONG).show()
                 true
             }
             R.id.action_clean -> {
-                Toast.makeText(this, "Limpar arquivos clicado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.cleanup_clicked), Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_settings -> {
@@ -155,9 +155,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             if (!android.os.Environment.isExternalStorageManager()) {
                 // Mostra um diálogo explicativo antes de mandar para as configurações
                 androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle("Permissão Necessária")
-                    .setMessage("Para editar e salvar arquivos APK, o Android exige a permissão de 'Acesso a todos os arquivos'. Vamos abrir as configurações para você autorizar.")
-                    .setPositiveButton("Configurações") { _, _ ->
+                    .setTitle(R.string.permission_needed)
+                    .setMessage(R.string.permission_all_files_desc)
+                    .setPositiveButton(R.string.settings_button) { _, _ ->
                         try {
                             val intent = Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                             intent.addCategory("android.intent.category.DEFAULT")
@@ -168,7 +168,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                             startActivity(intent)
                         }
                     }
-                    .setNegativeButton("Cancelar", null)
+                    .setNegativeButton(R.string.colormixer_cancel, null)
                     .show()
             }
         }
@@ -182,7 +182,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 // Após conceder permissões básicas, verifica se precisa de acesso total
                 checkAllFilesAccess()
             } else {
-                Toast.makeText(this, "Permissão de armazenamento necessária para o app funcionar", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.storage_permission_required), Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -26,43 +26,6 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tema do Editor"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <RadioGroup
-                android:id="@+id/rg_editor_theme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RadioButton
-                    android:id="@+id/rb_theme_darcula"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Darcula (Escuro)"
-                    android:padding="12dp"
-                    android:textColor="?attr/colorOnSurface" />
-
-                <RadioButton
-                    android:id="@+id/rb_theme_light"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Claro"
-                    android:padding="12dp"
-                    android:textColor="?attr/colorOnSurface" />
-            </RadioGroup>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?attr/separator"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="match_parent"

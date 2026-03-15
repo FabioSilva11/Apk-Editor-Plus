@@ -64,14 +64,14 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
         } else if (selectedFile.name.endsWith(".apk", true)) {
             showSignOptionsDialog(selectedFile)
         } else {
-            Toast.makeText(this, "Selecione um arquivo APK para assinar", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.select_apk_to_sign), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun showSignOptionsDialog(apkFile: File) {
-        val options = arrayOf("Sign with TestKey", "Sign with Custom KeyStore")
+        val options = arrayOf(getString(R.string.sign_with_testkey), getString(R.string.sign_with_custom_keystore))
         AlertDialog.Builder(this)
-            .setTitle("Sign APK: ${apkFile.name}")
+            .setTitle(getString(R.string.sign_apk_title, apkFile.name))
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> signWithTestKey(apkFile)
@@ -102,14 +102,14 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
         val files = keyStoreManager.listKeyStores()
         
         if (files.isEmpty()) {
-            Toast.makeText(this, "Nenhuma chave encontrada em 'Chaves de Assinatura'", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.signing_failed_check_keys), Toast.LENGTH_LONG).show()
             return
         }
         
         val names = files.map { it.name }
 
         AlertDialog.Builder(this)
-            .setTitle("Selecionar KeyStore")
+            .setTitle(R.string.select_keystore)
             .setItems(names.toTypedArray()) { _, which ->
                 requestKeyStorePassword(apkFile, files[which])
             }
@@ -125,15 +125,15 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
         container.addView(input)
 
         AlertDialog.Builder(this)
-            .setTitle("Senha")
+            .setTitle(R.string.password)
             .setView(container)
-            .setPositiveButton("OK") { dialog: DialogInterface, which: Int ->
+            .setPositiveButton(android.R.string.ok) { dialog: DialogInterface, which: Int ->
                 val password = input.text.toString()
                 if (password.isNotEmpty()) {
                     performCustomSign(apkFile, ksFile, password)
                 }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(R.string.colormixer_cancel, null)
             .show()
     }
 

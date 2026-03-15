@@ -67,7 +67,7 @@ class SigningProgressActivity : BaseActivity() {
                 keyPass?.toCharArray() ?: charArrayOf(),
                 object : ApkSignerManager.SignerListener {
                     override fun onStart() {
-                        updateUI("Iniciando processo...", false)
+                        updateUI(getString(R.string.signing_started), false)
                     }
 
                     override fun onProgress(message: String) {
@@ -75,11 +75,11 @@ class SigningProgressActivity : BaseActivity() {
                     }
 
                     override fun onSuccess() {
-                        updateUI("Sucesso! APK assinado.", true)
+                        updateUI(getString(R.string.success_apk_signed), true)
                     }
 
                     override fun onError(message: String) {
-                        updateUI("Erro: $message", true, isError = true)
+                        updateUI(getString(R.string.error_label, message), true, isError = true)
                     }
                 }
             )
@@ -93,10 +93,10 @@ class SigningProgressActivity : BaseActivity() {
                 progressBar.visibility = View.GONE
                 layoutButtons.visibility = View.VISIBLE
                 if (isError) {
-                    tvTitle.text = "Falha na Assinatura"
+                    tvTitle.text = getString(R.string.signing_failed)
                     btnViewOutput.visibility = View.GONE
                 } else {
-                    tvTitle.text = "Assinatura Concluída"
+                    tvTitle.text = getString(R.string.signing_completed)
                 }
             }
         }

@@ -20,7 +20,7 @@ class EditModeDialog(
         val builder = AlertDialog.Builder(context)
             .setTitle(R.string.edit_mode)
             .setView(view)
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(R.string.colormixer_cancel, null)
 
         dialog = builder.create()
 

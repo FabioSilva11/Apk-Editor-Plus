@@ -147,7 +147,7 @@ class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItem
         intent?.let {
             it.putExtra("apkPath", path)
             startActivity(it)
-        } ?: Toast.makeText(this, "Modo de edição não suportado ainda", Toast.LENGTH_SHORT).show()
+        } ?: Toast.makeText(this, getString(R.string.edit_mode_not_supported), Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(v: View) {

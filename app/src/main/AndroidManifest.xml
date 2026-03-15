@@ -46,7 +46,6 @@
         <activity android:name=".SettingActivity" />
         <activity android:name=".SettingEditorActivity" />
         <activity android:name=".SettingHideActivity" />
-        <activity android:name=".TextEditNormalActivity" android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".TextEditBigActivity" android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".MfSearchRetActivity" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".ApkSearchActivity" />

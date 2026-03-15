@@ -83,14 +83,14 @@ class KeyStoreListActivity : BaseActivity() {
         AlertDialog.Builder(this)
             .setTitle(R.string.create_keystore)
             .setView(view)
-            .setPositiveButton("Criar") { dialog, _ ->
+            .setPositiveButton(R.string.create) { dialog, _ ->
                 val name = etName.text.toString()
                 val ksPass = etKsPass.text.toString()
                 val alias = etAlias.text.toString()
                 val keyPass = etKeyPass.text.toString()
                 
                 if (name.isEmpty() || ksPass.isEmpty() || alias.isEmpty() || keyPass.isEmpty()) {
-                    Toast.makeText(this, "Preencha todos os campos obrigatórios", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.fill_all_required_fields), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
@@ -108,27 +108,27 @@ class KeyStoreListActivity : BaseActivity() {
                     )
                     adapter.add(file)
                     updateEmptyState()
-                    Toast.makeText(this, "Chave criada com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.key_created_successfully), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Toast.makeText(this, "Erro: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(R.string.colormixer_cancel, null)
             .show()
     }
 
     private fun showDeleteConfirm(file: File, position: Int) {
         AlertDialog.Builder(this)
-            .setTitle("Excluir Chave")
-            .setMessage("Deseja realmente excluir ${file.name}?")
-            .setPositiveButton("Excluir") { dialog, _ ->
+            .setTitle(R.string.delete_key)
+            .setMessage(getString(R.string.confirm_delete_key, file.name))
+            .setPositiveButton(R.string.delete) { dialog, _ ->
                 if (file.delete()) {
                     adapter.removeAt(position)
                     updateEmptyState()
-                    Toast.makeText(this, "Excluído", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.deleted), Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(R.string.colormixer_cancel, null)
             .show()
     }
 
@@ -160,7 +160,7 @@ class KeyStoreListActivity : BaseActivity() {
             val text2 = view.findViewById<TextView>(android.R.id.text2)
             
             text1.text = file.name
-            text2.text = "Caminho: ${file.absolutePath}"
+            text2.text = getString(R.string.path_label, file.absolutePath)
             
             return view
         }

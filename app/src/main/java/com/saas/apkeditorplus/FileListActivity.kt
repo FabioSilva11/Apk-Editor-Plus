@@ -49,7 +49,7 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_switch_sd -> {
-                    Toast.makeText(this, "Alternar armazenamento não implementado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.switch_storage_not_implemented), Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false
@@ -82,7 +82,7 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
             // Mostra o diálogo de modo de edição
             showEditModeDialog(selectedFile.path)
         } else {
-            Toast.makeText(this, "Selecione um arquivo APK", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.select_apk_file), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -105,7 +105,7 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         intent?.let {
             it.putExtra("apkPath", path)
             startActivity(it)
-        } ?: Toast.makeText(this, "Modo de edição não suportado ainda", Toast.LENGTH_SHORT).show()
+        } ?: Toast.makeText(this, getString(R.string.edit_mode_not_supported), Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(v: View) {
@@ -117,7 +117,7 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
             }
             R.id.files_list -> {
                 // Talvez mostrar lista de arquivos recentes ou favoritos
-                Toast.makeText(this, "Arquivos recentes não implementado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.recent_files_not_implemented), Toast.LENGTH_SHORT).show()
             }
             R.id.search_button -> {
                 val keyword = findViewById<EditText>(R.id.keyword_edit).text.toString()
@@ -127,7 +127,7 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
                     intent.putExtra("Path", currentPath)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "Digite uma palavra-chave para buscar", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.keyword_required), Toast.LENGTH_SHORT).show()
                 }
             }
         }

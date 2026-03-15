@@ -41,7 +41,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
 
         apkPath = intent.getStringExtra("apkPath") ?: ""
         if (apkPath.isEmpty()) {
-            Toast.makeText(this, "Caminho do APK não encontrado", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.apk_path_not_found), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -93,7 +93,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
             } catch (e: Exception) {
                 e.printStackTrace()
                 handler.post {
-                    Toast.makeText(this, "Erro ao carregar info do APK: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.error_loading_apk_info, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }.start()
@@ -101,7 +101,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
 
     private fun updateUI() {
         manifestInfo?.let { info ->
-            toolbar.title = info.label ?: "Sem nome"
+            toolbar.title = info.label ?: getString(R.string.unnamed)
             etAppName.setText(info.label)
             etPkgName.setText(info.packageName)
             etVerCode.setText(info.versionCode.toString())
@@ -153,7 +153,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
         val newPkgName = etPkgName.text.toString()
         val newVerCode = etVerCode.text.toString().toIntOrNull() ?: -1
         
-        Toast.makeText(this, "Salvando alterações...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.saving_changes), Toast.LENGTH_SHORT).show()
         
         Thread {
             try {
@@ -182,12 +182,12 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
                         putExtra("modifiedFiles", modifiedFiles)
                     }
                     startActivity(intent)
-                    Toast.makeText(this, "Axml modificado. Iniciando reconstrução...", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.axml_modified_rebuild), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 handler.post {
-                    Toast.makeText(this, "Erro ao salvar: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.error_saving, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }.start()

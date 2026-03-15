@@ -68,14 +68,14 @@ class InfoActivity : BaseActivity() {
                 } else {
                     mainHandler.post {
                         pbLoading.visibility = View.GONE
-                        Toast.makeText(this, "Erro ao carregar commits: ${connection.responseCode}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.error_loading_commits, connection.responseCode), Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 mainHandler.post {
                     pbLoading.visibility = View.GONE
-                    Toast.makeText(this, "Erro de conexão", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show()
                 }
             }
         }

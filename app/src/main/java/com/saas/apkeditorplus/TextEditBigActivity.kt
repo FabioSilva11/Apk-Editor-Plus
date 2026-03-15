@@ -78,7 +78,7 @@ class TextEditBigActivity : BaseActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
         filePath = intent.getStringExtra("filePath")
-        val fileName = intent.getStringExtra("fileName") ?: "Sem nome"
+        val fileName = intent.getStringExtra("fileName") ?: getString(R.string.unnamed)
         supportActionBar?.title = fileName
 
         editor = findViewById(R.id.editor)
@@ -195,9 +195,7 @@ class TextEditBigActivity : BaseActivity() {
     }
 
     private fun ensureTextmateTheme() {
-        if (editor.colorScheme !is TextMateColorScheme) {
-            editor.colorScheme = TextMateColorScheme.create(ThemeRegistry.getInstance())
-        }
+        editor.colorScheme = TextMateColorScheme.create(ThemeRegistry.getInstance())
     }
 
     private fun resetColorScheme() {
@@ -206,18 +204,23 @@ class TextEditBigActivity : BaseActivity() {
     }
 
     private fun chooseTheme() {
-        val themes = arrayOf("Darcula", "Light")
+        val themes = arrayOf("Darcula", "Light", "Ayu Dark", "Quiet Light", "Solarized Dark")
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle(R.string.switch_color_scheme)
             .setItems(themes) { _, which ->
                 val themeName = when (which) {
                     0 -> "darcula"
                     1 -> "light"
+                    2 -> "ayu-dark"
+                    3 -> "quietlight"
+                    4 -> "solarized_dark"
                     else -> "darcula"
                 }
                 ThemeRegistry.getInstance().setTheme(themeName)
                 ensureTextmateTheme()
-                resetColorScheme()
+                // resetColorScheme() is no longer needed as ensureTextmateTheme sets a new scheme
+                // Salvar a escolha do tema
+                prefs.edit().putString("editor_theme", themeName).apply()
             }
             .show()
     }
@@ -335,16 +338,16 @@ class TextEditBigActivity : BaseActivity() {
     override fun onBackPressed() {
         if (originalText != editor.text.toString()) {
             AlertDialog.Builder(this)
-                .setTitle("Salvar alterações?")
-                .setMessage("Você fez modificações que ainda não foram salvas.")
-                .setPositiveButton("Salvar") { _, _ ->
+                .setTitle(R.string.save_changes)
+                .setMessage(R.string.unsaved_changes_msg)
+                .setPositiveButton(R.string.save) { _, _ ->
                     saveFile()
                     finish()
                 }
-                .setNegativeButton("Descartar") { _, _ ->
+                .setNegativeButton(R.string.discard) { _, _ ->
                     finish()
                 }
-                .setNeutralButton("Cancelar", null)
+                .setNeutralButton(R.string.colormixer_cancel, null)
                 .show()
         } else {
             super.onBackPressed()
@@ -354,9 +357,9 @@ class TextEditBigActivity : BaseActivity() {
     private fun copyToClipboard() {
         if (editor.cursor.left != editor.cursor.right) {
             editor.copyText()
-            Toast.makeText(this, "Copiado para a área de transferência", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.file_copied_toast), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Nada selecionado", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.nothing_selected), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -398,14 +401,25 @@ class TextEditBigActivity : BaseActivity() {
                     "light"
                 ).apply { isDark = false }
             )
+            ThemeRegistry.getInstance().loadTheme(
+                ThemeModel(
+                    IThemeSource.fromInputStream(assets.open("textmate/ayu-dark.json"), "ayu-dark.json", null),
+                    "ayu-dark"
+                ).apply { isDark = true }
+            )
+            ThemeRegistry.getInstance().loadTheme(
+                ThemeModel(
+                    IThemeSource.fromInputStream(assets.open("textmate/quietlight.json"), "quietlight.json", null),
+                    "quietlight"
+                ).apply { isDark = false }
+            )
+            ThemeRegistry.getInstance().loadTheme(
+                ThemeModel(
+                    IThemeSource.fromInputStream(assets.open("textmate/solarized_dark.json"), "solarized_dark.json", null),
+                    "solarized_dark"
+                ).apply { isDark = true }
+            )
             
-            // Aplicar o tema escolhido pelo usuário
-            val userTheme = prefs.getString("editor_theme", "darcula") ?: "darcula"
-            ThemeRegistry.getInstance().setTheme(userTheme)
-            
-            // Aplicar TextMateColorScheme ao editor
-            ensureTextmateTheme()
-
             // Carregar gramáticas utilizando DefaultGrammarDefinition
             GrammarRegistry.getInstance().loadGrammar(
                 DefaultGrammarDefinition.withGrammarSource(
@@ -429,13 +443,13 @@ class TextEditBigActivity : BaseActivity() {
                 )
             )
 
-            // Identificação automática da linguagem pela extensão
+            // Identificação automática da linguagem pela extensão ou fallback para XML
             val ext = filePath?.substringAfterLast('.', "")?.lowercase() ?: ""
             val scopeName = when (ext) {
                 "xml", "axml" -> "text.xml"
                 "java" -> "source.java"
                 "smali" -> "source.smali"
-                else -> null
+                else -> "text.xml" // Padrão solicitado: XML
             }
 
             if (scopeName != null) {
@@ -443,6 +457,13 @@ class TextEditBigActivity : BaseActivity() {
                 editor.setEditorLanguage(language)
             }
             
+            // Aplicar o tema escolhido pelo usuário (DEPOIS de definir a linguagem)
+            val userTheme = prefs.getString("editor_theme", "light") ?: "light"
+            ThemeRegistry.getInstance().setTheme(userTheme)
+            
+            // Aplicar TextMateColorScheme ao editor
+            ensureTextmateTheme()
+
         } catch (e: Exception) {
             e.printStackTrace()
             // Fallback para o tema padrão se o TextMate falhar
@@ -466,10 +487,10 @@ class TextEditBigActivity : BaseActivity() {
                 val currentText = editor.text.toString()
                 File(path).writeText(currentText)
                 originalText = currentText
-                Toast.makeText(this, "Arquivo salvo!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.file_saved_toast), Toast.LENGTH_SHORT).show()
                 setResult(RESULT_OK)
             } catch (e: Exception) {
-                Toast.makeText(this, "Erro ao salvar: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_saving, e.message), Toast.LENGTH_SHORT).show()
             }
         }
     }

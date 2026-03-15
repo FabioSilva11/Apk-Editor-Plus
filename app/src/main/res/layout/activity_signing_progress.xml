@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="Processando Assinatura"
+        android:text="@string/processing_signature"
         android:textColor="?attr/iconPrimary"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="Por favor, aguarde..."
+        android:text="@string/please_wait"
         android:textColor="?attr/iconSecondary"
         android:textSize="14sp" />
 
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Iniciando..."
+        android:text="@string/starting"
         android:textColor="?attr/iconPrimary"
         android:textSize="16sp" />
 
@@ -61,7 +61,7 @@
             android:id="@+id/btn_view_output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ver Arquivo de Saída" />
+            android:text="@string/view_output_file" />
 
         <Button
             android:id="@+id/btn_finish"
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Concluir" />
+            android:text="@string/finish" />
     </LinearLayout>
 
 </LinearLayout>

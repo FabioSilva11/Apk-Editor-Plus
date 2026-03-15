@@ -79,8 +79,16 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
                 updatePathDisplay(selectedFile.path)
             }
         } else if (selectedFile.name.endsWith(".apk", true)) {
-            // Mostra o diálogo de modo de edição
-            showEditModeDialog(selectedFile.path)
+            // Se foi aberta para selecionar um arquivo para verificação
+            if (intent.getBooleanExtra("select_for_verify", false)) {
+                val resultIntent = Intent()
+                resultIntent.putExtra("apkPath", selectedFile.path)
+                setResult(RESULT_OK, resultIntent)
+                finish()
+            } else {
+                // Mostra o diálogo de modo de edição normal
+                showEditModeDialog(selectedFile.path)
+            }
         } else {
             Toast.makeText(this, getString(R.string.select_apk_file), Toast.LENGTH_SHORT).show()
         }

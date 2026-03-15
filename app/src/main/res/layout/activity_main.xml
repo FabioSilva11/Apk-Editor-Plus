@@ -60,10 +60,7 @@
                 android:id="@+id/btn_prj"
                 android:text="@string/action_prj"
                 style="@style/MD.H"/>
-            <Button
-                android:id="@+id/btn_odex"
-                android:text="@string/action_odex"
-                style="@style/MD.H"/>
+
             <Button
                 android:id="@+id/btn_sign"
                 android:text="@string/action_sign"

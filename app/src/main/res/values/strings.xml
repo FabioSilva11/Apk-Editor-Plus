@@ -637,14 +637,12 @@
     <string name="action_apk">APK file</string>
     <string name="action_app">Installed app</string>
     <string name="action_prj">Projects</string>
-    <string name="action_odex">ODEX patcher</string>
     <string name="action_info">Git Status</string>
     <string name="action_sett">Settings</string>
     <string name="action_exit">Exit</string>
     <string name="action_apk_desc">Select APK file to editing</string>
     <string name="action_app_desc">Select an installed app to editing</string>
     <string name="action_prj_desc">List of your projects</string>
-    <string name="action_odex_desc">Apply patch for application</string>
     <string name="action_info_desc">Credits and developer information</string>
     <string name="action_sett_desc">Appearance, decoding, assembly, etc</string>
     <string name="action_exit_desc">Quit the application</string>
@@ -707,7 +705,6 @@
     <string name="templates_delete_all">Delete all</string>
     <string name="templates_label">Label</string>
     <string name="templates_content">Content</string>
-    <string name="show_odex">Show “ODEX patcher”</string>
     <string name="show_info">Show “Help”</string>
     <string name="hide_projects">Hide “Projects”</string>
     <string name="hide_exit">Hide “Exit”</string>

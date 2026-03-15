@@ -78,7 +78,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private fun setupClickListeners() {
         val buttonIds = intArrayOf(
-            R.id.btn_apk, R.id.btn_app, R.id.btn_prj, R.id.btn_odex,
+            R.id.btn_apk, R.id.btn_app, R.id.btn_prj,
             R.id.btn_sign, R.id.btn_verify, R.id.btn_db, R.id.btn_info,
             R.id.btn_settings, R.id.btn_exit
         )
@@ -93,7 +93,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.btn_apk -> Intent(this, FileListActivity::class.java)
             R.id.btn_app -> Intent(this, UserAppActivity::class.java)
             R.id.btn_prj -> Intent(this, ProjectListActivity::class.java)
-            R.id.btn_odex -> Intent(this, OdexPatchActivity::class.java)
             R.id.btn_sign -> Intent(this, SelectFileActivity::class.java)
             R.id.btn_verify -> Intent(this, VerifyActivity::class.java)
             R.id.btn_db -> Intent(this, KeyStoreListActivity::class.java)

@@ -52,7 +52,7 @@
         <activity android:name=".ColorXmlActivity" />
         <activity android:name=".ProjectListActivity" />
         <activity android:name=".AxmlEditActivity" />
-        <activity android:name=".OdexPatchActivity" />
+
         <activity android:name=".PngEditActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".AboutModActivity" />

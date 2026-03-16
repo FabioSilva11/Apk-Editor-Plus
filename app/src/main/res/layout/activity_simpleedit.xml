@@ -112,7 +112,7 @@
             android:layout_marginRight="4dp"
             android:singleLine="true"
             android:layout_weight="1"/>
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

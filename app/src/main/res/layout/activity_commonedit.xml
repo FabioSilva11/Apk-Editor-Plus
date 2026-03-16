@@ -308,14 +308,14 @@
         android:paddingBottom="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/close"
             android:layout_weight="1"
             style="@style/Widget.Material3.Button.OutlinedButton"/>
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

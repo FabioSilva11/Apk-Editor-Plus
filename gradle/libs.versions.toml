@@ -14,6 +14,11 @@ bouncycastle = "1.83"
 gson = "2.13.2"
 soraEditor = "0.24.4"
 desugar = "2.1.5"
+smali = "3.0.3"
+lifecycle = "2.8.7"
+coroutines = "1.9.0"
+
+
 
 
 
@@ -36,6 +41,14 @@ sora-editor-bom = { group = "io.github.rosemoe", name = "editor-bom", version.re
 sora-editor-core = { group = "io.github.rosemoe", name = "editor" }
 sora-editor-language-textmate = { group = "io.github.rosemoe", name = "language-textmate" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugar" }
+smali-core = { group = "com.android.tools.smali", name = "smali", version.ref = "smali" }
+baksmali = { group = "com.android.tools.smali", name = "smali-baksmali", version.ref = "smali" }
+dexlib2 = { group = "com.android.tools.smali", name = "smali-dexlib2", version.ref = "smali" }
+smali-util = { group = "com.android.tools.smali", name = "smali-util", version.ref = "smali" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+
 
 
 

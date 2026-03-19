@@ -58,4 +58,5 @@ dependencies {
     implementation(libs.smali.util)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.viewpager2)
 }

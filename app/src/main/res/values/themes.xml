@@ -1,177 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Light Theme -->
-    <style name="Theme.ApkEditorPlus" parent="Theme.Material3.DayNight">
-        <!-- Main colors -->
+<resources>
+
+    <!-- ===================== -->
+    <!-- TEMA BASE COM TOOLBAR -->
+    <!-- ===================== -->
+
+    <style name="Theme.MyApp" parent="Theme.Material3.Light">
+
+        <!-- Cores principais -->
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
         <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+
         <item name="colorSecondary">@color/md_theme_light_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
+
         <item name="colorTertiary">@color/md_theme_light_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
-        <item name="colorError">@color/md_theme_light_error</item>
-        <item name="colorOnError">@color/md_theme_light_onError</item>
-        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
-        <item name="android:windowBackground">@color/md_theme_light_background</item>
+
+        <!-- Fundo e superfícies -->
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
         <item name="colorSurface">@color/md_theme_light_surface</item>
         <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
-        <item name="colorOutline">@color/md_theme_light_outline</item>
-        <item name="colorAccent">@color/md_theme_light_primary</item>
+
+        <!-- Estados -->
+        <item name="colorError">@color/md_theme_light_error</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Toolbar -->
+        <item name="toolbarStyle">@style/Widget.MyApp.Toolbar</item>
+
+        <!-- Botões -->
+        <item name="materialButtonStyle">@style/Widget.MyApp.Button</item>
+
+        <!-- TextInput -->
+        <item name="textInputStyle">@style/Widget.MyApp.TextInputLayout</item>
+ 
+        <!-- Cards -->
+        <item name="materialCardViewStyle">@style/Widget.MyApp.Card</item>
         
-        <!-- Button Styles -->
-        <item name="materialButtonStyle">@style/Widget.Material3.Button.TonalButton</item>
-        <item name="borderlessButtonStyle">@style/Widget.Material3.Button.TextButton</item>
-        
-        <!-- Default text colors based on theme -->
+        <!-- Cores de texto -->
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
-        
-        <!-- Status Bar and Navigation Bar -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
-        <item name="colorPrimaryDark">@color/md_theme_light_background</item>
-        
-        <!-- Toolbar Styles -->
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="actionBarSize">56dp</item>
-        
-        <!-- Dialog Styles -->
-        <item name="alertDialogTheme">@style/Theme.App.Dialog</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textColorSecondaryNoDisable">?attr/colorOnSurfaceVariant</item>
 
-        <!-- Custom Attribute Mappings for APK Editor compatibility -->
-        <item name="bottomBar">?attr/colorSurface</item>
-        <item name="card">?attr/colorSurfaceContainerLow</item>
+        <!-- ActionBar e Menu -->
+        <item name="actionBarTheme">@style/ThemeOverlay.MyApp.ActionBar</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.Material3.Light</item>
+
+        <!-- Atributos Legado Mapeados para M3 -->
         <item name="iconPrimary">?attr/colorOnSurface</item>
         <item name="iconSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="navActivated">?attr/colorPrimary</item>
+        <item name="navNormal">?attr/colorOnSurfaceVariant</item>
+        <item name="bottomBar">?attr/colorSurfaceVariant</item>
+        <item name="card">?attr/colorSurfaceVariant</item>
         <item name="separator">?attr/colorOutlineVariant</item>
-        <item name="googleButtonSolid">?attr/colorPrimary</item>
-        <item name="searchBox">?attr/colorSurfaceVariant</item>
-        <item name="textMedium">?attr/colorOnSurface</item>
-        <item name="textSmall">?attr/colorOnSurfaceVariant</item>
-        <item name="fade">?attr/colorSurface</item>
-        <item name="progressHorizontal">?attr/colorPrimary</item>
-        <item name="popupBg">?attr/colorSurfaceContainer</item>
-        <item name="dialogBg">?attr/colorSurfaceContainerHigh</item>
-        
-    <item name="navActivated">?attr/colorPrimary</item>
-    <item name="navNormal">?attr/colorOnSurfaceVariant</item>
-    <item name="navRipple">?attr/colorControlHighlight</item>
-    <item name="navSolid">?attr/colorPrimaryContainer</item>
-    <item name="navStroke">?attr/colorOutline</item>
-    <item name="navStroked">@android:color/transparent</item>
-    
-    <!-- Card Icons -->
-        <item name="cardIc1">?attr/colorPrimary</item>
-        <item name="cardIc2">?attr/colorSecondary</item>
-        <item name="cardIc3">?attr/colorTertiary</item>
-        <item name="cardIc4">?attr/colorError</item>
-        <item name="cardIc5">?attr/colorPrimary</item>
-        <item name="cardIc6">?attr/colorSecondary</item>
-        <item name="cardIc7">?attr/colorTertiary</item>
-        <item name="cardIc8">?attr/colorError</item>
-        <item name="cardIc9">?attr/colorPrimary</item>
-        <item name="cardIc10">?attr/colorSecondary</item>
+
     </style>
 
-    <style name="Theme.ApkEditorPlus.NoActionBar" parent="Theme.ApkEditorPlus">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+
+    <!-- ===================== -->
+    <!-- TEMA SEM TOOLBAR -->
+    <!-- ===================== -->
+
+    <style name="Theme.MyApp.NoToolbar" parent="Theme.Material3.Light">
+
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
+
     </style>
 
-    <style name="Theme.ApkEditorPlus.Main" parent="Theme.ApkEditorPlus.NoActionBar" />
 
-    <!-- Global style for MD.H buttons (common in this app) -->
-    <style name="MD.H" parent="Widget.Material3.Button.TonalButton">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">8dp</item>
-        <item name="android:backgroundTint">?attr/colorSurface</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
+    <!-- ===================== -->
+    <!-- WIDGETS CUSTOM -->
+    <!-- ===================== -->
 
-    <!-- Text Styles -->
-    <style name="MD.Text.Medium" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
-    
-    <style name="MD.Text.Small" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
-    </style>
-
-    <style name="MD.Toolbar.Title" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
-
-    <style name="MD.Button.Borderless" parent="Widget.Material3.Button.TextButton" />
-
-    <style name="button" parent="Widget.Material3.Button.TonalButton" />
-
-    <style name="MD.G" parent="Widget.Material3.CompoundButton.RadioButton" />
-
-    <style name="MD.F" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:drawablePadding">16dp</item>
-        <item name="android:drawableTint">?attr/colorOnSurfaceVariant</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
-
-    <style name="MD.Dialog.Title" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
-
-    <style name="CheckBoxStyle" parent="Widget.Material3.CompoundButton.CheckBox" />
-
-    <style name="main_tab_bottom" parent="TextAppearance.Material3.LabelSmall" />
-
-    <!-- Compatibility style for existing manifest references -->
-    <style name="MD.Dark.NoActionBar" parent="Theme.ApkEditorPlus.NoActionBar" />
-
-    <!-- White Toolbar Theme for Activities that need it -->
-    <style name="Theme.ApkEditorPlus.WhiteToolbar" parent="Theme.ApkEditorPlus">
-        <item name="colorPrimary">@color/md_theme_light_surface</item>
-        <item name="colorOnPrimary">@color/md_theme_light_onSurface</item>
-        <!-- For components inside toolbar -->
-        <item name="colorControlNormal">#757575</item> 
-    </style>
-
-    <style name="Theme.ApkEditorPlus.WhiteToolbar.NoActionBar" parent="Theme.ApkEditorPlus.WhiteToolbar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <!-- Custom Toolbar Style for Sketchware look -->
-    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="background">?attr/colorSurface</item>
+    <!-- Toolbar -->
+    <style name="Widget.MyApp.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurface</item>
         <item name="titleTextColor">?attr/colorOnSurface</item>
         <item name="navigationIconTint">?attr/colorOnSurface</item>
-        <item name="titleTextAppearance">@style/TextAppearance.App.Toolbar.Title</item>
+        <item name="actionMenuTextColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="TextAppearance.App.Toolbar.Title" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="android:textStyle">bold</item>
+    <!-- Botões -->
+    <style name="Widget.MyApp.Button" parent="Widget.Material3.Button" />
+
+    <style name="Widget.MyApp.Button.TextButton" parent="Widget.Material3.Button.TextButton">
+        <!-- Herdando comportamento de M3 TextButton -->
     </style>
 
-    <!-- Custom Dialog Theme -->
-    <style name="Theme.App.Dialog" parent="Theme.Material3.DayNight.Dialog.Alert">
-        <item name="colorPrimary">@color/md_theme_light_primary</item>
-        <item name="colorSecondary">@color/md_theme_light_primary</item>
-        <item name="colorAccent">@color/md_theme_light_primary</item>
+    <style name="Widget.MyApp.Button.TonalButton" parent="Widget.Material3.Button.TonalButton">
+        <!-- Herdando comportamento de M3 TonalButton -->
+    </style>
+
+    <style name="Widget.MyApp.Button.ElevatedButton" parent="Widget.Material3.Button.ElevatedButton">
+        <!-- Herdando comportamento de M3 ElevatedButton -->
+    </style>
+
+    <style name="Widget.MyApp.Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <!-- Herdando comportamento de M3 OutlinedButton -->
+    </style>
+
+    <style name="Widget.MyApp.Button.IconButton" parent="Widget.Material3.Button.IconButton">
+        <!-- Herdando comportamento de M3 IconButton -->
+    </style>
+
+    <!-- Cards -->
+    <style name="Widget.MyApp.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/md_theme_light_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Card.Elevated" parent="Widget.MyApp.Card" />
+
+    <style name="Widget.MyApp.Card.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/md_theme_light_surfaceVariant</item>
+    </style>
+
+    <style name="Widget.MyApp.Card.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">@color/md_theme_light_surface</item>
+    </style>
+
+    <!-- Inputs -->
+    <style name="Widget.MyApp.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/md_theme_light_primary</item>
+        <item name="hintTextColor">@color/md_theme_light_onSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.MyApp.TextInputLayout.Filled" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/md_theme_light_surfaceVariant</item>
+    </style>
+
+    <!-- Overlay para ActionBar -->
+    <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.Material3.ActionBar">
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="actionMenuTextColor">?attr/colorOnSurface</item>
     </style>
+
 </resources>

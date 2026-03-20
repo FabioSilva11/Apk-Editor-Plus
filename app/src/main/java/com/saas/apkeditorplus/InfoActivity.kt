@@ -28,15 +28,13 @@ class InfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
         
-        setupToolbar()
-
         initializeCommitsList()
         fetchCommits()
     }
 
     private fun initializeCommitsList() {
-        val listView = findViewById<ListView>(R.id.lv_commits)
-        pbLoading = findViewById(R.id.pb_loading)
+        val listView = findViewById<ListView>(R.id.application_list)
+        pbLoading = findViewById(R.id.progress_bar)
         adapter = CommitAdapter(this)
         listView.adapter = adapter
     }
@@ -81,12 +79,6 @@ class InfoActivity : BaseActivity() {
         }
     }
 
-    private fun setupToolbar() {
-        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.header_layout)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener { finish() }
-    }
 
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {

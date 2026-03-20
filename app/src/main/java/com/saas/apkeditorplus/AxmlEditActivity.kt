@@ -14,7 +14,6 @@ import java.util.zip.ZipFile
 
 class AxmlEditActivity : BaseActivity() {
 
-    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
     private lateinit var progressBar: ProgressBar
     private lateinit var apkPath: String
@@ -29,15 +28,12 @@ class AxmlEditActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_axmledit)
-
+        
         apkPath = intent.getStringExtra("apkPath") ?: ""
         if (apkPath.isEmpty()) {
             finish()
         }
 
-        toolbar = findViewById(R.id.header_layout)
-        toolbar.setNavigationOnClickListener { onBackPressed() }
-        
         listView = findViewById(R.id.files_list)
         progressBar = findViewById(R.id.progress_bar)
         
@@ -74,13 +70,13 @@ class AxmlEditActivity : BaseActivity() {
                 info.applicationInfo?.let { appInfo ->
                     appInfo.sourceDir = apkPath
                     val label = appInfo.loadLabel(pm).toString()
-                    toolbar.title = label
-                    toolbar.subtitle = apkPath
+                    supportActionBar?.title = label
+                    supportActionBar?.subtitle = apkPath
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            toolbar.subtitle = apkPath
+            supportActionBar?.subtitle = apkPath
         }
     }
 
@@ -132,7 +128,7 @@ class AxmlEditActivity : BaseActivity() {
                 zipFile.close()
                 runOnUiThread {
                     updateList()
-                    toolbar.subtitle = if (currentPath.isEmpty()) apkPath else "$apkPath/$currentPath"
+                    supportActionBar?.subtitle = if (currentPath.isEmpty()) apkPath else "$apkPath/$currentPath"
                     progressBar.visibility = View.GONE
                 }
             } catch (e: Exception) {

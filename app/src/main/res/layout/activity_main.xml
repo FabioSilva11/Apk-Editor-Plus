@@ -1,90 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <com.google.android.material.card.MaterialCardView
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:strokeWidth="0dp">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorSurface"
-            app:navigationIcon="@drawable/ic_theme"
-            app:navigationIconTint="?attr/colorOnSurface"
-            app:title=""
-            app:titleCentered="true">
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/app_name"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:gravity="center" />
-                
-        </com.google.android.material.appbar.MaterialToolbar>
-    </com.google.android.material.card.MaterialCardView>
-
-    <ScrollView
-        android:scrollbars="none"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        android:layout_weight="1">
         <LinearLayout
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_apk"
-                android:text="@string/action_apk"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/action_apk" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_app"
-                android:text="@string/action_app"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/action_app" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_common_edit"
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/common_edit" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_prj"
-                android:text="@string/action_prj"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/action_prj" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_sign"
-                android:text="@string/action_sign"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/action_sign" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_verify"
-                android:text="@string/action_verify"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/action_verify" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_db"
-                android:text="@string/action_db"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/action_db" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_info"
-                android:text="@string/action_info"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/action_info" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_settings"
-                android:text="@string/action_sett"
-                style="@style/MD.H"/>
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/action_sett" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_exit"
+                style="@style/Widget.MyApp.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/action_exit"
-                style="@style/MD.H"/>
+                android:textColor="?attr/colorError" />
+
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

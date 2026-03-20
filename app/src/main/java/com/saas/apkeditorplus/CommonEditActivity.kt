@@ -20,7 +20,6 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
     private var manifestInfo: ManifestInfo? = null
     
     // UI Components
-    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var ivLauncherIcon: ImageView
     private lateinit var etAppName: EditText
     private lateinit var etPkgName: EditText
@@ -51,9 +50,6 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun initViews() {
-        toolbar = findViewById(R.id.header_layout)
-        toolbar.setNavigationOnClickListener { finish() }
-        
         ivLauncherIcon = findViewById(R.id.launcher_icon)
         etAppName = findViewById(R.id.et_appname)
         etPkgName = findViewById(R.id.et_pkgname)
@@ -101,7 +97,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
 
     private fun updateUI() {
         manifestInfo?.let { info ->
-            toolbar.title = info.label ?: getString(R.string.unnamed)
+            supportActionBar?.title = info.label ?: getString(R.string.unnamed)
             etAppName.setText(info.label)
             etPkgName.setText(info.packageName)
             etVerCode.setText(info.versionCode.toString())
@@ -113,7 +109,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
             if (info.installLocation >= 0 && info.installLocation < spLocation.adapter.count) {
                 spLocation.setSelection(info.installLocation)
             }
-
+ 
             // Load icon
             try {
                 val pm = packageManager
@@ -130,7 +126,7 @@ class CommonEditActivity : BaseActivity(), View.OnClickListener {
                         ivLauncherIcon.setImageDrawable(icon)
                         
                         if (manifestInfo?.label.isNullOrEmpty()) {
-                            toolbar.title = label
+                            supportActionBar?.title = label
                             etAppName.setText(label)
                         }
                     }

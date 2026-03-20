@@ -15,68 +15,55 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.concurrent.thread
 
-class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
-
-    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
+class UserAppActivity : BaseActivity(), AdapterView.OnItemClickListener {
+ 
     private lateinit var listView: ListView
     private lateinit var progressBar: ProgressBar
-    private lateinit var searchEdit: EditText
     private lateinit var adapter: AppAdapter
     private var showSystemApps = false
     private var allApps: List<AppInfo> = listOf()
-
+ 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_applist)
-
-        // Inicializa as views
-        toolbar = findViewById(R.id.header_layout)
+ 
         listView = findViewById(R.id.application_list)
         progressBar = findViewById(R.id.progress_bar)
-        searchEdit = findViewById(R.id.et_keyword)
-        
-        setupToolbar()
         
         adapter = AppAdapter(this)
         listView.adapter = adapter
         listView.onItemClickListener = this
         
-        findViewById<View>(R.id.btn_search).setOnClickListener(this)
-        
-        // Configura a busca em tempo real
-        searchEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filterApps(s.toString())
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
         loadApps()
     }
 
-    private fun setupToolbar() {
-        toolbar.setNavigationOnClickListener { finish() }
-        toolbar.inflateMenu(R.menu.menu_applist) // Vamos precisar criar este arquivo
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_user_apps -> {
-                    showSystemApps = false
-                    loadApps()
-                    true
-                }
-                R.id.action_system_apps -> {
-                    showSystemApps = true
-                    loadApps()
-                    true
-                }
-                else -> false
+    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_applist, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
             }
+            R.id.action_user_apps -> {
+                showSystemApps = false
+                loadApps()
+                true
+            }
+            R.id.action_system_apps -> {
+                showSystemApps = true
+                loadApps()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun updateTitle() {
-        toolbar.title = if (showSystemApps) getString(R.string.system_apps) else getString(R.string.user_apps)
+        supportActionBar?.title = if (showSystemApps) getString(R.string.system_apps) else getString(R.string.user_apps)
     }
 
     private fun loadApps() {
@@ -108,20 +95,11 @@ class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItem
             runOnUiThread {
                 progressBar.visibility = View.GONE
                 adapter.setApps(allApps)
-                searchEdit.isEnabled = true
                 updateTitle()
             }
         }
     }
 
-    private fun filterApps(query: String) {
-        val filtered = if (query.isEmpty()) {
-            allApps
-        } else {
-            allApps.filter { it.name.contains(query, ignoreCase = true) || it.packageName.contains(query, ignoreCase = true) }
-        }
-        adapter.setApps(filtered)
-    }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val app = adapter.getItem(position)
@@ -150,12 +128,5 @@ class UserAppActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItem
         } ?: Toast.makeText(this, getString(R.string.edit_mode_not_supported), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.btn_search -> {
-                val query = searchEdit.text.toString()
-                filterApps(query)
-            }
-        }
-    }
+
 }

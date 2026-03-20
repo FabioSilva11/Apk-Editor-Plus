@@ -11,10 +11,6 @@ class SettingActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_activity)
 
-        findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
-            finish()
-        }
-
         findViewById<LinearLayout>(R.id.btn_editor_settings).setOnClickListener {
             startActivity(Intent(this, SettingEditorActivity::class.java))
         }

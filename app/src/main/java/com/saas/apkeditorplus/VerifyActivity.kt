@@ -15,9 +15,6 @@ class VerifyActivity : BaseActivity() {
         
         textView = findViewById(R.id.verify_text_view)
         
-        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.header_layout)
-        toolbar.setNavigationOnClickListener { finish() }
-        
         // Abre o seletor de arquivos ao iniciar se for a primeira vez
         if (savedInstanceState == null) {
             val intent = Intent(this, FileListActivity::class.java)

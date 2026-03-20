@@ -9,7 +9,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <!-- CardView simples para garantir formato circular sem depender de drawables externos -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:cardCornerRadius="20dp"
@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_person"
             android:scaleType="centerCrop"/>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:layout_width="0dp"

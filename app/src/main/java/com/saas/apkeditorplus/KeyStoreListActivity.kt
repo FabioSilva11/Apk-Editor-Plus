@@ -23,10 +23,9 @@ class KeyStoreListActivity : BaseActivity() {
         setContentView(R.layout.activity_keystore_list)
 
         manager = KeyStoreManager(this)
-        listView = findViewById(R.id.list_view)
+        listView = findViewById(R.id.application_list)
         tvEmpty = findViewById(R.id.tv_empty)
         
-        setupToolbar()
         setupListView()
         
         findViewById<FloatingActionButton>(R.id.fab_add).setOnClickListener {
@@ -34,10 +33,6 @@ class KeyStoreListActivity : BaseActivity() {
         }
     }
 
-    private fun setupToolbar() {
-        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
-        toolbar.setNavigationOnClickListener { finish() }
-    }
 
     private fun setupListView() {
         adapter = KeyStoreAdapter(manager.listKeyStores().toMutableList())

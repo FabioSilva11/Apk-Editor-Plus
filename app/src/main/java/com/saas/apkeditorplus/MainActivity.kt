@@ -17,9 +17,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        // Configura a Toolbar customizada
-        setupToolbar()
-
         // Inicializa os botões e define os listeners
         setupClickListeners()
 
@@ -29,13 +26,13 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private val STORAGE_PERMISSION_CODE = 1
 
-    private fun setupToolbar() {
-        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        
-        toolbar.setNavigationOnClickListener {
-            toggleTheme()
+    override fun setupActionBar() {
+        super.setupActionBar()
+        supportActionBar?.let { actionBar ->
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            // Usa o ícone de tema no lugar do botão voltar (já que é a tela inicial)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_theme)
+            actionBar.setDisplayShowTitleEnabled(false)
         }
     }
 
@@ -59,7 +56,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                Toast.makeText(this, getString(R.string.action_future_update), Toast.LENGTH_LONG).show()
+                toggleTheme()
                 true
             }
             R.id.action_clean -> {
@@ -78,7 +75,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private fun setupClickListeners() {
         val buttonIds = intArrayOf(
-            R.id.btn_apk, R.id.btn_app, R.id.btn_prj,
+            R.id.btn_apk, R.id.btn_app, R.id.btn_common_edit, R.id.btn_prj,
             R.id.btn_sign, R.id.btn_verify, R.id.btn_db, R.id.btn_info,
             R.id.btn_settings, R.id.btn_exit
         )
@@ -92,6 +89,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         val intent: Intent? = when (v.id) {
             R.id.btn_apk -> Intent(this, FileListActivity::class.java)
             R.id.btn_app -> Intent(this, UserAppActivity::class.java)
+            R.id.btn_common_edit -> {
+                val intent = Intent(this, FileListActivity::class.java)
+                intent.putExtra("select_for_common_edit", true)
+                intent
+            }
             R.id.btn_prj -> Intent(this, ProjectListActivity::class.java)
             R.id.btn_sign -> Intent(this, SelectFileActivity::class.java)
             R.id.btn_verify -> Intent(this, VerifyActivity::class.java)

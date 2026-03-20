@@ -12,9 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
-class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
+class FileListActivity : BaseActivity(), AdapterView.OnItemClickListener {
 
-    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
     private lateinit var adapter: FileAdapter
     private var currentPath: String = Environment.getExternalStorageDirectory().path
@@ -23,11 +22,7 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_listfile)
 
-        // Inicializa as views
-        toolbar = findViewById(R.id.header_layout)
         listView = findViewById(R.id.file_list)
-        
-        setupToolbar()
         
         // Configura o adaptador
         val initialDir = File(currentPath)
@@ -35,30 +30,30 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         listView.adapter = adapter
         listView.onItemClickListener = this
 
-        // Configura os botões
-        findViewById<View>(R.id.menu_home).setOnClickListener(this)
-        findViewById<View>(R.id.files_list).setOnClickListener(this)
-        findViewById<View>(R.id.search_button).setOnClickListener(this)
-
         updatePathDisplay(initialDir.path)
     }
 
-    private fun setupToolbar() {
-        toolbar.setNavigationOnClickListener { finish() }
-        toolbar.inflateMenu(R.menu.menu_filelist)
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_switch_sd -> {
-                    Toast.makeText(this, getString(R.string.switch_storage_not_implemented), Toast.LENGTH_SHORT).show()
-                    true
-                }
-                else -> false
+    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_filelist, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
             }
+            R.id.action_switch_sd -> {
+                Toast.makeText(this, getString(R.string.switch_storage_not_implemented), Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun updatePathDisplay(path: String) {
-        toolbar.title = path
+        supportActionBar?.title = path
         currentPath = path
     }
 
@@ -79,12 +74,16 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
                 updatePathDisplay(selectedFile.path)
             }
         } else if (selectedFile.name.endsWith(".apk", true)) {
-            // Se foi aberta para selecionar um arquivo para verificação
-            if (intent.getBooleanExtra("select_for_verify", false)) {
+            val isSelectForVerify = intent.getBooleanExtra("select_for_verify", false)
+            val isSelectForCommonEdit = intent.getBooleanExtra("select_for_common_edit", false)
+            
+            if (isSelectForVerify) {
                 val resultIntent = Intent()
                 resultIntent.putExtra("apkPath", selectedFile.path)
                 setResult(RESULT_OK, resultIntent)
                 finish()
+            } else if (isSelectForCommonEdit) {
+                startEditActivity(2, selectedFile.path)
             } else {
                 // Mostra o diálogo de modo de edição normal
                 showEditModeDialog(selectedFile.path)
@@ -116,28 +115,4 @@ class FileListActivity : BaseActivity(), View.OnClickListener, AdapterView.OnIte
         } ?: Toast.makeText(this, getString(R.string.edit_mode_not_supported), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.menu_home -> {
-                val homePath = Environment.getExternalStorageDirectory().path
-                adapter.setDir(homePath)
-                updatePathDisplay(homePath)
-            }
-            R.id.files_list -> {
-                // Talvez mostrar lista de arquivos recentes ou favoritos
-                Toast.makeText(this, getString(R.string.recent_files_not_implemented), Toast.LENGTH_SHORT).show()
-            }
-            R.id.search_button -> {
-                val keyword = findViewById<EditText>(R.id.keyword_edit).text.toString()
-                if (keyword.isNotEmpty()) {
-                    val intent = Intent(this, ApkSearchActivity::class.java)
-                    intent.putExtra("Keyword", keyword)
-                    intent.putExtra("Path", currentPath)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, getString(R.string.keyword_required), Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
 }

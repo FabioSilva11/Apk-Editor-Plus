@@ -1,51 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/header_layout"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorSurface"
-        app:navigationIcon="@drawable/ic_back"
-        app:navigationIconTint="?attr/colorOnSurface"
-        app:title="Selecione um APK para assinar"
-        app:titleTextAppearance="@style/MD.Toolbar.Title"
-        xmlns:app="http://schemas.android.com/apk/res-auto" />
-    
-    <!-- Lista de arquivos -->
-    <ListView
-        android:id="@+id/file_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-    
-    <!-- Barra inferior (Home e busca rápida) -->
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
     <LinearLayout
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:background="?attr/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
-        <RelativeLayout
-            android:id="@+id/menu_home"
-            android:background="@drawable/mtrl_ripple_action"
-            android:layout_width="40dp"
-            android:layout_height="40dp">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/dg_home"
-                android:tint="?attr/iconSecondary"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-        <Space
-            android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/application_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:cacheColorHint="?attr/colorSurface" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
     </LinearLayout>
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="#ffffffff"
+    android:background="?attr/colorSurface"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/header_layout"
-        android:background="#ffe9f2fc"
+        android:background="?attr/colorSurfaceContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#ff5997c4"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorPrimary"
             android:layout_gravity="center"
             android:id="@+id/filename"
             android:paddingLeft="4dp"
@@ -39,7 +39,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/menu_layout"
-                android:background="#ff111111"
+                android:background="?attr/colorSurfaceContainerHigh"
                 android:layout_width="match_parent"
                 android:layout_height="48dp">
                 <ImageView
@@ -86,14 +86,14 @@
             <ImageView
                 android:gravity="center"
                 android:id="@+id/panel_button"
-                android:background="#ff111111"
+                android:background="?attr/colorSurfaceContainerHigh"
                 android:padding="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/edit_slide_left"/>
             <RelativeLayout
                 android:id="@+id/panel_content"
-                android:background="#ff111111"
+                android:background="?attr/colorSurfaceContainerHigh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <ViewAnimator
@@ -112,7 +112,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <EditText
-                                android:textColor="#ffffffff"
+                                android:textColor="?attr/colorOnSurface"
                                 android:id="@+id/findEdit"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                                 <requestFocus/>
                             </EditText>
                             <EditText
-                                android:textColor="#ffffffff"
+                                android:textColor="?attr/colorOnSurface"
                                 android:id="@+id/replaceEdit"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

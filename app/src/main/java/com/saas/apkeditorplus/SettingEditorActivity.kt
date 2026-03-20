@@ -12,10 +12,6 @@ class SettingEditorActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_editor_activity)
 
-        findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
-            finish()
-        }
-
         val cbLineNumbers = findViewById<CheckBox>(R.id.cb_show_line_numbers)
 
         cbLineNumbers.isChecked = prefs.getBoolean("editor_show_line_numbers", true)

@@ -1,43 +1,76 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="12dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/full_edit"
+        style="@style/Widget.MyApp.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/full_edit"
-        android:drawableLeft="@drawable/ic_edit_1"
-        style="@style/MD.F"/>
-    <TextView
+        android:gravity="start|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:icon="@drawable/ic_edit_1"
+        app:iconPadding="16dp" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/simple_edit"
+        style="@style/Widget.MyApp.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/simple_edit"
-        android:drawableLeft="@drawable/ic_edit_2"
-        style="@style/MD.F"/>
-    <TextView
+        android:gravity="start|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:icon="@drawable/ic_edit_2"
+        app:iconPadding="16dp" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/common_edit"
+        style="@style/Widget.MyApp.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/common_edit"
-        android:drawableLeft="@drawable/ic_edit_3"
-        style="@style/MD.F"/>
+        android:gravity="start|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:icon="@drawable/ic_edit_3"
+        app:iconPadding="16dp" />
+
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/xml_edit_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/xml_edit"
+            style="@style/Widget.MyApp.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/xml_file_edit"
-            android:drawableLeft="@drawable/ic_edit_4"
-            style="@style/MD.F"/>
+            android:gravity="start|center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:icon="@drawable/ic_edit_4"
+            app:iconPadding="16dp" />
     </LinearLayout>
-    <TextView
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/data_edit"
+        style="@style/Widget.MyApp.Button.TextButton"
         android:visibility="gone"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/edit_data_root"
-        android:drawableLeft="@drawable/ic_edit_5"
-        style="@style/MD.F"/>
+        android:gravity="start|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:icon="@drawable/ic_edit_5"
+        app:iconPadding="16dp" />
 </LinearLayout>
 
 

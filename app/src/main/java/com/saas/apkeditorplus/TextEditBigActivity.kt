@@ -73,10 +73,6 @@ class TextEditBigActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text_edit_big_activity)
 
-        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener { onBackPressed() }
-
         filePath = intent.getStringExtra("filePath")
         val fileName = intent.getStringExtra("fileName") ?: getString(R.string.unnamed)
         supportActionBar?.title = fileName

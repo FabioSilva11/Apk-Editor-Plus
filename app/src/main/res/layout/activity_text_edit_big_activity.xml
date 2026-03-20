@@ -11,20 +11,6 @@
         android:layout_above="@+id/main_bottom_bar"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/toolbar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorSurface">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_back"
-                app:navigationIconTint="?attr/colorOnSurface" />
-
-        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
             android:id="@+id/search_panel"
@@ -44,7 +30,7 @@
 
                 <Button
                     android:id="@+id/btn_goto_prev"
-                    style="?attr/buttonBarButtonStyle"
+                    style="@style/Widget.MyApp.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -53,7 +39,7 @@
 
                 <Button
                     android:id="@+id/btn_goto_next"
-                    style="?attr/buttonBarButtonStyle"
+                    style="@style/Widget.MyApp.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -62,7 +48,7 @@
 
                 <Button
                     android:id="@+id/btn_replace"
-                    style="?attr/buttonBarButtonStyle"
+                    style="@style/Widget.MyApp.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -71,7 +57,7 @@
 
                 <Button
                     android:id="@+id/btn_replace_all"
-                    style="?attr/buttonBarButtonStyle"
+                    style="@style/Widget.MyApp.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

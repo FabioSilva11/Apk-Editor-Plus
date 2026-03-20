@@ -57,15 +57,16 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_view_output"
+            style="@style/Widget.MyApp.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/view_output_file" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_finish"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/Widget.MyApp.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

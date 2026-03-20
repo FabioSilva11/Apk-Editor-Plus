@@ -10,40 +10,33 @@ import android.widget.TextView
 import android.widget.Toast
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
+import android.widget.ProgressBar
 import java.io.File
 
 class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var listView: ListView
+    private lateinit var progressBar: ProgressBar
     private lateinit var adapter: FileAdapter
     private var currentPath: String = Environment.getExternalStorageDirectory().path
-
-    override fun shouldHideActionBar(): Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_file_activity)
-
-        toolbar = findViewById(R.id.header_layout)
-        setSupportActionBar(toolbar)
-        
-        toolbar.setNavigationOnClickListener { finish() }
-        
-        listView = findViewById(R.id.file_list)
+  
+        listView = findViewById(R.id.application_list)
+        progressBar = findViewById<ProgressBar>(R.id.progress_bar)
         
         val initialDir = File(currentPath)
         adapter = FileAdapter(this, initialDir)
         listView.adapter = adapter
         listView.onItemClickListener = this
-
-        findViewById<View>(R.id.menu_home).setOnClickListener(this)
-
+  
         updatePathDisplay(initialDir.path)
     }
 
     private fun updatePathDisplay(path: String) {
-        toolbar.title = path
+        supportActionBar?.title = path
         currentPath = path
     }
 
@@ -167,12 +160,6 @@ class SelectFileActivity : BaseActivity(), View.OnClickListener, AdapterView.OnI
     }
 
     override fun onClick(v: View) {
-        when (v.id) {
-            R.id.menu_home -> {
-                val homePath = Environment.getExternalStorageDirectory().path
-                adapter.setDir(homePath)
-                updatePathDisplay(homePath)
-            }
-        }
+        // Nada implementado no momento
     }
 }

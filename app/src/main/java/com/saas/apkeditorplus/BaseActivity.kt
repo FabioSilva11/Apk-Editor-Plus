@@ -21,22 +21,38 @@ open class BaseActivity : AppCompatActivity() {
         
         // Aplica o tema
         applyPersistedTheme()
-
-        if (shouldHideActionBar()) {
-            supportRequestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-            supportActionBar?.hide()
-        }
         
         super.onCreate(savedInstanceState)
     }
 
-    open fun shouldHideActionBar(): Boolean = true
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        if (!shouldHideActionBar()) {
+            setupActionBar()
+        } else {
+            supportActionBar?.hide()
+        }
+    }
+
+    open fun shouldHideActionBar(): Boolean = false
+
+    protected open fun setupActionBar() {
+        supportActionBar?.let { actionBar ->
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            // O ícone de voltar padrão do Android costuma ser ic_back ou similar
+        }
+    }
 
     private fun applyPersistedTheme() {
         val themeMode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         if (AppCompatDelegate.getDefaultNightMode() != themeMode) {
             AppCompatDelegate.setDefaultNightMode(themeMode)
         }
-        setTheme(R.style.Theme_ApkEditorPlus_NoActionBar)
+        setTheme(R.style.Theme_MyApp)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

@@ -1,114 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Dark Theme -->
-    <style name="Theme.ApkEditorPlus" parent="Theme.Material3.DayNight">
-        <!-- Main colors -->
+<resources>
+
+    <!-- ===================== -->
+    <!-- TEMA BASE COM TOOLBAR (Dark) -->
+    <!-- ===================== -->
+
+    <style name="Theme.MyApp" parent="Theme.Material3.Dark">
+
+        <!-- Cores principais -->
         <item name="colorPrimary">@color/md_theme_dark_primary</item>
         <item name="colorOnPrimary">@color/md_theme_dark_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_dark_primaryContainer</item>
         <item name="colorOnPrimaryContainer">@color/md_theme_dark_onPrimaryContainer</item>
+
         <item name="colorSecondary">@color/md_theme_dark_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_dark_onSecondary</item>
         <item name="colorSecondaryContainer">@color/md_theme_dark_secondaryContainer</item>
         <item name="colorOnSecondaryContainer">@color/md_theme_dark_onSecondaryContainer</item>
+
         <item name="colorTertiary">@color/md_theme_dark_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_dark_onTertiary</item>
         <item name="colorTertiaryContainer">@color/md_theme_dark_tertiaryContainer</item>
         <item name="colorOnTertiaryContainer">@color/md_theme_dark_onTertiaryContainer</item>
-        <item name="colorError">@color/md_theme_dark_error</item>
-        <item name="colorOnError">@color/md_theme_dark_onError</item>
-        <item name="colorErrorContainer">@color/md_theme_dark_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/md_theme_dark_onErrorContainer</item>
-        <item name="android:windowBackground">@color/md_theme_dark_background</item>
+
+        <!-- Fundo e superfícies -->
+        <item name="android:colorBackground">@color/md_theme_dark_background</item>
         <item name="colorSurface">@color/md_theme_dark_surface</item>
         <item name="colorOnSurface">@color/md_theme_dark_onSurface</item>
         <item name="colorSurfaceVariant">@color/md_theme_dark_surfaceVariant</item>
         <item name="colorOnSurfaceVariant">@color/md_theme_dark_onSurfaceVariant</item>
-        <item name="colorOutline">@color/md_theme_dark_outline</item>
 
-        <!-- Button Styles -->
-        <item name="materialButtonStyle">@style/Widget.Material3.Button.TonalButton</item>
-        <item name="borderlessButtonStyle">@style/Widget.Material3.Button.TextButton</item>
+        <!-- Estados -->
+        <item name="colorError">@color/md_theme_dark_error</item>
+        <item name="colorOnError">@color/md_theme_dark_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/md_theme_dark_onErrorContainer</item>
 
-        <!-- Default text colors based on theme -->
+        <!-- Status bar -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Toolbar -->
+        <item name="toolbarStyle">@style/Widget.MyApp.Toolbar</item>
+
+        <!-- Botões -->
+        <item name="materialButtonStyle">@style/Widget.MyApp.Button</item>
+
+        <!-- TextInput -->
+        <item name="textInputStyle">@style/Widget.MyApp.TextInputLayout</item>
+
+        <!-- Cards -->
+        <item name="materialCardViewStyle">@style/Widget.MyApp.Card</item>
+
+        <!-- Cores de texto -->
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textColorSecondaryNoDisable">?attr/colorOnSurfaceVariant</item>
 
-        <!-- Status Bar and Navigation Bar -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
-        <item name="colorPrimaryDark">@color/md_theme_dark_background</item>
+        <!-- ActionBar e Menu -->
+        <item name="actionBarTheme">@style/ThemeOverlay.MyApp.ActionBar</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.Material3.Dark</item>
 
-        <!-- Toolbar Styles -->
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="actionBarSize">56dp</item>
-        
-        <!-- Dialog Styles -->
-        <item name="alertDialogTheme">@style/Theme.App.Dialog</item>
-
-        <!-- Custom Attribute Mappings for APK Editor compatibility -->
-        <item name="bottomBar">?attr/colorSurface</item>
-        <item name="card">?attr/colorSurfaceContainerLow</item>
+        <!-- Atributos Legado Mapeados para M3 -->
         <item name="iconPrimary">?attr/colorOnSurface</item>
         <item name="iconSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="navActivated">?attr/colorPrimary</item>
+        <item name="navNormal">?attr/colorOnSurfaceVariant</item>
+        <item name="bottomBar">?attr/colorSurfaceVariant</item>
+        <item name="card">?attr/colorSurfaceVariant</item>
         <item name="separator">?attr/colorOutlineVariant</item>
-        <item name="googleButtonSolid">?attr/colorPrimary</item>
-        <item name="searchBox">?attr/colorSurfaceVariant</item>
-        <item name="textMedium">?attr/colorOnSurface</item>
-        <item name="textSmall">?attr/colorOnSurfaceVariant</item>
-        <item name="fade">?attr/colorSurface</item>
-        <item name="progressHorizontal">?attr/colorPrimary</item>
-        <item name="popupBg">?attr/colorSurfaceContainer</item>
-        <item name="dialogBg">?attr/colorSurfaceContainerHigh</item>
-        
-    <item name="navActivated">?attr/colorPrimary</item>
-    <item name="navNormal">?attr/colorOnSurfaceVariant</item>
-    <item name="navRipple">?attr/colorControlHighlight</item>
-    <item name="navSolid">?attr/colorPrimaryContainer</item>
-    <item name="navStroke">?attr/colorOutline</item>
-    <item name="navStroked">@android:color/transparent</item>
-    
-    <!-- Card Icons -->
-        <item name="cardIc1">?attr/colorPrimary</item>
-        <item name="cardIc2">?attr/colorSecondary</item>
-        <item name="cardIc3">?attr/colorTertiary</item>
-        <item name="cardIc4">?attr/colorError</item>
-        <item name="cardIc5">?attr/colorPrimary</item>
-        <item name="cardIc6">?attr/colorSecondary</item>
-        <item name="cardIc7">?attr/colorTertiary</item>
-        <item name="cardIc8">?attr/colorError</item>
-        <item name="cardIc9">?attr/colorPrimary</item>
-        <item name="cardIc10">?attr/colorSecondary</item>
+
     </style>
 
-    <style name="Theme.ApkEditorPlus.Main" parent="Theme.ApkEditorPlus.NoActionBar">
-        <!-- Keep the dark blueish color only for the Main screen toolbar -->
-        <item name="colorSurface">#0E1416</item>
+
+    <!-- ===================== -->
+    <!-- TEMA SEM TOOLBAR (Dark) -->
+    <!-- ===================== -->
+
+    <style name="Theme.MyApp.NoToolbar" parent="Theme.Material3.Dark">
+        <item name="colorPrimary">@color/md_theme_dark_primary</item>
+        <item name="colorSecondary">@color/md_theme_dark_secondary</item>
+        <item name="android:colorBackground">@color/md_theme_dark_background</item>
     </style>
 
-    <!-- Style overrides for dark mode -->
-    <style name="MD.H" parent="Widget.Material3.Button">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">8dp</item>
-        <item name="android:backgroundTint">?attr/colorPrimary</item>
-        <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="android:elevation">4dp</item>
-    </style>
 
-    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="background">?attr/colorSurface</item>
+    <!-- ===================== -->
+    <!-- WIDGETS CUSTOM -->
+    <!-- ===================== -->
+
+    <!-- Toolbar -->
+    <style name="Widget.MyApp.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurface</item>
         <item name="titleTextColor">?attr/colorOnSurface</item>
         <item name="navigationIconTint">?attr/colorOnSurface</item>
-        <item name="titleTextAppearance">@style/TextAppearance.App.Toolbar.Title</item>
+        <item name="actionMenuTextColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="Theme.App.Dialog" parent="Theme.Material3.DayNight.Dialog.Alert">
-        <item name="colorPrimary">@color/md_theme_dark_primary</item>
-        <item name="colorSecondary">@color/md_theme_dark_primary</item>
-        <item name="colorAccent">@color/md_theme_dark_primary</item>
-        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+    <!-- Botões -->
+    <style name="Widget.MyApp.Button" parent="Widget.Material3.Button" />
+
+    <style name="Widget.MyApp.Button.TextButton" parent="Widget.Material3.Button.TextButton" />
+    <style name="Widget.MyApp.Button.TonalButton" parent="Widget.Material3.Button.TonalButton" />
+    <style name="Widget.MyApp.Button.ElevatedButton" parent="Widget.Material3.Button.ElevatedButton" />
+    <style name="Widget.MyApp.Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton" />
+    <style name="Widget.MyApp.Button.IconButton" parent="Widget.Material3.Button.IconButton" />
+
+    <!-- Cards -->
+    <style name="Widget.MyApp.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/md_theme_dark_surface</item>
     </style>
+
+    <style name="Widget.MyApp.Card.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/md_theme_dark_surfaceVariant</item>
+    </style>
+
+    <style name="Widget.MyApp.Card.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">@color/md_theme_dark_surface</item>
+    </style>
+
+    <!-- Inputs -->
+    <style name="Widget.MyApp.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/md_theme_dark_primary</item>
+        <item name="hintTextColor">@color/md_theme_dark_onSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.MyApp.TextInputLayout.Filled" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/md_theme_dark_surfaceVariant</item>
+    </style>
+
+    <!-- Overlay para ActionBar -->
+    <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.Material3.Dark.ActionBar">
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="actionMenuTextColor">?attr/colorOnSurface</item>
+    </style>
+
 </resources>

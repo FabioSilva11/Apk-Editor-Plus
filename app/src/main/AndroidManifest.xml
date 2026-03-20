@@ -23,11 +23,10 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/Theme.ApkEditorPlus.NoActionBar">
+        android:theme="@style/Theme.MyApp">
         
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.ApkEditorPlus.Main"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,36 +34,36 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ApkInfoActivity" />
-        <activity android:name=".ApkInfoExActivity" android:exported="true" android:windowSoftInputMode="adjustResize"/>
+
+
         <activity android:name=".SimpleEditActivity" />
         <activity android:name=".CommonEditActivity" />
         <activity android:name=".ApkCreateActivity" />
-        <activity android:name=".ViewZipImageActivity" />
-        <activity android:name=".ApkComposeActivity" android:launchMode="singleTask"/>
+
+
         <activity android:name=".FileListActivity" />
         <activity android:name=".UserAppActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".SettingEditorActivity" />
         <activity android:name=".SettingHideActivity" />
         <activity android:name=".TextEditBigActivity" android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".MfSearchRetActivity" android:windowSoftInputMode="stateHidden"/>
+
         <activity android:name=".ApkSearchActivity" />
-        <activity android:name=".ColorXmlActivity" />
+
         <activity android:name=".ProjectListActivity" />
         <activity android:name=".AxmlEditActivity" />
 
-        <activity android:name=".PngEditActivity" />
+
         <activity android:name=".InfoActivity" />
-        <activity android:name=".AboutModActivity" />
-        <activity android:name=".TemplatesActivity" />
-        <activity android:name=".PrefOverallActivity" />
-        <activity android:name=".PrefDetailActivity" />
+
+
+
+
         <activity android:name=".EditorActivity" />
-        <activity android:name=".SqliteTableListActivity" />
-        <activity android:name=".SqliteTableViewActivity" />
-        <activity android:name=".SqliteRowViewActivity" />
-        <activity android:name=".SelectDbActivity" />
+
+
+
+
         <activity android:name=".VerifyActivity" />
         <activity android:name=".SelectFileActivity" />
         <activity android:name=".SigningProgressActivity" />

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_string"
+        android:icon="@drawable/ic_edit_1"
+        android:title="@string/string" />
+    <item
+        android:id="@+id/action_files"
+        android:icon="@drawable/ic_folder"
+        android:title="@string/files" />
+    <item
+        android:id="@+id/action_manifest"
+        android:icon="@drawable/ic_apk_shortcut"
+        android:title="@string/manifest" />
+</menu>

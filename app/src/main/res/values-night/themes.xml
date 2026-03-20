@@ -67,9 +67,16 @@
         <item name="iconSecondary">?attr/colorOnSurfaceVariant</item>
         <item name="navActivated">?attr/colorPrimary</item>
         <item name="navNormal">?attr/colorOnSurfaceVariant</item>
+        <item name="navSolid">@color/md_theme_dark_primaryContainer</item>
+        <item name="navStroke">#40FFFFFF</item>
+        <item name="navStroked">@color/md_theme_dark_primary</item>
+        <item name="navRipple">#20FFFFFF</item>
         <item name="bottomBar">?attr/colorSurfaceVariant</item>
         <item name="card">?attr/colorSurfaceVariant</item>
         <item name="separator">?attr/colorOutlineVariant</item>
+
+        <!-- Bottom Navigation Style -->
+        <item name="bottomNavigationStyle">@style/Widget.MyApp.BottomNavigationView</item>
 
     </style>
 
@@ -135,6 +142,14 @@
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
         <item name="actionMenuTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Navigation Bar Style (Material 3 with Indicator) -->
+    <style name="Widget.MyApp.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemIconTint">@color/bnv_item_color</item>
+        <item name="itemTextColor">@color/bnv_item_color</item>
+        <item name="itemIconSize">22dp</item>
+        <item name="labelVisibilityMode">labeled</item>
     </style>
 
 </resources>

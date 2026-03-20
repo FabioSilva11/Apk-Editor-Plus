@@ -53,14 +53,31 @@ class AppAdapter(private val context: Context) : BaseAdapter() {
         if (cachedIcon != null) {
             iconView.setImageDrawable(cachedIcon)
         } else {
-            // No mundo ideal, isso seria em uma thread separada (Glide/Coil), 
-            // mas para paridade simples com o original usaremos o cache direto.
+            // Em uma thread separada seria melhor, mas seguiremos o fluxo original com cache
             try {
-                val icon = packageManager.getApplicationIcon(app.packageName)
-                iconCache.put(app.packageName, icon)
-                iconView.setImageDrawable(icon)
+                // Tentando obter o ícone "real" do arquivo APK no disco
+                val archiveInfo = packageManager.getPackageArchiveInfo(app.sourceDir, 0)
+                val appInfo = archiveInfo?.applicationInfo
+                if (appInfo != null) {
+                    appInfo.sourceDir = app.sourceDir
+                    appInfo.publicSourceDir = app.sourceDir
+                    val icon = appInfo.loadIcon(packageManager)
+                    iconCache.put(app.packageName, icon)
+                    iconView.setImageDrawable(icon)
+                } else {
+                    // Fallback para o ícone do sistema se não conseguir ler o arquivo
+                    val icon = packageManager.getApplicationIcon(app.packageName)
+                    iconCache.put(app.packageName, icon)
+                    iconView.setImageDrawable(icon)
+                }
             } catch (e: Exception) {
-                iconView.setImageResource(android.R.drawable.sym_def_app_icon)
+                try {
+                    val icon = packageManager.getApplicationIcon(app.packageName)
+                    iconCache.put(app.packageName, icon)
+                    iconView.setImageDrawable(icon)
+                } catch (e2: Exception) {
+                    iconView.setImageResource(android.R.drawable.sym_def_app_icon)
+                }
             }
         }
 

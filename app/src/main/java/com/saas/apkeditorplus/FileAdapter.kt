@@ -1,7 +1,8 @@
 package com.saas.apkeditorplus
 
 import android.content.Context
-import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ class FileAdapter(private val context: Context, private var currentDir: File) : 
 
     private var files: Array<File> = arrayOf()
     private val inflater: LayoutInflater = LayoutInflater.from(context)
+    private val iconCache = LruCache<String, Drawable>(64)
 
     init {
         refresh()
@@ -58,17 +60,43 @@ class FileAdapter(private val context: Context, private var currentDir: File) : 
         val file = getItem(position) as File
         name.text = file.name
         
+        // Resolve a cor do tema para tintar os ícones do sistema
+        val typedValue = android.util.TypedValue()
+        context.theme.resolveAttribute(R.attr.iconPrimary, typedValue, true)
+        val iconTintColor = typedValue.data
+
         if (file.isDirectory) {
             icon.setImageResource(R.drawable.ic_folder)
-            icon.setColorFilter(null)
+            icon.setColorFilter(iconTintColor)
             info.text = "Pasta"
         } else {
             if (file.name.endsWith(".apk", true)) {
-                icon.setImageResource(R.drawable.apk_icon)
+                icon.clearColorFilter() // Remove qualquer tint para mostrar o ícone real colorid
+                val cachedIcon = iconCache.get(file.path)
+                if (cachedIcon != null) {
+                    icon.setImageDrawable(cachedIcon)
+                } else {
+                    try {
+                        val packageManager = context.packageManager
+                        val archiveInfo = packageManager.getPackageArchiveInfo(file.path, 0)
+                        val appInfo = archiveInfo?.applicationInfo
+                        if (appInfo != null) {
+                            appInfo.sourceDir = file.path
+                            appInfo.publicSourceDir = file.path
+                            val iconDrawable = appInfo.loadIcon(packageManager)
+                            iconCache.put(file.path, iconDrawable)
+                            icon.setImageDrawable(iconDrawable)
+                        } else {
+                            icon.setImageResource(R.drawable.apk_icon)
+                        }
+                    } catch (e: Exception) {
+                        icon.setImageResource(R.drawable.apk_icon)
+                    }
+                }
             } else {
                 icon.setImageResource(R.drawable.ic_file_unknown)
+                icon.setColorFilter(iconTintColor)
             }
-            icon.setColorFilter(null)
             info.text = formatFileSize(file.length())
         }
 

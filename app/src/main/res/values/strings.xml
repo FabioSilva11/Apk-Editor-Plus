@@ -854,4 +854,8 @@
     <string name="error_loading_apk_info">Error loading APK info: %s</string>
     <string name="saving_changes">Saving changes…</string>
     <string name="axml_modified_rebuild">AXML modified. Starting rebuild…</string>
+    <string name="menu_share_app">Compartilhar app</string>
+    <string name="menu_telegram_group">Telegram grupo</string>
+    <string name="menu_about">É sobre</string>
+    <string name="about_message">Este é um projeto open source e qualquer um pode editar e melhorar.</string>
 </resources>

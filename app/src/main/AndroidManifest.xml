@@ -38,6 +38,7 @@
 
         <activity android:name=".SimpleEditActivity" />
         <activity android:name=".CommonEditActivity" />
+        <activity android:name=".FullEditActivity" />
         <activity android:name=".ApkCreateActivity" />
 
 

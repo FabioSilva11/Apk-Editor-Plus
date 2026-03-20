@@ -102,7 +102,7 @@ class FileListActivity : BaseActivity(), AdapterView.OnItemClickListener {
 
     private fun startEditActivity(mode: Int, path: String) {
         val intent = when (mode) {
-            0 -> Intent(this, UserAppActivity::class.java) // Na versão original, 0 parece ser Full Edit ou algo do tipo
+            0 -> Intent(this, FullEditActivity::class.java)
             1 -> Intent(this, SimpleEditActivity::class.java)
             2 -> Intent(this, CommonEditActivity::class.java)
             4 -> Intent(this, AxmlEditActivity::class.java)

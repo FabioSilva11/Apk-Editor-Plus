@@ -116,6 +116,7 @@ class UserAppActivity : BaseActivity(), AdapterView.OnItemClickListener {
 
     private fun startEditActivity(mode: Int, path: String) {
         val intent = when (mode) {
+            0 -> android.content.Intent(this, FullEditActivity::class.java)
             1 -> android.content.Intent(this, SimpleEditActivity::class.java)
             2 -> android.content.Intent(this, CommonEditActivity::class.java)
             4 -> android.content.Intent(this, AxmlEditActivity::class.java)

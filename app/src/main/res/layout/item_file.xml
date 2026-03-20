@@ -15,8 +15,7 @@
         android:layout_height="32dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="12dp"
-        android:scaleType="fitCenter"
-        android:tint="?attr/iconPrimary"/>
+        android:scaleType="fitCenter"/>
 
     <LinearLayout
         android:orientation="vertical"

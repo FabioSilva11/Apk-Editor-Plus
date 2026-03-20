@@ -59,16 +59,46 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 toggleTheme()
                 true
             }
-            R.id.action_clean -> {
-                Toast.makeText(this, getString(R.string.cleanup_clicked), Toast.LENGTH_SHORT).show()
+            R.id.action_share_app -> {
+                shareApp()
                 true
             }
-            R.id.action_settings -> {
-                startActivity(Intent(this, SettingActivity::class.java))
+            R.id.action_telegram_group -> {
+                openTelegram()
+                true
+            }
+            R.id.action_about -> {
+                showAboutDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun shareApp() {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        val shareBody = "Baixe o ${getString(R.string.app_name)}: https://github.com/FabioSilva11/Apk-Editor-PLus"
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.menu_share_app)))
+    }
+
+    private fun openTelegram() {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://t.me/seu_grupo"))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Erro ao abrir o Telegram", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showAboutDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.menu_about)
+            .setMessage(R.string.about_message)
+            .setPositiveButton(R.string.close, null)
+            .show()
     }
 
 

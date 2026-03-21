@@ -37,6 +37,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.apksig)
     implementation(libs.bouncycastle.prov)
@@ -57,6 +59,9 @@ dependencies {
     implementation(libs.dexlib2)
     implementation(libs.smali.util)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.viewpager2)
+    implementation(files("libs/ARSCLib.jar"))
+    implementation(files("libs/JCommand.jar"))
 }

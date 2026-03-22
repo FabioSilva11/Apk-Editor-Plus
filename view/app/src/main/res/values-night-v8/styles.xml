@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="MD.DayNight.NoActionBar" parent="@style/MD.Dark.NoActionBar">
-    </style>
-    <style name="MD.DayNight" parent="@style/MD.Dark">
-    </style>
-    <style name="MD.DayNight.Main" parent="@style/MD.Dark.Main">
-    </style>
-</resources>

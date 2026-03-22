@@ -62,6 +62,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.viewpager2)
-    implementation(files("libs/ARSCLib.jar"))
-    implementation(files("libs/JCommand.jar"))
+
 }

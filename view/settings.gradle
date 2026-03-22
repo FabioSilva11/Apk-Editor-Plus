@@ -1,0 +1,3 @@
+rootProject.name = 'APK Editor'
+
+include 'app'

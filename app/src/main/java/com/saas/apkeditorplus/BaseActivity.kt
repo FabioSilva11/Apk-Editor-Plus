@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-
+import androidx.core.view.WindowCompat
 import com.google.android.material.color.DynamicColors
 
 open class BaseActivity : AppCompatActivity() {
@@ -13,15 +13,10 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Aplica cores dinâmicas se disponível
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         DynamicColors.applyToActivityIfAvailable(this)
-
-        // Carrega as SharedPreferences
         prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
-        
-        // Aplica o tema
         applyPersistedTheme()
-        
         super.onCreate(savedInstanceState)
     }
 
@@ -39,7 +34,6 @@ open class BaseActivity : AppCompatActivity() {
     protected open fun setupActionBar() {
         supportActionBar?.let { actionBar ->
             actionBar.setDisplayHomeAsUpEnabled(true)
-            // O ícone de voltar padrão do Android costuma ser ic_back ou similar
         }
     }
 

@@ -1,0 +1,29 @@
+package org.p088jf.dexlib2.iface;
+
+import java.util.List;
+import java.util.Set;
+import org.p088jf.dexlib2.iface.reference.TypeReference;
+
+/* JADX INFO: loaded from: classes.dex */
+public interface ClassDef extends TypeReference {
+    int getAccessFlags();
+
+    Set<? extends Annotation> getAnnotations();
+
+    Iterable<? extends Method> getDirectMethods();
+
+    Iterable<? extends Field> getInstanceFields();
+
+    List<String> getInterfaces();
+
+    String getSourceFile();
+
+    Iterable<? extends Field> getStaticFields();
+
+    String getSuperclass();
+
+    @Override // org.p088jf.dexlib2.iface.reference.TypeReference
+    String getType();
+
+    Iterable<? extends Method> getVirtualMethods();
+}

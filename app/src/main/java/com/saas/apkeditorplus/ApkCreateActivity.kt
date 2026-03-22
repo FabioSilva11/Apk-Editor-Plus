@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.saas.apkeditorplus.full.FullEditRepository
 import com.saas.apkeditorplus.utils.AxmlEncoder
 import java.io.File
 import java.io.FileOutputStream
@@ -121,6 +122,7 @@ class ApkCreateActivity : BaseActivity() {
     private fun rebuildApk(outputFile: File) {
         val zipFile = ZipFile(apkPath)
         val zos = ZipOutputStream(FileOutputStream(outputFile))
+        val compiledDexFiles = linkedMapOf<String, File>()
 
         val entries = zipFile.entries()
         while (entries.hasMoreElements()) {
@@ -137,7 +139,18 @@ class ApkCreateActivity : BaseActivity() {
             val modifiedPath = modifiedFiles.getString(entry.name)
             if (modifiedPath != null) {
                 val modifiedFile = File(modifiedPath)
-                if (isAxmlFile(entry.name)) {
+                if (FullEditRepository.isDexEntry(entry.name) && modifiedFile.isDirectory) {
+                    val compiledDex = compiledDexFiles.getOrPut(entry.name) {
+                        updateProgress("${getString(R.string.rebuilding_apk)} (${entry.name})")
+                        FullEditRepository.compileSmaliWorkspaceToDex(
+                            context = this,
+                            apkPath = apkPath,
+                            dexEntryName = entry.name,
+                            smaliDir = modifiedFile
+                        )
+                    }
+                    compiledDex.inputStream().use { it.copyTo(zos) }
+                } else if (isAxmlFile(entry.name)) {
                     // Check if the modified file is already a binary AXML (starts with magic 0x00080003)
                     val isBinary = isBinaryAxml(modifiedFile)
                     if (isBinary) {

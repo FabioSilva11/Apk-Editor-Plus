@@ -1,0 +1,348 @@
+package com.saas.apkeditorplus.full
+
+import android.content.Context
+import com.android.tools.smali.baksmali.Baksmali
+import com.android.tools.smali.baksmali.BaksmaliOptions
+import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
+import com.android.tools.smali.smali.Smali
+import com.android.tools.smali.smali.SmaliOptions
+import com.saas.apkeditorplus.utils.AxmlDecoder
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.security.MessageDigest
+import java.util.zip.ZipFile
+import kotlin.math.max
+import kotlin.math.min
+
+object FullEditRepository {
+    const val MANIFEST_ENTRY = "AndroidManifest.xml"
+    const val RESOURCES_ENTRY = "resources.arsc"
+
+    private val editableTextExtensions = setOf(
+        "css", "gradle", "html", "java", "js", "json", "kt", "md",
+        "properties", "smali", "svg", "txt", "xml", "yml", "yaml"
+    )
+
+    data class ArchiveItem(
+        val displayName: String,
+        val entryName: String,
+        val isDirectory: Boolean
+    )
+
+    data class StringResourceItem(
+        val name: String,
+        val value: String?,
+        val valueIndex: Int? = null
+    )
+
+    data class SmaliWorkspace(
+        val dexEntryName: String,
+        val rootDir: File,
+        val returnArchivePath: String
+    )
+
+    fun decodeManifest(apkPath: String): String {
+        return decodeXmlEntry(apkPath, MANIFEST_ENTRY)
+    }
+
+    fun parseStringResources(apkPath: String): List<StringResourceItem> {
+        return ResourceStringEditor.parseFromApk(apkPath)
+    }
+
+    fun parseStringResourcesFromArscFile(arscFile: File): List<StringResourceItem> {
+        return ResourceStringEditor.parseFromArscFile(arscFile)
+    }
+
+    fun exportStringResourcesEditorFile(
+        context: Context,
+        apkPath: String,
+        arscSourceFile: File? = null
+    ): File {
+        return ResourceStringEditor.exportToXml(
+            context = context,
+            apkPath = apkPath,
+            arscSourceFile = arscSourceFile
+        )
+    }
+
+    fun buildResourcesArscFromEditedStrings(
+        context: Context,
+        apkPath: String,
+        editedStringsXml: File
+    ): File {
+        return ResourceStringEditor.buildArscFromEditedXml(
+            context = context,
+            apkPath = apkPath,
+            editedStringsXml = editedStringsXml
+        )
+    }
+
+    fun listDirectory(apkPath: String, currentPath: String): List<ArchiveItem> {
+        ZipFile(apkPath).use { zipFile ->
+            val displayList = mutableListOf<ArchiveItem>()
+            if (currentPath.isNotEmpty()) {
+                displayList.add(ArchiveItem("..", parentPathOf(currentPath), true))
+            }
+
+            val folders = linkedSetOf<String>()
+            val files = mutableListOf<ArchiveItem>()
+            val entries = zipFile.entries()
+            while (entries.hasMoreElements()) {
+                val entry = entries.nextElement()
+                val name = entry.name
+                if (!name.startsWith(currentPath)) {
+                    continue
+                }
+                val relativeName = name.removePrefix(currentPath)
+                if (relativeName.isBlank()) {
+                    continue
+                }
+                val parts = relativeName.split("/")
+                if (parts.size > 1) {
+                    folders.add(parts.first())
+                } else if (!entry.isDirectory) {
+                    files.add(
+                        ArchiveItem(
+                            displayName = relativeName,
+                            entryName = name,
+                            isDirectory = false
+                        )
+                    )
+                }
+            }
+
+            folders.sorted().forEach { folderName ->
+                displayList.add(
+                    ArchiveItem(
+                        displayName = folderName,
+                        entryName = "$currentPath$folderName/",
+                        isDirectory = true
+                    )
+                )
+            }
+            displayList.addAll(files.sortedBy { it.displayName.lowercase() })
+            return displayList
+        }
+    }
+
+    fun prepareDexSmaliWorkspace(
+        context: Context,
+        apkPath: String,
+        dexEntryName: String
+    ): SmaliWorkspace {
+        require(isDexEntry(dexEntryName)) { "Not a dex entry: $dexEntryName" }
+
+        val workspace = SmaliWorkspace(
+            dexEntryName = dexEntryName,
+            rootDir = buildSmaliWorkspaceRoot(context, apkPath, dexEntryName),
+            returnArchivePath = parentPathOf(dexEntryName)
+        )
+        val markerFile = File(workspace.rootDir, ".ready")
+        val hasVisibleFiles = workspace.rootDir.listFiles()?.any { !it.name.startsWith(".") } == true
+        if (markerFile.exists() && hasVisibleFiles) {
+            return workspace
+        }
+
+        workspace.rootDir.deleteRecursively()
+        workspace.rootDir.mkdirs()
+
+        val dexFile = loadDexFileFromApk(apkPath, dexEntryName)
+        val success = Baksmali.disassembleDexFile(
+            dexFile,
+            workspace.rootDir,
+            workerCount(),
+            BaksmaliOptions().apply {
+                apiLevel = dexFile.opcodes.api
+            }
+        )
+        if (!success) {
+            workspace.rootDir.deleteRecursively()
+            error("Failed to convert $dexEntryName to smali")
+        }
+
+        markerFile.writeText("ready")
+        return workspace
+    }
+
+    fun listSmaliDirectory(workspace: SmaliWorkspace, currentPath: String): List<ArchiveItem> {
+        val relativePath = currentPath.removeSuffix("/")
+        val currentDir = if (relativePath.isBlank()) {
+            workspace.rootDir
+        } else {
+            File(workspace.rootDir, relativePath)
+        }
+        if (!currentDir.exists() || !currentDir.isDirectory) {
+            error("Smali directory not found: $currentPath")
+        }
+
+        val displayList = mutableListOf<ArchiveItem>()
+        displayList.add(
+            ArchiveItem(
+                displayName = "..",
+                entryName = if (relativePath.isBlank()) "" else parentPathOf("$relativePath/"),
+                isDirectory = true
+            )
+        )
+
+        val children = currentDir.listFiles()
+            ?.filterNot { it.name.startsWith(".") }
+            .orEmpty()
+
+        children
+            .filter { it.isDirectory }
+            .sortedBy { it.name.lowercase() }
+            .forEach { directory ->
+                displayList.add(
+                    ArchiveItem(
+                        displayName = directory.name,
+                        entryName = buildChildPath(currentPath, directory.name, true),
+                        isDirectory = true
+                    )
+                )
+            }
+
+        children
+            .filter { it.isFile }
+            .sortedBy { it.name.lowercase() }
+            .forEach { file ->
+                displayList.add(
+                    ArchiveItem(
+                        displayName = file.name,
+                        entryName = buildChildPath(currentPath, file.name, false),
+                        isDirectory = false
+                    )
+                )
+            }
+
+        return displayList
+    }
+
+    fun extractEntryForEditing(context: Context, apkPath: String, entryName: String): File {
+        val targetDir = File(context.cacheDir, "full_edit").apply { mkdirs() }
+        val targetFile = File(targetDir, entryName.replace("/", "_"))
+
+        ZipFile(apkPath).use { zipFile ->
+            val entry = zipFile.getEntry(entryName) ?: error("Entry not found: $entryName")
+            zipFile.getInputStream(entry).use { inputStream ->
+                if (entryName.endsWith(".xml", ignoreCase = true)) {
+                    FileOutputStream(targetFile).use { output ->
+                        val decoded = AxmlDecoder().decode(inputStream, output)
+                        if (!decoded) {
+                            throw IllegalStateException("Failed to decode XML: $entryName")
+                        }
+                    }
+                } else {
+                    FileOutputStream(targetFile).use { output ->
+                        inputStream.copyTo(output)
+                    }
+                }
+            }
+        }
+        return targetFile
+    }
+
+    fun resolveSmaliWorkspaceFile(workspace: SmaliWorkspace, relativePath: String): File {
+        return File(workspace.rootDir, relativePath.removeSuffix("/"))
+    }
+
+    fun compileSmaliWorkspaceToDex(
+        context: Context,
+        apkPath: String,
+        dexEntryName: String,
+        smaliDir: File
+    ): File {
+        require(isDexEntry(dexEntryName)) { "Not a dex entry: $dexEntryName" }
+        require(smaliDir.exists() && smaliDir.isDirectory) {
+            "Smali workspace not found: ${smaliDir.absolutePath}"
+        }
+
+        val dexFile = loadDexFileFromApk(apkPath, dexEntryName)
+        val outputDir = File(context.cacheDir, "full_edit_built_dex").apply { mkdirs() }
+        val outputDex = File(outputDir, "${workspaceKey(apkPath, dexEntryName)}.dex")
+        if (outputDex.exists()) {
+            outputDex.delete()
+        }
+
+        val success = Smali.assemble(
+            SmaliOptions().apply {
+                apiLevel = dexFile.opcodes.api
+                outputDexFile = outputDex.absolutePath
+                jobs = workerCount()
+            },
+            smaliDir.absolutePath
+        )
+        if (!success || !outputDex.exists()) {
+            error("Failed to compile smali back to $dexEntryName")
+        }
+
+        return outputDex
+    }
+
+    fun isEditableTextEntry(entryName: String): Boolean {
+        if (entryName.endsWith("/")) {
+            return false
+        }
+        val extension = entryName.substringAfterLast('.', "")
+        return extension.lowercase() in editableTextExtensions
+    }
+
+    fun isDexEntry(entryName: String): Boolean {
+        return entryName.endsWith(".dex", ignoreCase = true)
+    }
+
+    private fun decodeXmlEntry(apkPath: String, entryName: String): String {
+        ZipFile(apkPath).use { zipFile ->
+            val entry = zipFile.getEntry(entryName) ?: error("Entry not found: $entryName")
+            zipFile.getInputStream(entry).use { inputStream ->
+                val output = ByteArrayOutputStream()
+                val decoded = AxmlDecoder().decode(inputStream, output)
+                if (!decoded) {
+                    error("Failed to decode XML: $entryName")
+                }
+                return output.toString(Charsets.UTF_8.name())
+            }
+        }
+    }
+
+    private fun parentPathOf(path: String): String {
+        val normalized = path.removeSuffix("/")
+        val lastSlash = normalized.lastIndexOf('/')
+        return if (lastSlash == -1) "" else normalized.substring(0, lastSlash + 1)
+    }
+
+    private fun buildSmaliWorkspaceRoot(context: Context, apkPath: String, dexEntryName: String): File {
+        val baseDir = File(context.cacheDir, "full_edit_smali").apply { mkdirs() }
+        return File(baseDir, "${workspaceKey(apkPath, dexEntryName)}_${sanitizeEntryName(dexEntryName)}")
+    }
+
+    private fun loadDexFileFromApk(apkPath: String, dexEntryName: String): DexBackedDexFile {
+        ZipFile(apkPath).use { zipFile ->
+            val entry = zipFile.getEntry(dexEntryName) ?: error("Entry not found: $dexEntryName")
+            zipFile.getInputStream(entry).use { inputStream ->
+                return DexBackedDexFile(null, inputStream.readBytes())
+            }
+        }
+    }
+
+    private fun buildChildPath(currentPath: String, childName: String, isDirectory: Boolean): String {
+        val basePath = currentPath.removeSuffix("/")
+        val childPath = if (basePath.isBlank()) childName else "$basePath/$childName"
+        return if (isDirectory) "$childPath/" else childPath
+    }
+
+    private fun workspaceKey(apkPath: String, entryName: String): String {
+        val apkFile = File(apkPath)
+        val identity = "$apkPath|${apkFile.length()}|${apkFile.lastModified()}|$entryName"
+        val digest = MessageDigest.getInstance("SHA-1").digest(identity.toByteArray(Charsets.UTF_8))
+        return digest.joinToString("") { byte -> "%02x".format(byte) }
+    }
+
+    private fun sanitizeEntryName(entryName: String): String {
+        return entryName.replace(Regex("[^A-Za-z0-9._-]"), "_")
+    }
+
+    private fun workerCount(): Int {
+        return min(4, max(1, Runtime.getRuntime().availableProcessors()))
+    }
+}

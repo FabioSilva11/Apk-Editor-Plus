@@ -1,9 +1,9 @@
-package com.saas.apkeditorplus
+﻿package com.saas.apkeditorplus
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -17,24 +17,32 @@ class FullEditActivity : BaseActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var apkPath: String
+    private val modifiedFiles = linkedMapOf<String, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fulledit)
-        
+
+        apkPath = intent.getStringExtra("apkPath") ?: ""
+        if (apkPath.isBlank()) {
+            Toast.makeText(this, getString(R.string.apk_path_not_found), Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         viewPager = findViewById(R.id.view_pager)
         bottomNavigation = findViewById(R.id.bottom_navigation)
-        
+
         setupViewPager()
         setupBottomNavigation()
-        
-        val apkPath = intent.getStringExtra("apkPath")
+        updateActionBar()
     }
 
     private fun setupViewPager() {
-        val adapter = FullEditPagerAdapter(this)
+        val adapter = FullEditPagerAdapter(this, apkPath)
         viewPager.adapter = adapter
-        
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 bottomNavigation.menu.getItem(position).isChecked = true
@@ -71,33 +79,72 @@ class FullEditActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_build -> {
-                // Logic to build
+                buildModifiedApk()
                 true
             }
             R.id.action_patch -> {
-                // Logic for patch
+                Toast.makeText(this, getString(R.string.not_available), Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_webserver -> {
-                // Logic for webserver
+                Toast.makeText(this, getString(R.string.not_available), Toast.LENGTH_SHORT).show()
                 true
             }
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private inner class FullEditPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+    fun registerModifiedFile(entryName: String, tempFilePath: String) {
+        modifiedFiles[entryName] = tempFilePath
+    }
+
+    private fun buildModifiedApk() {
+        if (modifiedFiles.isEmpty()) {
+            Toast.makeText(this, getString(R.string.no_change_detected), Toast.LENGTH_SHORT).show()
+            return
+        }
+        val bundle = Bundle().apply {
+            modifiedFiles.forEach { (entryName, tempFilePath) ->
+                putString(entryName, tempFilePath)
+            }
+        }
+        startActivity(
+            android.content.Intent(this, ApkCreateActivity::class.java).apply {
+                putExtra("apkPath", apkPath)
+                putExtra("modifiedFiles", bundle)
+            }
+        )
+    }
+
+    private fun updateActionBar() {
+        val title = runCatching {
+            packageManager.getPackageArchiveInfo(apkPath, 0)?.applicationInfo?.let { appInfo ->
+                appInfo.sourceDir = apkPath
+                appInfo.publicSourceDir = apkPath
+                appInfo.loadLabel(packageManager)?.toString()
+            }
+        }.getOrNull()
+
+        supportActionBar?.title = title ?: getString(R.string.full_edit)
+        supportActionBar?.subtitle = apkPath
+    }
+
+    private inner class FullEditPagerAdapter(
+        activity: AppCompatActivity,
+        private val apkPath: String
+    ) : FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = 3
+
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> StringFragment()
-                1 -> FilesFragment()
-                2 -> ManifestFragment()
-                else -> StringFragment()
+                0 -> StringFragment.newInstance(apkPath)
+                1 -> FilesFragment.newInstance(apkPath)
+                2 -> ManifestFragment.newInstance(apkPath)
+                else -> StringFragment.newInstance(apkPath)
             }
         }
     }

@@ -1,9 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:gravity="top"
+    android:orientation="horizontal"
     android:paddingStart="16dp"
     android:paddingTop="12dp"
     android:paddingEnd="16dp"
@@ -11,17 +13,21 @@
 
     <TextView
         android:id="@+id/string_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:layout_weight="1"
+        android:lineSpacingExtra="1dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/full_edit_text_secondary"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/string_value"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:textSize="13sp" />
+        android:layout_weight="1"
+        android:lineSpacingExtra="1dp"
+        android:textColor="@color/full_edit_text_primary"
+        android:textSize="14sp" />
+
 </LinearLayout>

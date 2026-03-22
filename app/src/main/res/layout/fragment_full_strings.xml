@@ -1,25 +1,63 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/full_edit_surface"
     android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/language_spinner"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="0dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="0dp">
 
-    <Button
-        android:id="@+id/open_editor_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/open_in_editor" />
+        <ImageButton
+            android:id="@+id/action_add_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/add_a_language"
+            android:padding="8dp"
+            android:src="@drawable/ic_add"
+            android:tint="@color/full_edit_text_primary" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1">
+
+            <Spinner
+                android:id="@+id/language_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/down_arrow_grey"
+                android:tint="@color/full_edit_text_secondary" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/open_editor_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/translate_plugin"
+            android:padding="8dp"
+            android:src="@drawable/dg_translate"
+            android:tint="@color/full_edit_text_primary" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -30,7 +68,9 @@
             android:id="@+id/string_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null" />
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/empty_view"
@@ -39,7 +79,7 @@
             android:gravity="center"
             android:padding="16dp"
             android:text="@string/loading"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="@color/full_edit_text_secondary"
             android:visibility="gone" />
 
         <ProgressBar
@@ -51,23 +91,50 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:paddingStart="0dp"
+        android:paddingTop="0dp"
+        android:paddingEnd="0dp"
+        android:paddingBottom="0dp">
 
-        <EditText
-            android:id="@+id/keyword_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/pls_input_keyword"
-            android:singleLine="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/full_edit_search_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp">
 
-        <Button
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/search" />
+            <EditText
+                android:id="@+id/keyword_edit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/pls_input_keyword"
+                android:imeOptions="actionSearch"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:singleLine="true"
+                android:textSize="12sp"
+                android:textColor="@color/full_edit_text_primary"
+                android:textColorHint="@color/full_edit_text_secondary" />
+
+            <ImageButton
+                android:id="@+id/search_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/search"
+                android:padding="8dp"
+                android:src="@drawable/ic_search"
+                android:tint="@color/full_edit_text_secondary" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

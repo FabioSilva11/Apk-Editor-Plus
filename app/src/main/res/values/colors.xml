@@ -76,4 +76,13 @@
     <color name="grey">#9E9E9E</color>
     <color name="shortcut_background">@color/md_theme_light_primaryContainer</color>
 
+    <!-- Full edit visual -->
+    <color name="full_edit_surface">#FFFFFF</color>
+    <color name="full_edit_accent">#6E82BE</color>
+    <color name="full_edit_accent_on">#FFFFFF</color>
+    <color name="full_edit_text_primary">#43444A</color>
+    <color name="full_edit_text_secondary">#87858E</color>
+    <color name="full_edit_outline">#E8E4EE</color>
+    <color name="full_edit_search_surface">#F4F1F8</color>
+
 </resources>

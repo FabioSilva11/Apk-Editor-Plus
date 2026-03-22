@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Xml
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.Locale
 import java.util.zip.ZipFile
 import kotlin.math.max
 import org.xmlpull.v1.XmlPullParser
@@ -148,24 +149,49 @@ internal object ResourceStringEditor {
         }
     }
 
-    fun parseFromApk(apkPath: String): List<FullEditRepository.StringResourceItem> {
-        return parse(loadArscFromApk(apkPath)).items
+    fun parseFromApk(
+        apkPath: String,
+        localeQualifier: String = ""
+    ): List<FullEditRepository.StringResourceItem> {
+        return filterItems(parse(loadArscFromApk(apkPath)).items, localeQualifier)
     }
 
-    fun parseFromArscFile(arscFile: File): List<FullEditRepository.StringResourceItem> {
-        return parse(arscFile.readBytes()).items
+    fun parseFromArscFile(
+        arscFile: File,
+        localeQualifier: String = ""
+    ): List<FullEditRepository.StringResourceItem> {
+        return filterItems(parse(arscFile.readBytes()).items, localeQualifier)
+    }
+
+    fun listLocales(
+        apkPath: String,
+        arscSourceFile: File? = null
+    ): List<String> {
+        val snapshot = if (arscSourceFile != null && arscSourceFile.exists()) {
+            parse(arscSourceFile.readBytes())
+        } else {
+            parse(loadArscFromApk(apkPath))
+        }
+        return snapshot.items
+            .map { it.localeQualifier }
+            .distinct()
+            .sortedWith(
+                compareBy<String>({ if (it.isEmpty()) 0 else 1 }, { it.lowercase(Locale.ROOT) })
+            )
     }
 
     fun exportToXml(
         context: Context,
         apkPath: String,
-        arscSourceFile: File? = null
+        arscSourceFile: File? = null,
+        localeQualifier: String = ""
     ): File {
         val snapshot = if (arscSourceFile != null && arscSourceFile.exists()) {
             parse(arscSourceFile.readBytes())
         } else {
             parse(loadArscFromApk(apkPath))
         }
+        val selectedItems = filterItems(snapshot.items, localeQualifier)
         val targetDir = File(context.cacheDir, "full_edit_strings").apply { mkdirs() }
         val outputFile = File(
             targetDir,
@@ -177,7 +203,7 @@ internal object ResourceStringEditor {
             serializer.startDocument(Charsets.UTF_8.name(), true)
             serializer.text("\n")
             serializer.startTag(null, "resources")
-            snapshot.items.forEach { item ->
+            selectedItems.forEach { item ->
                 serializer.text("\n    ")
                 serializer.startTag(null, "string")
                 serializer.attribute(null, "name", item.name)
@@ -196,7 +222,8 @@ internal object ResourceStringEditor {
         context: Context,
         apkPath: String,
         editedStringsXml: File,
-        arscSourceFile: File? = null
+        arscSourceFile: File? = null,
+        localeQualifier: String = ""
     ): File {
         require(editedStringsXml.exists()) { "Edited strings file not found" }
         val editedValues = parseEditedStringsXml(editedStringsXml)
@@ -204,7 +231,8 @@ internal object ResourceStringEditor {
             context = context,
             apkPath = apkPath,
             overrides = editedValues,
-            arscSourceFile = arscSourceFile
+            arscSourceFile = arscSourceFile,
+            localeQualifier = localeQualifier
         )
     }
 
@@ -212,12 +240,16 @@ internal object ResourceStringEditor {
         context: Context,
         apkPath: String,
         overrides: Map<String, String>,
-        arscSourceFile: File? = null
+        arscSourceFile: File? = null,
+        localeQualifier: String = ""
     ): File {
         require(overrides.isNotEmpty()) { "No string changes to apply" }
         val snapshot = loadSnapshot(apkPath, arscSourceFile)
         val updatedStrings = snapshot.globalPool.strings.toMutableList()
-        snapshot.items.forEach { item ->
+        snapshot.items
+            .asSequence()
+            .filter { it.localeQualifier == localeQualifier }
+            .forEach { item ->
             val valueIndex = item.valueIndex ?: return@forEach
             val editedValue = overrides[item.name] ?: return@forEach
             if (valueIndex in updatedStrings.indices) {
@@ -338,7 +370,16 @@ internal object ResourceStringEditor {
         return Snapshot(
             bytes = bytes,
             globalPool = globalPool ?: error("Global string pool not found"),
-            items = items.sortedBy { it.name.lowercase() }
+            items = items
+                .associateBy { "${it.localeQualifier}\u0000${it.name}" }
+                .values
+                .sortedWith(
+                    compareBy<FullEditRepository.StringResourceItem>(
+                        { if (it.localeQualifier.isEmpty()) 0 else 1 },
+                        { it.localeQualifier.lowercase(Locale.ROOT) },
+                        { it.name.lowercase(Locale.ROOT) }
+                    )
+                )
         )
     }
 
@@ -421,19 +462,7 @@ internal object ResourceStringEditor {
 
         val configSize = reader.u32()
         val configBytes = reader.bytes(configSize - 4)
-        val hasLocale = if (configSize >= 8) {
-            val lang0 = configBytes[2]
-            val lang1 = configBytes[3]
-            val country0 = configBytes[4]
-            val country1 = configBytes[5]
-            lang0.toInt() != 0 || lang1.toInt() != 0 || country0.toInt() != 0 || country1.toInt() != 0
-        } else {
-            false
-        }
-        if (hasLocale) {
-            reader.seek(typeHeader.start + typeHeader.size)
-            return
-        }
+        val localeQualifier = parseLocaleQualifier(configBytes)
 
         val offsetsStart = reader.pos
         val maxOffsetBytes = typeChunkEnd - offsetsStart
@@ -490,7 +519,8 @@ internal object ResourceStringEditor {
                     FullEditRepository.StringResourceItem(
                         name = name,
                         value = value,
-                        valueIndex = valueIndex
+                        valueIndex = valueIndex,
+                        localeQualifier = localeQualifier
                     )
                 )
             }
@@ -666,6 +696,69 @@ internal object ResourceStringEditor {
             first
         } else {
             ((first and 0x7FFF) shl 16) or reader.u16()
+        }
+    }
+
+    private fun filterItems(
+        items: List<FullEditRepository.StringResourceItem>,
+        localeQualifier: String
+    ): List<FullEditRepository.StringResourceItem> {
+        return items.filter { it.localeQualifier == localeQualifier }
+    }
+
+    private fun parseLocaleQualifier(configBytes: ByteArray): String {
+        if (configBytes.size < 6) {
+            return ""
+        }
+        val language = decodeLanguage(configBytes[2], configBytes[3]) ?: return ""
+        val region = decodeRegion(configBytes[4], configBytes[5])
+        return buildString {
+            append('-')
+            append(language)
+            if (!region.isNullOrBlank()) {
+                append("-r")
+                append(region.uppercase(Locale.ROOT))
+            }
+        }
+    }
+
+    private fun decodeLanguage(firstByte: Byte, secondByte: Byte): String? {
+        val first = firstByte.toInt() and 0xFF
+        val second = secondByte.toInt() and 0xFF
+        if (first == 0 && second == 0) {
+            return null
+        }
+        return if ((first and 0x80) != 0) {
+            buildString {
+                append(((second and 0x1F) + 'a'.code).toChar())
+                append((((second and 0xE0) shr 5) + ((first and 0x03) shl 3) + 'a'.code).toChar())
+                append((((first and 0x7C) shr 2) + 'a'.code).toChar())
+            }
+        } else {
+            buildString {
+                append(first.toChar())
+                append(second.toChar())
+            }
+        }
+    }
+
+    private fun decodeRegion(firstByte: Byte, secondByte: Byte): String? {
+        val first = firstByte.toInt() and 0xFF
+        val second = secondByte.toInt() and 0xFF
+        if (first == 0 && second == 0) {
+            return null
+        }
+        return if ((first and 0x80) != 0) {
+            buildString {
+                append(((second and 0x1F) + '0'.code).toChar())
+                append((((second and 0xE0) shr 5) + ((first and 0x03) shl 3) + '0'.code).toChar())
+                append((((first and 0x7C) shr 2) + '0'.code).toChar())
+            }
+        } else {
+            buildString {
+                append(first.toChar())
+                append(second.toChar())
+            }
         }
     }
 

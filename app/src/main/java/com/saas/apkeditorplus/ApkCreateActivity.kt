@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import com.saas.apkeditorplus.full.FullEditRepository
 import com.saas.apkeditorplus.utils.AxmlEncoder
 import java.io.File
@@ -41,7 +42,7 @@ class ApkCreateActivity : BaseActivity() {
         tvResult = findViewById(R.id.result)
         btnInstall = findViewById(R.id.button_reinstall)
         btnUninstall = findViewById(R.id.button_uninstall)
-        ivResult = findViewById<ImageView>(R.id.result_image)
+        ivResult = findViewById(R.id.result_image)
 
         apkPath = intent.getStringExtra("apkPath") ?: ""
         modifiedFiles = intent.getBundleExtra("modifiedFiles") ?: Bundle()
@@ -56,8 +57,7 @@ class ApkCreateActivity : BaseActivity() {
 
     private fun extractPackageName() {
         try {
-            val pm = packageManager
-            val info = pm.getPackageArchiveInfo(apkPath, 0)
+            val info = packageManager.getPackageArchiveInfo(apkPath, 0)
             targetPackageName = info?.packageName
         } catch (e: Exception) {
             e.printStackTrace()
@@ -84,9 +84,8 @@ class ApkCreateActivity : BaseActivity() {
                 rebuildApk(unsignedApk)
 
                 updateProgress(getString(R.string.signing_apk))
-                val signedApk = File(getExternalFilesDir(null), "${targetPackageName ?: "modded"}_pro.apk")
-                
-                // Busca a primeira KeyStore do banco de dados (lógica simplificada da ApkEditor)
+                val outputDir = getExternalFilesDir(null) ?: filesDir
+                val signedApk = File(outputDir, "${targetPackageName ?: "modded"}_pro.apk")
                 val success = signWithDefaultOrFirstKey(unsignedApk, signedApk)
 
                 runOnUiThread {
@@ -107,74 +106,95 @@ class ApkCreateActivity : BaseActivity() {
     }
 
     private fun signWithDefaultOrFirstKey(input: File, output: File): Boolean {
-        // Tentativa de assinatura. No app original isso usa Chaves de Assinatura.
-        // Se falhar por falta de chave, o usuário verá o erro.
-        // Aqui simularemos o sucesso se as classes estiverem prontas.
         return try {
-            // Em uma implementação real, buscaríamos o JKS do banco de dados interno
-            // Por agora, manteremos o retorno true para permitir que a UI avance se o build foi ok.
-            true 
+            output.parentFile?.mkdirs()
+            if (output.exists()) {
+                output.delete()
+            }
+
+            val keyStoreFile = KeyStoreManager(this).getTestKey()
+            ApkSignerManager().signApk(
+                inputApk = input,
+                outputApk = output,
+                keyStoreFile = keyStoreFile,
+                keyStorePassword = "testkey".toCharArray(),
+                keyAlias = "testkey",
+                keyPassword = "testkey".toCharArray(),
+                listener = object : ApkSignerManager.SignerListener {
+                    override fun onStart() = Unit
+
+                    override fun onProgress(message: String) {
+                        updateProgress(message)
+                    }
+
+                    override fun onSuccess() = Unit
+
+                    override fun onError(message: String) = Unit
+                }
+            ) && output.exists() && output.length() > 0L
         } catch (e: Exception) {
+            e.printStackTrace()
             false
         }
     }
 
     private fun rebuildApk(outputFile: File) {
-        val zipFile = ZipFile(apkPath)
-        val zos = ZipOutputStream(FileOutputStream(outputFile))
-        val compiledDexFiles = linkedMapOf<String, File>()
+        ZipFile(apkPath).use { zipFile ->
+            ZipOutputStream(FileOutputStream(outputFile)).use { zos ->
+                val compiledDexFiles = linkedMapOf<String, File>()
+                val entries = zipFile.entries()
 
-        val entries = zipFile.entries()
-        while (entries.hasMoreElements()) {
-            val entry = entries.nextElement()
-            
-            // Ignora assinaturas antigas
-            if (entry.name.startsWith("META-INF/") && (entry.name.endsWith(".SF") || entry.name.endsWith(".RSA") || entry.name.endsWith(".MF"))) {
-                continue
-            }
+                while (entries.hasMoreElements()) {
+                    val entry = entries.nextElement()
 
-            val newEntry = ZipEntry(entry.name)
-            zos.putNextEntry(newEntry)
-
-            val modifiedPath = modifiedFiles.getString(entry.name)
-            if (modifiedPath != null) {
-                val modifiedFile = File(modifiedPath)
-                if (FullEditRepository.isDexEntry(entry.name) && modifiedFile.isDirectory) {
-                    val compiledDex = compiledDexFiles.getOrPut(entry.name) {
-                        updateProgress("${getString(R.string.rebuilding_apk)} (${entry.name})")
-                        FullEditRepository.compileSmaliWorkspaceToDex(
-                            context = this,
-                            apkPath = apkPath,
-                            dexEntryName = entry.name,
-                            smaliDir = modifiedFile
-                        )
+                    if (entry.name.startsWith("META-INF/") &&
+                        (entry.name.endsWith(".SF") ||
+                            entry.name.endsWith(".RSA") ||
+                            entry.name.endsWith(".MF"))
+                    ) {
+                        continue
                     }
-                    compiledDex.inputStream().use { it.copyTo(zos) }
-                } else if (isAxmlFile(entry.name)) {
-                    // Check if the modified file is already a binary AXML (starts with magic 0x00080003)
-                    val isBinary = isBinaryAxml(modifiedFile)
-                    if (isBinary) {
-                        modifiedFile.inputStream().use { it.copyTo(zos) }
-                    } else {
-                        val xmlString = modifiedFile.readText()
-                        val encoder = AxmlEncoder()
-                        val binaryData = encoder.encode(xmlString, this)
-                        if (binaryData != null) {
-                            zos.write(binaryData as ByteArray)
+
+                    zos.putNextEntry(ZipEntry(entry.name))
+
+                    val modifiedPath = modifiedFiles.getString(entry.name)
+                    if (modifiedPath != null) {
+                        val modifiedFile = File(modifiedPath)
+                        if (FullEditRepository.isDexEntry(entry.name) && modifiedFile.isDirectory) {
+                            val compiledDex = compiledDexFiles.getOrPut(entry.name) {
+                                updateProgress("${getString(R.string.rebuilding_apk)} (${entry.name})")
+                                FullEditRepository.compileSmaliWorkspaceToDex(
+                                    context = this,
+                                    apkPath = apkPath,
+                                    dexEntryName = entry.name,
+                                    smaliDir = modifiedFile
+                                )
+                            }
+                            compiledDex.inputStream().use { it.copyTo(zos) }
+                        } else if (isAxmlFile(entry.name)) {
+                            if (isBinaryAxml(modifiedFile)) {
+                                modifiedFile.inputStream().use { it.copyTo(zos) }
+                            } else {
+                                val xmlString = modifiedFile.readText()
+                                val encoder = AxmlEncoder()
+                                val binaryData = encoder.encode(xmlString, this)
+                                if (binaryData != null) {
+                                    zos.write(binaryData as ByteArray)
+                                } else {
+                                    modifiedFile.inputStream().use { it.copyTo(zos) }
+                                }
+                            }
                         } else {
                             modifiedFile.inputStream().use { it.copyTo(zos) }
                         }
+                    } else {
+                        zipFile.getInputStream(entry).use { it.copyTo(zos) }
                     }
-                } else {
-                    modifiedFile.inputStream().use { it.copyTo(zos) }
+
+                    zos.closeEntry()
                 }
-            } else {
-                zipFile.getInputStream(entry).use { it.copyTo(zos) }
             }
-            zos.closeEntry()
         }
-        zos.close()
-        zipFile.close()
     }
 
     private fun isAxmlFile(name: String): Boolean {
@@ -183,17 +203,19 @@ class ApkCreateActivity : BaseActivity() {
 
     private fun isBinaryAxml(file: File): Boolean {
         return try {
-            val bis = file.inputStream()
-            val header = ByteArray(4)
-            val read = bis.read(header)
-            bis.close()
-            if (read == 4) {
-                val magic = (header[0].toInt() and 0xFF) or
+            file.inputStream().use { input ->
+                val header = ByteArray(4)
+                val read = input.read(header)
+                if (read == 4) {
+                    val magic = (header[0].toInt() and 0xFF) or
                         ((header[1].toInt() and 0xFF) shl 8) or
                         ((header[2].toInt() and 0xFF) shl 16) or
                         ((header[3].toInt() and 0xFF) shl 24)
-                magic == 0x00080003
-            } else false
+                    magic == 0x00080003
+                } else {
+                    false
+                }
+            }
         } catch (e: Exception) {
             false
         }
@@ -206,34 +228,43 @@ class ApkCreateActivity : BaseActivity() {
     private fun showResult(success: Boolean, message: String) {
         layoutGenerating.visibility = View.GONE
         layoutReinstall.visibility = View.VISIBLE
-        
+
         if (success) {
             ivResult.setImageResource(R.drawable.ic_select)
             btnInstall.visibility = View.VISIBLE
-            
-            // Following master project's exact formatting logic
-            val str = getString(R.string.carlos) + String.format(getString(R.string.apk_savedas_1), outputApkFile?.absolutePath ?: "") + "\n\n"
-            
+
+            val resultText = getString(R.string.carlos) +
+                String.format(getString(R.string.apk_savedas_1), outputApkFile?.absolutePath ?: "") +
+                "\n\n"
+
             targetPackageName?.let { pkg ->
                 if (isAppInstalled(pkg)) {
                     val removeTip = getString(R.string.remove_tip)
-                    val spannable = android.text.SpannableStringBuilder(str + removeTip)
-                    
-                    val start = str.length
+                    val spannable = android.text.SpannableStringBuilder(resultText + removeTip)
+                    val start = resultText.length
                     val end = spannable.length
-                    
-                    spannable.setSpan(android.text.style.AbsoluteSizeSpan(12, true), start, end, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    // In master it uses a theme attribute for color, we'll use a standard secondary text color or gray
-                    spannable.setSpan(android.text.style.ForegroundColorSpan(android.graphics.Color.DKGRAY), start, end, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    
+
+                    spannable.setSpan(
+                        android.text.style.AbsoluteSizeSpan(12, true),
+                        start,
+                        end,
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    spannable.setSpan(
+                        android.text.style.ForegroundColorSpan(android.graphics.Color.DKGRAY),
+                        start,
+                        end,
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
                     tvResult.text = spannable
                     btnUninstall.visibility = View.VISIBLE
                 } else {
-                    tvResult.text = str
+                    tvResult.text = resultText
                     btnUninstall.visibility = View.GONE
                 }
             } ?: run {
-                tvResult.text = str
+                tvResult.text = resultText
                 btnUninstall.visibility = View.GONE
             }
         } else {
@@ -246,19 +277,37 @@ class ApkCreateActivity : BaseActivity() {
 
     private fun uninstallOriginal() {
         targetPackageName?.let { pkg ->
-            val intent = Intent(Intent.ACTION_DELETE)
-            intent.data = Uri.parse("package:$pkg")
-            startActivity(intent)
-        } ?: Toast.makeText(this, getString(R.string.package_name_not_identified), Toast.LENGTH_SHORT).show()
+            startActivity(
+                Intent(Intent.ACTION_DELETE).apply {
+                    data = Uri.parse("package:$pkg")
+                }
+            )
+        } ?: Toast.makeText(this, getString(R.string.package_name_not_identified), Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun installNewApk() {
         outputApkFile?.let { file ->
-            val intent = Intent(Intent.ACTION_VIEW)
-            val uri = androidx.core.content.FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            intent.setDataAndType(uri, "application/vnd.android.package-archive")
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (!file.exists()) {
+                Toast.makeText(this, getString(R.string.failed), Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val installDir = getExternalFilesDir("apk") ?: getExternalFilesDir(null) ?: cacheDir
+            if (!installDir.exists()) {
+                installDir.mkdirs()
+            }
+
+            val installFile = File(installDir, "gen.apk")
+            file.copyTo(installFile, overwrite = true)
+
+            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", installFile)
+            val intent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
+                putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true)
+                setDataAndType(uri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             startActivity(intent)
         }
     }

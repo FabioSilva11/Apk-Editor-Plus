@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="full_edit_surface">#12141B</color>
+    <color name="full_edit_accent">#8EA1E0</color>
+    <color name="full_edit_accent_on">#F7F8FF</color>
+    <color name="full_edit_text_primary">#E8E8EF</color>
+    <color name="full_edit_text_secondary">#B6B2C3</color>
+    <color name="full_edit_outline">#343948</color>
+    <color name="full_edit_search_surface">#242833</color>
+</resources>

@@ -6,13 +6,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.ProgressBar
@@ -26,6 +27,7 @@ import com.saas.apkeditorplus.FullEditActivity
 import com.saas.apkeditorplus.R
 import com.saas.apkeditorplus.TextEditBigActivity
 import java.io.File
+import java.util.Locale
 
 class StringFragment : Fragment() {
     private lateinit var apkPath: String
@@ -34,11 +36,15 @@ class StringFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var keywordEdit: EditText
     private lateinit var emptyView: TextView
+    private lateinit var languageAdapter: ArrayAdapter<String>
 
     private var allItems = emptyList<FullEditRepository.StringResourceItem>()
     private var visibleItems = emptyList<FullEditRepository.StringResourceItem>()
     private var stringsEditorTempFile: File? = null
     private var modifiedResourcesFile: File? = null
+    private var availableLocales = emptyList<String>()
+    private var selectedLocaleQualifier: String = ""
+    private var updatingSpinnerSelection = false
 
     private val editStringsLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -57,7 +63,8 @@ class StringFragment : Fragment() {
                     context = requireContext(),
                     apkPath = apkPath,
                     editedStringsXml = editorFile,
-                    arscSourceFile = modifiedResourcesFile
+                    arscSourceFile = modifiedResourcesFile,
+                    localeQualifier = selectedLocaleQualifier
                 )
             }
             if (!isAdded) {
@@ -125,23 +132,90 @@ class StringFragment : Fragment() {
             true
         }
 
-        languageSpinner.adapter = ArrayAdapter(
+        languageAdapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
-            listOf(getString(R.string.default_language))
-        ).also {
-            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            R.layout.item_full_edit_spinner,
+            mutableListOf<String>()
+        ).apply {
+            setDropDownViewResource(R.layout.item_full_edit_spinner_dropdown)
         }
-        languageSpinner.isEnabled = false
+        languageSpinner.adapter = languageAdapter
+        languageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (updatingSpinnerSelection) {
+                    return
+                }
+                val qualifier = availableLocales.getOrNull(position) ?: return
+                if (selectedLocaleQualifier != qualifier) {
+                    selectedLocaleQualifier = qualifier
+                    loadStrings()
+                }
+            }
 
-        view.findViewById<Button>(R.id.search_button).setOnClickListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+
+        keywordEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                applyFilter(s?.toString().orEmpty())
+            }
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
+
+        view.findViewById<View>(R.id.search_button).setOnClickListener {
             applyFilter(keywordEdit.text.toString())
         }
-        view.findViewById<Button>(R.id.open_editor_button).setOnClickListener {
-            openStringsEditor()
+        view.findViewById<View>(R.id.action_add_button).setOnClickListener {
+            Toast.makeText(requireContext(), getString(R.string.not_available), Toast.LENGTH_SHORT).show()
+        }
+        view.findViewById<View>(R.id.open_editor_button).setOnClickListener {
+            Toast.makeText(requireContext(), getString(R.string.not_available), Toast.LENGTH_SHORT).show()
         }
 
-        loadStrings()
+        loadLocales()
+    }
+
+    private fun loadLocales() {
+        progressBar.visibility = View.VISIBLE
+        emptyView.setText(R.string.loading)
+        Thread {
+            val result = runCatching {
+                val resourcesFile = modifiedResourcesFile
+                if (resourcesFile != null && resourcesFile.exists()) {
+                    FullEditRepository.listStringResourceLocales(apkPath, resourcesFile)
+                } else {
+                    FullEditRepository.listStringResourceLocales(apkPath)
+                }
+            }
+            if (!isAdded) {
+                return@Thread
+            }
+            requireActivity().runOnUiThread {
+                result.onSuccess { items ->
+                    val locales = items.ifEmpty { listOf("") }
+                    val resolvedLocale = resolveSelectedLocale(locales)
+                    updateLanguageSpinner(locales, resolvedLocale)
+                    selectedLocaleQualifier = resolvedLocale
+                    loadStrings()
+                }.onFailure { error ->
+                    progressBar.visibility = View.GONE
+                    allItems = emptyList()
+                    visibleItems = emptyList()
+                    availableLocales = emptyList()
+                    languageAdapter.clear()
+                    (listView.adapter as BaseAdapter).notifyDataSetChanged()
+                    emptyView.text = error.message ?: getString(R.string.general_error, "")
+                }
+            }
+        }.start()
     }
 
     private fun loadStrings() {
@@ -151,9 +225,12 @@ class StringFragment : Fragment() {
             val result = runCatching {
                 val resourcesFile = modifiedResourcesFile
                 if (resourcesFile != null && resourcesFile.exists()) {
-                    FullEditRepository.parseStringResourcesFromArscFile(resourcesFile)
+                    FullEditRepository.parseStringResourcesFromArscFile(
+                        resourcesFile,
+                        selectedLocaleQualifier
+                    )
                 } else {
-                    FullEditRepository.parseStringResources(apkPath)
+                    FullEditRepository.parseStringResources(apkPath, selectedLocaleQualifier)
                 }
             }
             if (!isAdded) {
@@ -223,7 +300,8 @@ class StringFragment : Fragment() {
                     context = requireContext(),
                     apkPath = apkPath,
                     overrides = mapOf(item.name to newValue),
-                    arscSourceFile = modifiedResourcesFile
+                    arscSourceFile = modifiedResourcesFile,
+                    localeQualifier = selectedLocaleQualifier
                 )
             }
             if (!isAdded) {
@@ -234,14 +312,7 @@ class StringFragment : Fragment() {
                 result.onSuccess { resourcesFile ->
                     modifiedResourcesFile = resourcesFile
                     registerModifiedResources(resourcesFile)
-                    allItems = allItems.map { current ->
-                        if (current.name == item.name) {
-                            current.copy(value = newValue)
-                        } else {
-                            current
-                        }
-                    }
-                    applyFilter(keywordEdit.text.toString())
+                    loadStrings()
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.file_saved),
@@ -272,7 +343,8 @@ class StringFragment : Fragment() {
                 FullEditRepository.exportStringResourcesEditorFile(
                     requireContext(),
                     apkPath,
-                    modifiedResourcesFile
+                    modifiedResourcesFile,
+                    selectedLocaleQualifier
                 )
             }
             if (!isAdded) {
@@ -310,6 +382,76 @@ class StringFragment : Fragment() {
             }
         }
         (listView.adapter as BaseAdapter).notifyDataSetChanged()
+    }
+
+    private fun updateLanguageSpinner(locales: List<String>, selectedQualifier: String) {
+        val orderedOptions = locales
+            .distinct()
+            .map { qualifier -> qualifier to formatLocaleLabel(qualifier) }
+            .sortedBy { it.second.lowercase(Locale.ROOT) }
+
+        availableLocales = orderedOptions.map { it.first }
+        val labels = orderedOptions.map { it.second }
+        val selectedIndex = availableLocales.indexOf(selectedQualifier).coerceAtLeast(0)
+
+        updatingSpinnerSelection = true
+        languageAdapter.clear()
+        languageAdapter.addAll(labels)
+        languageAdapter.notifyDataSetChanged()
+        languageSpinner.setSelection(selectedIndex, false)
+        updatingSpinnerSelection = false
+    }
+
+    private fun resolveSelectedLocale(locales: List<String>): String {
+        if (selectedLocaleQualifier in locales) {
+            return selectedLocaleQualifier
+        }
+
+        val deviceLocale = Locale.getDefault()
+        val exactQualifier = buildString {
+            append('-')
+            append(deviceLocale.language)
+            if (deviceLocale.country.isNotBlank()) {
+                append("-r")
+                append(deviceLocale.country.uppercase(Locale.ROOT))
+            }
+        }
+        val languageOnlyQualifier = "-${deviceLocale.language}"
+
+        return when {
+            exactQualifier in locales -> exactQualifier
+            languageOnlyQualifier in locales -> languageOnlyQualifier
+            "" in locales -> ""
+            else -> locales.first()
+        }
+    }
+
+    private fun formatLocaleLabel(qualifier: String): String {
+        if (qualifier.isBlank()) {
+            return getString(R.string.default_language)
+        }
+
+        val languageTag = qualifier
+            .removePrefix("-")
+            .replace("-r", "-")
+        val locale = Locale.forLanguageTag(languageTag)
+        val displayLanguage = locale
+            .getDisplayLanguage(Locale.ENGLISH)
+            .takeIf { it.isNotBlank() }
+            ?: languageTag
+
+        return buildString {
+            append(displayLanguage.replaceFirstChar { ch ->
+                if (ch.isLowerCase()) {
+                    ch.titlecase(Locale.ENGLISH)
+                } else {
+                    ch.toString()
+                }
+            })
+            append(" (")
+            append(qualifier)
+            append(')')
+        }
     }
 
     private fun copyToClipboard(text: String) {

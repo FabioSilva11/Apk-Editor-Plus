@@ -3,11 +3,12 @@ package com.saas.apkeditorplus.full
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
@@ -15,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.saas.apkeditorplus.FullEditActivity
 import com.saas.apkeditorplus.R
@@ -28,6 +30,7 @@ class FilesFragment : Fragment() {
     private lateinit var keywordEdit: EditText
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyView: TextView
+    private lateinit var modeView: TextView
 
     private var currentArchivePath: String = ""
     private var currentSmaliPath: String = ""
@@ -78,12 +81,35 @@ class FilesFragment : Fragment() {
         keywordEdit = view.findViewById(R.id.keyword_edit)
         progressBar = view.findViewById(R.id.progress_bar)
         emptyView = view.findViewById(R.id.empty_view)
+        modeView = view.findViewById(R.id.mode_label)
 
         listView.emptyView = emptyView
         listView.adapter = FilesAdapter()
 
-        view.findViewById<Button>(R.id.search_button).setOnClickListener {
+        keywordEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                applyFilter(s?.toString().orEmpty())
+            }
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
+
+        view.findViewById<View>(R.id.search_button).setOnClickListener {
             applyFilter(keywordEdit.text.toString())
+        }
+        view.findViewById<View>(R.id.home_button).setOnClickListener {
+            currentArchivePath = ""
+            currentSmaliPath = ""
+            currentSmaliWorkspace = null
+            loadFiles()
+        }
+        view.findViewById<View>(R.id.add_file_button).setOnClickListener {
+            Toast.makeText(requireContext(), getString(R.string.not_available), Toast.LENGTH_SHORT).show()
+        }
+        view.findViewById<View>(R.id.add_folder_button).setOnClickListener {
+            Toast.makeText(requireContext(), getString(R.string.not_available), Toast.LENGTH_SHORT).show()
         }
 
         loadFiles()
@@ -108,7 +134,14 @@ class FilesFragment : Fragment() {
                 progressBar.visibility = View.GONE
                 result.onSuccess { items ->
                     allItems = items
-                    pathView.text = buildCurrentPathLabel(smaliWorkspace)
+                    val currentPathLabel = buildCurrentPathLabel(smaliWorkspace)
+                    pathView.text = currentPathLabel
+                    pathView.isVisible = currentPathLabel.isNotBlank()
+                    modeView.text = if (smaliWorkspace != null) {
+                        getString(R.string.smali)
+                    } else {
+                        getString(R.string.files)
+                    }
                     applyFilter(keywordEdit.text.toString())
                     emptyView.setText(R.string.not_found)
                 }.onFailure { error ->
@@ -270,10 +303,8 @@ class FilesFragment : Fragment() {
         smaliWorkspace: FullEditRepository.SmaliWorkspace?
     ): String {
         if (smaliWorkspace == null) {
-            return getString(
-                R.string.full_edit_current_path,
-                if (currentArchivePath.isBlank()) "/" else "/$currentArchivePath"
-            )
+            val relativePath = currentArchivePath.removeSuffix("/")
+            return if (relativePath.isBlank()) "" else "/$relativePath"
         }
 
         val relative = currentSmaliPath.removeSuffix("/")
@@ -296,19 +327,22 @@ class FilesFragment : Fragment() {
                 ?: layoutInflater.inflate(R.layout.item_zipfile, parent, false)
             val item = visibleItems[position]
             rowView.findViewById<TextView>(R.id.filename).text = item.displayName
-            rowView.findViewById<TextView>(R.id.detail1).text =
-                if (item.displayName == "..") "" else item.entryName
+            val detailView = rowView.findViewById<TextView>(R.id.detail1)
+            detailView.text = ""
+            detailView.visibility = View.GONE
             rowView.findViewById<View>(R.id.menu_edit).visibility = View.GONE
             rowView.findViewById<View>(R.id.menu_save).visibility = View.GONE
+            rowView.findViewById<View>(R.id.selection_indicator).visibility =
+                if (item.displayName == "..") View.INVISIBLE else View.VISIBLE
 
             val icon = rowView.findViewById<ImageView>(R.id.file_icon)
             icon.setImageResource(
                 when {
                     item.isDirectory && item.displayName == ".." -> R.drawable.ic_file_up
-                    item.isDirectory -> R.drawable.ic_file_folder
+                    item.isDirectory -> R.drawable.ic_folder
                     item.entryName.endsWith(".xml", ignoreCase = true) -> R.drawable.ic_edit_1
                     item.entryName.endsWith(".smali", ignoreCase = true) -> R.drawable.ic_edit_1
-                    item.entryName.endsWith(".dex", ignoreCase = true) -> R.drawable.ic_edit_1
+                    item.entryName.endsWith(".dex", ignoreCase = true) -> R.drawable.ic_edit_3
                     else -> R.drawable.ic_file_unknown
                 }
             )

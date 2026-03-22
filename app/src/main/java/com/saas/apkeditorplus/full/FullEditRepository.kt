@@ -33,7 +33,8 @@ object FullEditRepository {
     data class StringResourceItem(
         val name: String,
         val value: String?,
-        val valueIndex: Int? = null
+        val valueIndex: Int? = null,
+        val localeQualifier: String = ""
     )
 
     data class SmaliWorkspace(
@@ -46,23 +47,38 @@ object FullEditRepository {
         return decodeXmlEntry(apkPath, MANIFEST_ENTRY)
     }
 
-    fun parseStringResources(apkPath: String): List<StringResourceItem> {
-        return ResourceStringEditor.parseFromApk(apkPath)
+    fun parseStringResources(
+        apkPath: String,
+        localeQualifier: String = ""
+    ): List<StringResourceItem> {
+        return ResourceStringEditor.parseFromApk(apkPath, localeQualifier)
     }
 
-    fun parseStringResourcesFromArscFile(arscFile: File): List<StringResourceItem> {
-        return ResourceStringEditor.parseFromArscFile(arscFile)
+    fun parseStringResourcesFromArscFile(
+        arscFile: File,
+        localeQualifier: String = ""
+    ): List<StringResourceItem> {
+        return ResourceStringEditor.parseFromArscFile(arscFile, localeQualifier)
+    }
+
+    fun listStringResourceLocales(
+        apkPath: String,
+        arscSourceFile: File? = null
+    ): List<String> {
+        return ResourceStringEditor.listLocales(apkPath, arscSourceFile)
     }
 
     fun exportStringResourcesEditorFile(
         context: Context,
         apkPath: String,
-        arscSourceFile: File? = null
+        arscSourceFile: File? = null,
+        localeQualifier: String = ""
     ): File {
         return ResourceStringEditor.exportToXml(
             context = context,
             apkPath = apkPath,
-            arscSourceFile = arscSourceFile
+            arscSourceFile = arscSourceFile,
+            localeQualifier = localeQualifier
         )
     }
 
@@ -70,13 +86,15 @@ object FullEditRepository {
         context: Context,
         apkPath: String,
         editedStringsXml: File,
-        arscSourceFile: File? = null
+        arscSourceFile: File? = null,
+        localeQualifier: String = ""
     ): File {
         return ResourceStringEditor.buildArscFromEditedXml(
             context = context,
             apkPath = apkPath,
             editedStringsXml = editedStringsXml,
-            arscSourceFile = arscSourceFile
+            arscSourceFile = arscSourceFile,
+            localeQualifier = localeQualifier
         )
     }
 
@@ -84,13 +102,15 @@ object FullEditRepository {
         context: Context,
         apkPath: String,
         overrides: Map<String, String>,
-        arscSourceFile: File? = null
+        arscSourceFile: File? = null,
+        localeQualifier: String = ""
     ): File {
         return ResourceStringEditor.buildArscWithOverrides(
             context = context,
             apkPath = apkPath,
             overrides = overrides,
-            arscSourceFile = arscSourceFile
+            arscSourceFile = arscSourceFile,
+            localeQualifier = localeQualifier
         )
     }
 

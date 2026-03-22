@@ -69,12 +69,28 @@ object FullEditRepository {
     fun buildResourcesArscFromEditedStrings(
         context: Context,
         apkPath: String,
-        editedStringsXml: File
+        editedStringsXml: File,
+        arscSourceFile: File? = null
     ): File {
         return ResourceStringEditor.buildArscFromEditedXml(
             context = context,
             apkPath = apkPath,
-            editedStringsXml = editedStringsXml
+            editedStringsXml = editedStringsXml,
+            arscSourceFile = arscSourceFile
+        )
+    }
+
+    fun buildResourcesArscFromOverrides(
+        context: Context,
+        apkPath: String,
+        overrides: Map<String, String>,
+        arscSourceFile: File? = null
+    ): File {
+        return ResourceStringEditor.buildArscWithOverrides(
+            context = context,
+            apkPath = apkPath,
+            overrides = overrides,
+            arscSourceFile = arscSourceFile
         )
     }
 

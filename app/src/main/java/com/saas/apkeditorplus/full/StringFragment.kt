@@ -1,6 +1,9 @@
 package com.saas.apkeditorplus.full
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +21,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.saas.apkeditorplus.FullEditActivity
 import com.saas.apkeditorplus.R
 import com.saas.apkeditorplus.TextEditBigActivity
@@ -39,47 +43,46 @@ class StringFragment : Fragment() {
     private val editStringsLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val editorFile = stringsEditorTempFile ?: return@registerForActivityResult
-            if (!editorFile.exists()) {
-                return@registerForActivityResult
-            }
-            progressBar.visibility = View.VISIBLE
-            Thread {
-                val compileResult = runCatching {
-                    FullEditRepository.buildResourcesArscFromEditedStrings(
-                        requireContext(),
-                        apkPath,
-                        editorFile
-                    )
-                }
-                if (!isAdded) {
-                    return@Thread
-                }
-                requireActivity().runOnUiThread {
-                    progressBar.visibility = View.GONE
-                    compileResult.onSuccess { resourcesFile ->
-                        modifiedResourcesFile = resourcesFile
-                        (activity as? FullEditActivity)?.registerModifiedFile(
-                            FullEditRepository.RESOURCES_ENTRY,
-                            resourcesFile.absolutePath
-                        )
-                        loadStrings()
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.file_saved),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }.onFailure { error ->
-                        Toast.makeText(
-                            requireContext(),
-                            error.message ?: getString(R.string.failed),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }.start()
+        if (result.resultCode != Activity.RESULT_OK) {
+            return@registerForActivityResult
         }
+        val editorFile = stringsEditorTempFile ?: return@registerForActivityResult
+        if (!editorFile.exists()) {
+            return@registerForActivityResult
+        }
+        progressBar.visibility = View.VISIBLE
+        Thread {
+            val compileResult = runCatching {
+                FullEditRepository.buildResourcesArscFromEditedStrings(
+                    context = requireContext(),
+                    apkPath = apkPath,
+                    editedStringsXml = editorFile,
+                    arscSourceFile = modifiedResourcesFile
+                )
+            }
+            if (!isAdded) {
+                return@Thread
+            }
+            requireActivity().runOnUiThread {
+                progressBar.visibility = View.GONE
+                compileResult.onSuccess { resourcesFile ->
+                    modifiedResourcesFile = resourcesFile
+                    registerModifiedResources(resourcesFile)
+                    loadStrings()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.file_saved),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        requireContext(),
+                        error.message ?: getString(R.string.failed),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }.start()
     }
 
     companion object {
@@ -113,8 +116,13 @@ class StringFragment : Fragment() {
 
         listView.emptyView = emptyView
         listView.adapter = StringListAdapter()
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
-            openStringsEditor()
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            visibleItems.getOrNull(position)?.let(::showEditDialog)
+        }
+        listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, position, _ ->
+            val item = visibleItems.getOrNull(position) ?: return@OnItemLongClickListener false
+            copyToClipboard(item.name)
+            true
         }
 
         languageSpinner.adapter = ArrayAdapter(
@@ -173,6 +181,90 @@ class StringFragment : Fragment() {
         }.start()
     }
 
+    private fun showEditDialog(item: FullEditRepository.StringResourceItem) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_string_value, null, false)
+        val keyView = dialogView.findViewById<TextView>(R.id.key)
+        val valueEdit = dialogView.findViewById<EditText>(R.id.value)
+        keyView.text = item.name
+        keyView.setOnClickListener { copyToClipboard(item.name) }
+        valueEdit.setText(item.value.orEmpty())
+        valueEdit.setSelection(valueEdit.text.length)
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.edit_string_value)
+            .setView(dialogView)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(android.R.string.ok, null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val newValue = valueEdit.text.toString()
+                if (newValue == item.value.orEmpty()) {
+                    dialog.dismiss()
+                    return@setOnClickListener
+                }
+                dialog.dismiss()
+                saveStringValue(item, newValue)
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun saveStringValue(
+        item: FullEditRepository.StringResourceItem,
+        newValue: String
+    ) {
+        progressBar.visibility = View.VISIBLE
+        Thread {
+            val result = runCatching {
+                FullEditRepository.buildResourcesArscFromOverrides(
+                    context = requireContext(),
+                    apkPath = apkPath,
+                    overrides = mapOf(item.name to newValue),
+                    arscSourceFile = modifiedResourcesFile
+                )
+            }
+            if (!isAdded) {
+                return@Thread
+            }
+            requireActivity().runOnUiThread {
+                progressBar.visibility = View.GONE
+                result.onSuccess { resourcesFile ->
+                    modifiedResourcesFile = resourcesFile
+                    registerModifiedResources(resourcesFile)
+                    allItems = allItems.map { current ->
+                        if (current.name == item.name) {
+                            current.copy(value = newValue)
+                        } else {
+                            current
+                        }
+                    }
+                    applyFilter(keywordEdit.text.toString())
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.file_saved),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        requireContext(),
+                        error.message ?: getString(R.string.failed),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }.start()
+    }
+
+    private fun registerModifiedResources(resourcesFile: File) {
+        (activity as? FullEditActivity)?.registerModifiedFile(
+            FullEditRepository.RESOURCES_ENTRY,
+            resourcesFile.absolutePath
+        )
+    }
+
     private fun openStringsEditor() {
         progressBar.visibility = View.VISIBLE
         Thread {
@@ -218,6 +310,16 @@ class StringFragment : Fragment() {
             }
         }
         (listView.adapter as BaseAdapter).notifyDataSetChanged()
+    }
+
+    private fun copyToClipboard(text: String) {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText("string_key", text))
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.copied_to_clipboard, text),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private inner class StringListAdapter : BaseAdapter() {

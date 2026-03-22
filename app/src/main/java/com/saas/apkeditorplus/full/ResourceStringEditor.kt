@@ -195,19 +195,53 @@ internal object ResourceStringEditor {
     fun buildArscFromEditedXml(
         context: Context,
         apkPath: String,
-        editedStringsXml: File
+        editedStringsXml: File,
+        arscSourceFile: File? = null
     ): File {
         require(editedStringsXml.exists()) { "Edited strings file not found" }
-        val snapshot = parse(loadArscFromApk(apkPath))
         val editedValues = parseEditedStringsXml(editedStringsXml)
+        return buildArscWithOverrides(
+            context = context,
+            apkPath = apkPath,
+            overrides = editedValues,
+            arscSourceFile = arscSourceFile
+        )
+    }
+
+    fun buildArscWithOverrides(
+        context: Context,
+        apkPath: String,
+        overrides: Map<String, String>,
+        arscSourceFile: File? = null
+    ): File {
+        require(overrides.isNotEmpty()) { "No string changes to apply" }
+        val snapshot = loadSnapshot(apkPath, arscSourceFile)
         val updatedStrings = snapshot.globalPool.strings.toMutableList()
         snapshot.items.forEach { item ->
             val valueIndex = item.valueIndex ?: return@forEach
-            val editedValue = editedValues[item.name] ?: return@forEach
+            val editedValue = overrides[item.name] ?: return@forEach
             if (valueIndex in updatedStrings.indices) {
                 updatedStrings[valueIndex] = editedValue
             }
         }
+        return writePatchedResources(context, apkPath, snapshot, updatedStrings)
+    }
+
+    private fun loadSnapshot(apkPath: String, arscSourceFile: File?): Snapshot {
+        val sourceBytes = if (arscSourceFile != null && arscSourceFile.exists()) {
+            arscSourceFile.readBytes()
+        } else {
+            loadArscFromApk(apkPath)
+        }
+        return parse(sourceBytes)
+    }
+
+    private fun writePatchedResources(
+        context: Context,
+        apkPath: String,
+        snapshot: Snapshot,
+        updatedStrings: List<String>
+    ): File {
         val newStringPoolChunk = buildStringPoolChunk(snapshot.globalPool, updatedStrings)
         val oldChunkEnd = snapshot.globalPool.start + snapshot.globalPool.chunkSize
         val merged = ByteArrayOutputStream(

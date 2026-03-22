@@ -18,19 +18,11 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ScrollView
+        <ListView
+            android:id="@+id/manifest_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
-
-            <TextView
-                android:id="@+id/manifest_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="13sp" />
-        </ScrollView>
+            android:divider="@null" />
 
         <TextView
             android:id="@+id/empty_view"

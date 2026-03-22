@@ -1,8 +1,13 @@
 package com.saas.apkeditorplus
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import java.io.File
+import java.util.concurrent.Executors
 import java.util.zip.ZipFile
 
 class SimpleEditActivity : BaseActivity(), View.OnClickListener {
@@ -36,6 +42,9 @@ class SimpleEditActivity : BaseActivity(), View.OnClickListener {
     private lateinit var audiosListView: ListView
 
     private val modifiedFiles = linkedMapOf<String, String>()
+    private val thumbnailCache = object : LruCache<String, Bitmap>(60) {}
+    private val thumbnailExecutor = Executors.newFixedThreadPool(2)
+    private val mainHandler = Handler(Looper.getMainLooper())
     private var pendingReplaceEntry: ArchiveEntry? = null
     private var selectedTabIndex: Int = 0
 
@@ -346,6 +355,92 @@ class SimpleEditActivity : BaseActivity(), View.OnClickListener {
         return !isImageFile(name) && !isAudioFile(name)
     }
 
+    private fun loadImagePreview(item: ArchiveEntry, iconView: ImageView) {
+        val previewKey = buildPreviewKey(item)
+        iconView.tag = previewKey
+        iconView.scaleType = ImageView.ScaleType.CENTER_CROP
+
+        val cachedBitmap = thumbnailCache.get(previewKey)
+        if (cachedBitmap != null && !cachedBitmap.isRecycled) {
+            iconView.setImageBitmap(cachedBitmap)
+            return
+        }
+
+        iconView.setImageResource(R.drawable.ic_edit_1)
+        thumbnailExecutor.execute {
+            val bitmap = runCatching { decodeImagePreview(item) }.getOrNull()
+            if (bitmap != null) {
+                thumbnailCache.put(previewKey, bitmap)
+                mainHandler.post {
+                    if (iconView.tag == previewKey) {
+                        iconView.setImageBitmap(bitmap)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun buildPreviewKey(item: ArchiveEntry): String {
+        val replacementPath = modifiedFiles[item.entryName].orEmpty()
+        return "${item.entryName}|$replacementPath"
+    }
+
+    private fun decodeImagePreview(item: ArchiveEntry): Bitmap? {
+        val replacementPath = modifiedFiles[item.entryName]
+        if (!replacementPath.isNullOrBlank()) {
+            return decodeSampledBitmapFromFile(File(replacementPath))
+        }
+
+        ZipFile(apkPath).use { zipFile ->
+            val entry = zipFile.getEntry(item.entryName) ?: return null
+            zipFile.getInputStream(entry).use { input ->
+                return decodeSampledBitmapFromBytes(input.readBytes())
+            }
+        }
+    }
+
+    private fun decodeSampledBitmapFromFile(file: File): Bitmap? {
+        if (!file.exists()) {
+            return null
+        }
+        val bounds = BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        BitmapFactory.decodeFile(file.absolutePath, bounds)
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = calculateInSampleSize(bounds, 96, 96)
+        }
+        return BitmapFactory.decodeFile(file.absolutePath, options)
+    }
+
+    private fun decodeSampledBitmapFromBytes(bytes: ByteArray): Bitmap? {
+        val bounds = BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = calculateInSampleSize(bounds, 96, 96)
+        }
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+    }
+
+    private fun calculateInSampleSize(
+        options: BitmapFactory.Options,
+        reqWidth: Int,
+        reqHeight: Int
+    ): Int {
+        var inSampleSize = 1
+        val height = options.outHeight
+        val width = options.outWidth
+        if (height <= 0 || width <= 0) {
+            return inSampleSize
+        }
+        while ((height / inSampleSize) > reqHeight || (width / inSampleSize) > reqWidth) {
+            inSampleSize *= 2
+        }
+        return inSampleSize.coerceAtLeast(1)
+    }
+
     override fun onClick(view: View) {
         when (view.id) {
             R.id.files_label -> viewPager.currentItem = 0
@@ -393,13 +488,18 @@ class SimpleEditActivity : BaseActivity(), View.OnClickListener {
             rowView.findViewById<View>(R.id.menu_save).visibility = View.GONE
 
             val icon = rowView.findViewById<ImageView>(R.id.file_icon)
-            icon.setImageResource(
-                when {
-                    isImageFile(item.entryName) -> R.drawable.ic_edit_1
-                    isAudioFile(item.entryName) -> R.drawable.ic_file_unknown
-                    else -> R.drawable.ic_file_unknown
-                }
-            )
+            if (isImageFile(item.entryName)) {
+                loadImagePreview(item, icon)
+            } else {
+                icon.tag = null
+                icon.scaleType = ImageView.ScaleType.FIT_CENTER
+                icon.setImageResource(
+                    when {
+                        isAudioFile(item.entryName) -> R.drawable.ic_file_unknown
+                        else -> R.drawable.ic_file_unknown
+                    }
+                )
+            }
 
             val detailColor = if (replacement == null) {
                 resolveColorAttr(R.attr.navNormal, 0xFF666666.toInt())
@@ -409,5 +509,10 @@ class SimpleEditActivity : BaseActivity(), View.OnClickListener {
             rowView.findViewById<TextView>(R.id.detail1).setTextColor(detailColor)
             return rowView
         }
+    }
+
+    override fun onDestroy() {
+        thumbnailExecutor.shutdownNow()
+        super.onDestroy()
     }
 }

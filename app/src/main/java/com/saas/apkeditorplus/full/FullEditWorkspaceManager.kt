@@ -19,7 +19,8 @@ import org.xmlpull.v1.XmlPullParser
 internal object FullEditWorkspaceManager {
     private const val WORKSPACE_DIR = "full_edit_workspace"
     private const val WORKSPACE_MARKER = ".decoded"
-    private const val OVERRIDE_STRINGS_FILE = "zz_strings_full_edit.xml"
+    private const val STRINGS_FILE = "strings.xml"
+    private const val LEGACY_OVERRIDE_STRINGS_FILE = "zz_strings_full_edit.xml"
     private val hiddenStringPrefixes = listOf(
         "abc_",
         "androidx_",
@@ -50,6 +51,9 @@ internal object FullEditWorkspaceManager {
         Regex("^default_res_0x[0-9a-fA-F]+$"),
         Regex("^string_[0-9a-fA-F]+$"),
         Regex("^mr_.*$")
+    )
+    private val formatSpecifierRegex = Regex(
+        """%(?:(\d+)\$)?[-#+ 0,(<]*\d*(?:\.\d+)?(?:[tT])?[a-zA-Z%]"""
     )
 
     data class WorkspaceInfo(
@@ -171,15 +175,42 @@ internal object FullEditWorkspaceManager {
         apkPath: String,
         localeQualifier: String
     ): File {
-        require(localeQualifier.isNotBlank()) { "Invalid locale qualifier" }
-        val workspace = getWorkspace(context, apkPath)
-        val targetDir = valuesDirectoryForQualifier(workspace.resDir, localeQualifier)
-        if (targetDir.exists() && containsStringResource(targetDir)) {
+        return addLanguageLikeOriginal(context, apkPath, localeQualifier)
+    }
+
+    fun addLanguageLikeOriginal(
+        context: Context,
+        apkPath: String,
+        localeQualifier: String
+    ): File {
+        require(localeQualifier.length >= 3) { "Invalid locale qualifier" }
+
+        val defaultValues = readStringResources(context, apkPath, "")
+        if (defaultValues.isEmpty()) {
+            error("Wait for decoding")
+        }
+
+        val currentValues = readStringResources(context, apkPath, localeQualifier)
+        val existingNames = currentValues.mapTo(linkedSetOf()) { it.name }
+        val mergedValues = linkedMapOf<String, String>()
+
+        currentValues.forEach { item ->
+            mergedValues[item.name] = item.value.orEmpty()
+        }
+
+        var addedCount = 0
+        defaultValues.forEach { item ->
+            if (existingNames.add(item.name)) {
+                mergedValues[item.name] = item.value.orEmpty()
+                addedCount += 1
+            }
+        }
+
+        if (addedCount == 0) {
             error("Locale already exists")
         }
-        val defaultValues = readStringResources(context, apkPath, "")
-            .associate { it.name to it.value.orEmpty() }
-        return writeLocaleSnapshotAndCompile(context, apkPath, localeQualifier, defaultValues)
+
+        return writeLocaleSnapshotAndCompile(context, apkPath, localeQualifier, mergedValues)
     }
 
     private fun writeLocaleSnapshotAndCompile(
@@ -193,8 +224,8 @@ internal object FullEditWorkspaceManager {
         if (!valuesDir.exists()) {
             valuesDir.mkdirs()
         }
-        val overrideFile = File(valuesDir, OVERRIDE_STRINGS_FILE)
-        writeStringsXml(overrideFile, values)
+        File(valuesDir, LEGACY_OVERRIDE_STRINGS_FILE).delete()
+        writeStringsXml(File(valuesDir, STRINGS_FILE), values)
         return compileResources(context, apkPath, workspace)
     }
 
@@ -269,7 +300,7 @@ internal object FullEditWorkspaceManager {
             ?.filter { file -> file.isFile && file.extension.equals("xml", ignoreCase = true) }
             ?.sortedWith(
                 compareBy<File>(
-                    { if (it.name == OVERRIDE_STRINGS_FILE) 1 else 0 },
+                    { if (it.name.equals(STRINGS_FILE, ignoreCase = true)) 0 else 1 },
                     { it.name.lowercase(Locale.ROOT) }
                 )
             )
@@ -313,10 +344,13 @@ internal object FullEditWorkspaceManager {
             serializer.startDocument(Charsets.UTF_8.name(), true)
             serializer.text("\n")
             serializer.startTag(null, "resources")
-            values.toSortedMap(String.CASE_INSENSITIVE_ORDER).forEach { (name, value) ->
+            values.forEach { (name, value) ->
                 serializer.text("\n    ")
                 serializer.startTag(null, "string")
                 serializer.attribute(null, "name", name)
+                if (requiresFormattedFalse(value)) {
+                    serializer.attribute(null, "formatted", "false")
+                }
                 serializer.text(value)
                 serializer.endTag(null, "string")
             }
@@ -330,6 +364,14 @@ internal object FullEditWorkspaceManager {
     private fun isDisplayableString(name: String): Boolean {
         return hiddenStringPrefixes.none { prefix -> name.startsWith(prefix) } &&
             hiddenStringPatterns.none { pattern -> pattern.matches(name) }
+    }
+
+    private fun requiresFormattedFalse(value: String): Boolean {
+        val nonPositionalFormats = formatSpecifierRegex.findAll(value)
+            .map { it.value }
+            .filter { token -> token != "%%" && !token.contains('$') }
+            .count()
+        return nonPositionalFormats > 1
     }
 
     private fun safeLocaleSuffix(localeQualifier: String): String {

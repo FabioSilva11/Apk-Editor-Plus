@@ -12,6 +12,13 @@ class EditModeDialog(
     private val apkPath: String,
     private val onModeSelected: (mode: Int, path: String) -> Unit
 ) {
+    companion object {
+        const val FULL_EDIT = 0
+        const val SIMPLE_EDIT = 1
+        const val COMMON_EDIT = 2
+        const val XML_FILE_EDIT = 4
+    }
+
     private var dialog: AlertDialog? = null
 
     fun show() {

@@ -32,6 +32,10 @@ android {
     }
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    exclude("com/saas/teste/**")
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

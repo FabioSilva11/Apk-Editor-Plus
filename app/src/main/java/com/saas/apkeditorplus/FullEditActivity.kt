@@ -1,11 +1,13 @@
 package com.saas.apkeditorplus
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,19 +35,17 @@ class FullEditActivity : BaseActivity() {
     private lateinit var tabString: TextView
     private lateinit var tabFiles: TextView
     private lateinit var tabManifest: TextView
-    private lateinit var apkPath: String
+
+    private lateinit var apkInfoLoader: ApkArchiveInfoLoader
+
     private val modifiedFiles = linkedMapOf<String, String>()
+    private var apkPath: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fulledit)
 
-        apkPath = intent.getStringExtra("apkPath") ?: ""
-        if (apkPath.isBlank()) {
-            Toast.makeText(this, getString(R.string.apk_path_not_found), Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+        apkPath = intent.getStringExtra("apkPath").orEmpty()
 
         rootView = findViewById(R.id.full_edit_root)
         headerContainer = findViewById(R.id.header_container)
@@ -61,15 +61,42 @@ class FullEditActivity : BaseActivity() {
         tabFiles = findViewById(R.id.tab_files)
         tabManifest = findViewById(R.id.tab_manifest)
 
+        apkInfoLoader = ApkArchiveInfoLoader(this)
+
         setupViewPager()
         setupTabs()
         setupActions()
         applyWindowInsets()
         loadHeader()
+        updateBuildButtonState()
     }
 
+    override fun onDestroy() {
+        apkInfoLoader.shutdown()
+        super.onDestroy()
+    }
+
+    fun getApkPath(): String = apkPath
+
+    fun registerModifiedEntry(entryName: String, file: File) {
+        if (!file.exists()) {
+            return
+        }
+        modifiedFiles[entryName] = file.absolutePath
+        updateBuildButtonState()
+    }
+
+    fun resolveModifiedEntry(entryName: String): File? {
+        return modifiedFiles[entryName]
+            ?.takeIf { it.isNotBlank() }
+            ?.let(::File)
+            ?.takeIf(File::exists)
+    }
+
+    fun isEntryModified(entryName: String): Boolean = modifiedFiles.containsKey(entryName)
+
     private fun setupViewPager() {
-        viewPager.adapter = FullEditPagerAdapter(apkPath)
+        viewPager.adapter = FullEditPagerAdapter()
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 updateTabSelection(position)
@@ -85,13 +112,17 @@ class FullEditActivity : BaseActivity() {
     }
 
     private fun setupActions() {
-        actionBuildButton.setOnClickListener { buildModifiedApk() }
-        actionPatchButton.setOnClickListener {
-            Toast.makeText(this, getString(R.string.not_available), Toast.LENGTH_SHORT).show()
+        actionBuildButton.setOnClickListener { startBuildFlow() }
+
+        val placeholderClickListener = View.OnClickListener {
+            Toast.makeText(
+                this,
+                getString(R.string.action_future_update),
+                Toast.LENGTH_SHORT
+            ).show()
         }
-        actionWebserverButton.setOnClickListener {
-            Toast.makeText(this, getString(R.string.not_available), Toast.LENGTH_SHORT).show()
-        }
+        actionPatchButton.setOnClickListener(placeholderClickListener)
+        actionWebserverButton.setOnClickListener(placeholderClickListener)
     }
 
     private fun updateTabSelection(position: Int) {
@@ -100,54 +131,86 @@ class FullEditActivity : BaseActivity() {
         }
     }
 
-    fun registerModifiedFile(entryName: String, tempFilePath: String) {
-        modifiedFiles[entryName] = tempFilePath
+    private fun loadHeader() {
+        val fallbackTitle = apkPath
+            .takeIf { it.isNotBlank() }
+            ?.let { File(it).nameWithoutExtension }
+            ?.takeIf { it.isNotBlank() }
+            ?: getString(R.string.full_edit)
+
+        apkTitleView.text = fallbackTitle
+        apkPackageView.text = File(apkPath).absolutePath
+        apkIconView.setImageDrawable(
+            AppCompatResources.getDrawable(this, R.drawable.apk_icon)
+        )
+
+        val cachedInfo = apkInfoLoader.get(apkPath)
+        if (cachedInfo != null) {
+            bindHeaderInfo(cachedInfo)
+        } else if (apkPath.isNotBlank()) {
+            apkInfoLoader.load(apkPath) {
+                runOnUiThread {
+                    apkInfoLoader.get(apkPath)?.let(::bindHeaderInfo)
+                }
+            }
+        }
     }
 
-    private fun buildModifiedApk() {
+    private fun bindHeaderInfo(info: ApkArchiveInfo) {
+        if (info.label.isNotBlank()) {
+            apkTitleView.text = info.label
+        }
+        apkPackageView.text = info.packageName.ifBlank { apkPath }
+        apkIconView.setImageDrawable(
+            info.icon ?: AppCompatResources.getDrawable(this, R.drawable.apk_icon)
+        )
+    }
+
+    private fun updateBuildButtonState() {
+        actionBuildButton.alpha = if (modifiedFiles.isEmpty()) 0.74f else 1f
+    }
+
+    private fun startBuildFlow() {
+        if (apkPath.isBlank()) {
+            Toast.makeText(this, getString(R.string.apk_path_not_found), Toast.LENGTH_SHORT).show()
+            return
+        }
         if (modifiedFiles.isEmpty()) {
             Toast.makeText(this, getString(R.string.no_change_detected), Toast.LENGTH_SHORT).show()
             return
         }
+
         val bundle = Bundle().apply {
-            modifiedFiles.forEach { (entryName, tempFilePath) ->
-                putString(entryName, tempFilePath)
+            modifiedFiles.forEach { (entryName, path) ->
+                putString(entryName, path)
             }
         }
+
         startActivity(
-            android.content.Intent(this, ApkCreateActivity::class.java).apply {
+            Intent(this, ApkCreateActivity::class.java).apply {
                 putExtra("apkPath", apkPath)
                 putExtra("modifiedFiles", bundle)
             }
         )
     }
 
-    private fun loadHeader() {
-        val archiveInfo = runCatching {
-            packageManager.getPackageArchiveInfo(apkPath, 0)
-        }.getOrNull()
-        val appInfo = archiveInfo?.applicationInfo?.also {
-            it.sourceDir = apkPath
-            it.publicSourceDir = apkPath
+    override fun onBackPressed() {
+        if (modifiedFiles.isEmpty()) {
+            super.onBackPressed()
+            return
         }
 
-        val title = runCatching {
-            appInfo?.loadLabel(packageManager)?.toString()
-        }.getOrNull()
-        val packageName = archiveInfo?.packageName
-        val icon = runCatching {
-            appInfo?.loadIcon(packageManager)
-        }.getOrNull()
-
-        apkTitleView.text = title?.takeIf { it.isNotBlank() } ?: File(apkPath).nameWithoutExtension
-        apkPackageView.text = packageName ?: getString(R.string.package_name_not_identified)
-        if (icon != null) {
-            apkIconView.setImageDrawable(icon)
-        } else {
-            apkIconView.setImageDrawable(
-                AppCompatResources.getDrawable(this, R.drawable.apk_icon)
-            )
-        }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.save_changes)
+            .setMessage(R.string.unsaved_changes_msg)
+            .setPositiveButton(R.string.build) { _, _ ->
+                startBuildFlow()
+            }
+            .setNegativeButton(R.string.discard) { _, _ ->
+                finish()
+            }
+            .setNeutralButton(R.string.colormixer_cancel, null)
+            .show()
     }
 
     private fun applyWindowInsets() {
@@ -163,9 +226,7 @@ class FullEditActivity : BaseActivity() {
         ViewCompat.requestApplyInsets(rootView)
     }
 
-    private inner class FullEditPagerAdapter(
-        private val apkPath: String
-    ) : FragmentStateAdapter(this@FullEditActivity) {
+    private inner class FullEditPagerAdapter : FragmentStateAdapter(this@FullEditActivity) {
         override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {

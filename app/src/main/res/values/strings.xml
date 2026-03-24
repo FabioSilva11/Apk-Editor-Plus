@@ -138,6 +138,9 @@
     <string name="font_size">Font size</string>
     <string name="font_size_summary">Current font size: %d</string>
     <string name="full_edit">Full edit</string>
+    <string name="full_edit_ui_only_subtitle">UI preview only</string>
+    <string name="full_edit_ui_only_message">This Full Edit screen is UI only right now.</string>
+    <string name="folder_label">Folder</string>
     <string name="general_error">Error: %s</string>
     <string name="hackable">You can break it</string>
     <string name="hello_world">Hello world!</string>

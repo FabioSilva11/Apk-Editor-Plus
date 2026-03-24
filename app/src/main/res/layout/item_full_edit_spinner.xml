@@ -5,7 +5,7 @@
     android:ellipsize="end"
     android:gravity="center_vertical"
     android:maxLines="1"
-    android:paddingStart="8dp"
-    android:paddingEnd="40dp"
+    android:paddingStart="18dp"
+    android:paddingEnd="8dp"
     android:textColor="@color/full_edit_text_primary"
-    android:textSize="14sp" />
+    android:textSize="12sp" />

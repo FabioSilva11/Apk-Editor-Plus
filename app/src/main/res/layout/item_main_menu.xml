@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="6dp"
+    android:background="@drawable/bg_main_menu_item"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:minHeight="20dp"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingTop="7dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="7dp">
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_main_menu_icon">
+
+        <ImageView
+            android:id="@+id/main_menu_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_apk_shortcut"
+            android:tint="@color/main_menu_icon_tint" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/main_menu_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/main_menu_item_title"
+            android:textSize="16.5sp" />
+
+        <TextView
+            android:id="@+id/main_menu_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:fontFamily="sans-serif"
+            android:maxLines="2"
+            android:textColor="@color/main_menu_item_subtitle"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_main_menu_chevron" />
+
+</LinearLayout>

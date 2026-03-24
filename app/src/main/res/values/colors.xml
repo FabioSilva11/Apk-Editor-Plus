@@ -84,5 +84,23 @@
     <color name="full_edit_text_secondary">#87858E</color>
     <color name="full_edit_outline">#E8E4EE</color>
     <color name="full_edit_search_surface">#F4F1F8</color>
+    <color name="full_edit_search_stroke">#E5E0EC</color>
+    <color name="full_edit_spinner_surface">#F7F4FB</color>
+    <color name="full_edit_spinner_stroke">#E5E0EC</color>
+    <color name="full_edit_popup_surface">#FFFFFF</color>
+    <color name="full_edit_file_badge_folder">#EEF0F6</color>
+    <color name="full_edit_file_badge_manifest">#F3DBFF</color>
+    <color name="full_edit_file_badge_dex">#D9FFF7</color>
+    <color name="full_edit_file_badge_generic">#E6ECFF</color>
+
+    <!-- Main menu visual -->
+    <color name="main_menu_screen_background">#F4F3F7</color>
+    <color name="main_menu_item_background">#FFFDFE</color>
+    <color name="main_menu_item_stroke">#D5D1DB</color>
+    <color name="main_menu_icon_background">#DCE4FF</color>
+    <color name="main_menu_icon_tint">#122A63</color>
+    <color name="main_menu_item_title">#25262C</color>
+    <color name="main_menu_item_subtitle">#6B6A73</color>
+    <color name="main_menu_chevron_tint">#4F4F59</color>
 
 </resources>

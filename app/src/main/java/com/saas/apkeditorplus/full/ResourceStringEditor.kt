@@ -16,6 +16,37 @@ internal object ResourceStringEditor {
     private const val RES_TABLE_TYPE_TYPE = 0x0201
     private const val RES_TABLE_TYPE_SPEC_TYPE = 0x0202
     private const val UTF8_FLAG = 1 shl 8
+    private val hiddenStringPrefixes = listOf(
+        "abc_",
+        "androidx_",
+        "bottomsheet_",
+        "character_counter_",
+        "clear_text_end_icon_",
+        "common_google_play_services_",
+        "error_icon_content_description",
+        "exposed_dropdown_menu_",
+        "fallback_menu_item_",
+        "m3_",
+        "material_",
+        "material_clock_",
+        "material_timepicker_",
+        "mtrl_",
+        "nav_app_bar_",
+        "password_toggle_",
+        "path_password_",
+        "search_menu_",
+        "searchbar_",
+        "searchview_",
+        "side_sheet_",
+        "status_bar_",
+        "v7_preference_"
+    )
+    private val hiddenStringPatterns = listOf(
+        Regex("^APKTOOL_.*$"),
+        Regex("^default_res_0x[0-9a-fA-F]+$"),
+        Regex("^string_[0-9a-fA-F]+$"),
+        Regex("^mr_.*$")
+    )
 
     private data class Snapshot(
         val bytes: ByteArray,
@@ -153,14 +184,18 @@ internal object ResourceStringEditor {
         apkPath: String,
         localeQualifier: String = ""
     ): List<FullEditRepository.StringResourceItem> {
-        return filterItems(parse(loadArscFromApk(apkPath)).items, localeQualifier)
+        return filterDisplayableItems(
+            filterItems(parse(loadArscFromApk(apkPath)).items, localeQualifier)
+        )
     }
 
     fun parseFromArscFile(
         arscFile: File,
         localeQualifier: String = ""
     ): List<FullEditRepository.StringResourceItem> {
-        return filterItems(parse(arscFile.readBytes()).items, localeQualifier)
+        return filterDisplayableItems(
+            filterItems(parse(arscFile.readBytes()).items, localeQualifier)
+        )
     }
 
     fun listLocales(
@@ -172,7 +207,7 @@ internal object ResourceStringEditor {
         } else {
             parse(loadArscFromApk(apkPath))
         }
-        return snapshot.items
+        return filterDisplayableItems(snapshot.items)
             .map { it.localeQualifier }
             .distinct()
             .sortedWith(
@@ -191,7 +226,9 @@ internal object ResourceStringEditor {
         } else {
             parse(loadArscFromApk(apkPath))
         }
-        val selectedItems = filterItems(snapshot.items, localeQualifier)
+        val selectedItems = filterDisplayableItems(
+            filterItems(snapshot.items, localeQualifier)
+        )
         val targetDir = File(context.cacheDir, "full_edit_strings").apply { mkdirs() }
         val outputFile = File(
             targetDir,
@@ -250,12 +287,12 @@ internal object ResourceStringEditor {
             .asSequence()
             .filter { it.localeQualifier == localeQualifier }
             .forEach { item ->
-            val valueIndex = item.valueIndex ?: return@forEach
-            val editedValue = overrides[item.name] ?: return@forEach
-            if (valueIndex in updatedStrings.indices) {
-                updatedStrings[valueIndex] = editedValue
+                val valueIndex = item.valueIndex ?: return@forEach
+                val editedValue = overrides[item.name] ?: return@forEach
+                if (valueIndex in updatedStrings.indices) {
+                    updatedStrings[valueIndex] = editedValue
+                }
             }
-        }
         return writePatchedResources(context, apkPath, snapshot, updatedStrings)
     }
 
@@ -706,12 +743,23 @@ internal object ResourceStringEditor {
         return items.filter { it.localeQualifier == localeQualifier }
     }
 
+    private fun filterDisplayableItems(
+        items: List<FullEditRepository.StringResourceItem>
+    ): List<FullEditRepository.StringResourceItem> {
+        return items.filter { item ->
+            val name = item.name
+            hiddenStringPrefixes.none { prefix -> name.startsWith(prefix) } &&
+                hiddenStringPatterns.none { pattern -> pattern.matches(name) }
+        }
+    }
+
     private fun parseLocaleQualifier(configBytes: ByteArray): String {
-        if (configBytes.size < 6) {
+        if (configBytes.size < 8) {
             return ""
         }
-        val language = decodeLanguage(configBytes[2], configBytes[3]) ?: return ""
-        val region = decodeRegion(configBytes[4], configBytes[5])
+        // ResTable_config stores language/country after mcc and mnc.
+        val language = decodeLanguage(configBytes[4], configBytes[5]) ?: return ""
+        val region = decodeRegion(configBytes[6], configBytes[7])
         return buildString {
             append('-')
             append(language)

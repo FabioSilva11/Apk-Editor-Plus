@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     android:ellipsize="end"
     android:gravity="center_vertical"
-    android:maxLines="1"
-    android:paddingStart="12dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="12dp"
-    android:paddingBottom="12dp"
+    android:maxLines="2"
+    android:paddingStart="18dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="16dp"
     android:textColor="@color/full_edit_text_primary"
-    android:textSize="14sp" />
+    android:textSize="16sp" />

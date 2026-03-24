@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="@android:color/transparent"
     android:baselineAligned="false"
+    android:foreground="?attr/selectableItemBackground"
     android:gravity="top"
+    android:minHeight="72dp"
     android:orientation="horizontal"
     android:paddingStart="16dp"
     android:paddingTop="12dp"
@@ -16,8 +18,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:lineSpacingExtra="1dp"
-        android:paddingEnd="16dp"
+        android:lineSpacingExtra="2dp"
+        android:paddingEnd="14dp"
         android:textColor="@color/full_edit_text_secondary"
         android:textSize="14sp" />
 
@@ -26,8 +28,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:lineSpacingExtra="1dp"
+        android:lineSpacingExtra="2dp"
         android:textColor="@color/full_edit_text_primary"
-        android:textSize="14sp" />
+        android:textSize="15sp" />
 
 </LinearLayout>

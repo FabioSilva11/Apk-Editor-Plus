@@ -140,7 +140,9 @@ class ManifestFragment : Fragment() {
         emptyView.setText(R.string.loading)
         Thread {
             val result = runCatching {
-                FullEditRepository.decodeManifest(apkPath)
+                val workspaceManifest = FullEditWorkspaceManager.getManifestFile(requireContext(), apkPath)
+                manifestTempFile = workspaceManifest
+                workspaceManifest.readText()
             }
             if (!isAdded) {
                 return@Thread
@@ -300,19 +302,10 @@ class ManifestFragment : Fragment() {
     }
 
     private fun ensureManifestTempFile(): File {
-        val existingFile = manifestTempFile
-        if (existingFile != null && existingFile.exists()) {
-            return existingFile
-        }
-
-        val outputDir = File(requireContext().cacheDir, "full_edit_manifest").apply { mkdirs() }
-        return File(
-            outputDir,
-            "${apkPath.hashCode().toUInt().toString(16)}_${FullEditRepository.MANIFEST_ENTRY}"
-        ).also { file ->
-            file.writeText(manifestText)
-            manifestTempFile = file
-        }
+        val file = manifestTempFile ?: FullEditWorkspaceManager.getManifestFile(requireContext(), apkPath)
+        file.writeText(manifestText)
+        manifestTempFile = file
+        return file
     }
 
     private fun registerManifestAsModified(file: File) {

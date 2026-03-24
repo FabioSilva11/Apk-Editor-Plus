@@ -1,104 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/main_menu_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center_horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_apk"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/action_apk" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_app"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/action_app" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_common_edit"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/common_edit" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_prj"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/action_prj" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_sign"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/action_sign" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_verify"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/action_verify" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_db"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/action_db" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_info"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/action_info" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_settings"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/action_sett" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_exit"
-                style="@style/Widget.MyApp.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/action_exit"
-                android:textColor="?attr/colorError" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:listSelector="@android:color/transparent" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

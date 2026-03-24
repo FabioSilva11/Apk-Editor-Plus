@@ -5,12 +5,14 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.text.InputType
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
@@ -30,6 +32,11 @@ import java.io.File
 import java.util.Locale
 
 class StringFragment : Fragment() {
+    private data class LanguageOption(
+        val code: String,
+        val label: String
+    )
+
     private lateinit var apkPath: String
     private lateinit var languageSpinner: Spinner
     private lateinit var listView: ListView
@@ -59,12 +66,11 @@ class StringFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
         Thread {
             val compileResult = runCatching {
-                FullEditRepository.buildResourcesArscFromEditedStrings(
+                FullEditWorkspaceManager.applyEditedStringsFile(
                     context = requireContext(),
                     apkPath = apkPath,
-                    editedStringsXml = editorFile,
-                    arscSourceFile = modifiedResourcesFile,
-                    localeQualifier = selectedLocaleQualifier
+                    localeQualifier = selectedLocaleQualifier,
+                    editedStringsXml = editorFile
                 )
             }
             if (!isAdded) {
@@ -174,10 +180,10 @@ class StringFragment : Fragment() {
             applyFilter(keywordEdit.text.toString())
         }
         view.findViewById<View>(R.id.action_add_button).setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.not_available), Toast.LENGTH_SHORT).show()
+            showAddLanguageDialog()
         }
         view.findViewById<View>(R.id.open_editor_button).setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.not_available), Toast.LENGTH_SHORT).show()
+            openStringsEditor()
         }
 
         loadLocales()
@@ -188,12 +194,7 @@ class StringFragment : Fragment() {
         emptyView.setText(R.string.loading)
         Thread {
             val result = runCatching {
-                val resourcesFile = modifiedResourcesFile
-                if (resourcesFile != null && resourcesFile.exists()) {
-                    FullEditRepository.listStringResourceLocales(apkPath, resourcesFile)
-                } else {
-                    FullEditRepository.listStringResourceLocales(apkPath)
-                }
+                FullEditWorkspaceManager.listStringLocales(requireContext(), apkPath)
             }
             if (!isAdded) {
                 return@Thread
@@ -223,15 +224,11 @@ class StringFragment : Fragment() {
         emptyView.setText(R.string.loading)
         Thread {
             val result = runCatching {
-                val resourcesFile = modifiedResourcesFile
-                if (resourcesFile != null && resourcesFile.exists()) {
-                    FullEditRepository.parseStringResourcesFromArscFile(
-                        resourcesFile,
-                        selectedLocaleQualifier
-                    )
-                } else {
-                    FullEditRepository.parseStringResources(apkPath, selectedLocaleQualifier)
-                }
+                FullEditWorkspaceManager.readStringResources(
+                    requireContext(),
+                    apkPath,
+                    selectedLocaleQualifier
+                )
             }
             if (!isAdded) {
                 return@Thread
@@ -296,12 +293,12 @@ class StringFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
         Thread {
             val result = runCatching {
-                FullEditRepository.buildResourcesArscFromOverrides(
+                FullEditWorkspaceManager.saveSingleStringOverride(
                     context = requireContext(),
                     apkPath = apkPath,
-                    overrides = mapOf(item.name to newValue),
-                    arscSourceFile = modifiedResourcesFile,
-                    localeQualifier = selectedLocaleQualifier
+                    localeQualifier = selectedLocaleQualifier,
+                    name = item.name,
+                    newValue = newValue
                 )
             }
             if (!isAdded) {
@@ -340,10 +337,9 @@ class StringFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
         Thread {
             val result = runCatching {
-                FullEditRepository.exportStringResourcesEditorFile(
+                FullEditWorkspaceManager.exportStringEditorFile(
                     requireContext(),
                     apkPath,
-                    modifiedResourcesFile,
                     selectedLocaleQualifier
                 )
             }
@@ -369,6 +365,135 @@ class StringFragment : Fragment() {
                 }
             }
         }.start()
+    }
+
+    private fun showAddLanguageDialog() {
+        val options = buildLanguageOptions()
+        val dialogContainer = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            val padding = (16 * resources.displayMetrics.density).toInt()
+            setPadding(padding, padding, padding, 0)
+        }
+
+        val picker = Spinner(requireContext())
+        val codeEdit = EditText(requireContext()).apply {
+            hint = "pt or pt-rBR"
+            inputType = InputType.TYPE_CLASS_TEXT
+        }
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            options.map { it.label }
+        )
+        picker.adapter = adapter
+        picker.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                codeEdit.setText(options.getOrNull(position)?.code.orEmpty())
+                codeEdit.setSelection(codeEdit.text.length)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+
+        dialogContainer.addView(picker)
+        dialogContainer.addView(codeEdit)
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.add_a_language)
+            .setView(dialogContainer)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.create, null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val qualifier = normalizeLocaleInput(codeEdit.text.toString())
+                if (qualifier == null) {
+                    Toast.makeText(requireContext(), getString(R.string.invalid_lang_code), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (qualifier in availableLocales) {
+                    Toast.makeText(requireContext(), getString(R.string.lang_exist), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                dialog.dismiss()
+                progressBar.visibility = View.VISIBLE
+                Thread {
+                    val result = runCatching {
+                        FullEditWorkspaceManager.createLocaleFromDefault(
+                            context = requireContext(),
+                            apkPath = apkPath,
+                            localeQualifier = qualifier
+                        )
+                    }
+                    if (!isAdded) {
+                        return@Thread
+                    }
+                    requireActivity().runOnUiThread {
+                        progressBar.visibility = View.GONE
+                        result.onSuccess { resourcesFile ->
+                            modifiedResourcesFile = resourcesFile
+                            selectedLocaleQualifier = qualifier
+                            registerModifiedResources(resourcesFile)
+                            loadLocales()
+                            Toast.makeText(requireContext(), getString(R.string.file_saved), Toast.LENGTH_SHORT).show()
+                        }.onFailure { error ->
+                            Toast.makeText(
+                                requireContext(),
+                                error.message ?: getString(R.string.failed),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }.start()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun buildLanguageOptions(): List<LanguageOption> {
+        return Locale.getISOLanguages()
+            .map { code ->
+                val locale = Locale(code)
+                val displayName = locale.getDisplayLanguage(Locale.ENGLISH)
+                    .takeIf { it.isNotBlank() }
+                    ?: code
+                LanguageOption(
+                    code = code.lowercase(Locale.ROOT),
+                    label = "${displayName.replaceFirstChar { ch ->
+                        if (ch.isLowerCase()) ch.titlecase(Locale.ENGLISH) else ch.toString()
+                    }} (${code.lowercase(Locale.ROOT)})"
+                )
+            }
+            .sortedBy { it.label.lowercase(Locale.ROOT) }
+    }
+
+    private fun normalizeLocaleInput(rawInput: String): String? {
+        val normalized = rawInput.trim()
+            .replace('_', '-')
+            .removePrefix("-")
+        if (normalized.isBlank()) {
+            return null
+        }
+        val parts = normalized.split('-').filter { it.isNotBlank() }
+        val language = parts.firstOrNull()?.lowercase(Locale.ROOT) ?: return null
+        if (!Regex("^[a-z]{2,3}$").matches(language)) {
+            return null
+        }
+        if (parts.size == 1) {
+            return "-$language"
+        }
+        val regionPart = parts.drop(1)
+            .joinToString("-")
+            .removePrefix("r")
+            .uppercase(Locale.ROOT)
+        return when {
+            Regex("^[A-Z]{2}$").matches(regionPart) -> "-$language-r$regionPart"
+            Regex("^\\d{3}$").matches(regionPart) -> "-$language-r$regionPart"
+            else -> null
+        }
     }
 
     private fun applyFilter(query: String) {

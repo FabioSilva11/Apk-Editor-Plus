@@ -27,7 +27,8 @@
         
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,39 +37,78 @@
 
 
 
-        <activity android:name=".SimpleEditActivity" />
-        <activity android:name=".CommonEditActivity" />
-        <activity android:name=".FullEditActivity" />
-        <activity android:name=".ApkCreateActivity" />
+        <activity
+            android:name=".SimpleEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CommonEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FullEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ApkCreateActivity"
+            android:screenOrientation="portrait" />
 
 
-        <activity android:name=".FileListActivity" />
-        <activity android:name=".UserAppActivity" />
-        <activity android:name=".SettingActivity" />
-        <activity android:name=".SettingEditorActivity" />
-        <activity android:name=".SettingHideActivity" />
-        <activity android:name=".TextEditBigActivity" android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".FileListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserAppActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingEditorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingHideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TextEditBigActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
-        <activity android:name=".ApkSearchActivity" />
+        <activity
+            android:name=".ApkSearchActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ProjectListActivity" />
-        <activity android:name=".AxmlEditActivity" />
-
-
-        <activity android:name=".InfoActivity" />
-
-
-
-
-        <activity android:name=".EditorActivity" />
+        <activity
+            android:name=".ProjectListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AxmlEditActivity"
+            android:screenOrientation="portrait" />
 
 
+        <activity
+            android:name=".InfoActivity"
+            android:screenOrientation="portrait" />
 
 
-        <activity android:name=".VerifyActivity" />
-        <activity android:name=".SelectFileActivity" />
-        <activity android:name=".SigningProgressActivity" />
-        <activity android:name=".KeyStoreListActivity" />
+
+
+        <activity
+            android:name=".EditorActivity"
+            android:screenOrientation="portrait" />
+
+
+
+
+        <activity
+            android:name=".VerifyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectFileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SigningProgressActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".KeyStoreListActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

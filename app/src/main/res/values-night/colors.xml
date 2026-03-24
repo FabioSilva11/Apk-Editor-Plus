@@ -7,4 +7,20 @@
     <color name="full_edit_text_secondary">#B6B2C3</color>
     <color name="full_edit_outline">#343948</color>
     <color name="full_edit_search_surface">#242833</color>
+    <color name="full_edit_search_stroke">#353B48</color>
+    <color name="full_edit_spinner_surface">#1E222B</color>
+    <color name="full_edit_spinner_stroke">#353B48</color>
+    <color name="full_edit_popup_surface">#1E222B</color>
+    <color name="full_edit_file_badge_folder">#2A2F3B</color>
+    <color name="full_edit_file_badge_manifest">#4A3358</color>
+    <color name="full_edit_file_badge_dex">#1D514A</color>
+    <color name="full_edit_file_badge_generic">#24355A</color>
+    <color name="main_menu_screen_background">#15171C</color>
+    <color name="main_menu_item_background">#1E2128</color>
+    <color name="main_menu_item_stroke">#383D49</color>
+    <color name="main_menu_icon_background">#283455</color>
+    <color name="main_menu_icon_tint">#E0E8FF</color>
+    <color name="main_menu_item_title">#F1F2F8</color>
+    <color name="main_menu_item_subtitle">#B1B7C5</color>
+    <color name="main_menu_chevron_tint">#C8CEDC</color>
 </resources>

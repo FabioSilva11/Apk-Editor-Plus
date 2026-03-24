@@ -18,7 +18,7 @@
     <string name="abc_menu_space_shortcut_label">space</string>
     <string name="abc_menu_sym_shortcut_label">Sym+</string>
     <string name="abc_prepend_shortcut_label">Menu+</string>
-    <string name="abc_search_hint">Searchâ€¦</string>
+    <string name="abc_search_hint">Search…</string>
     <string name="abc_searchview_description_clear">Clear query</string>
     <string name="abc_searchview_description_query">Search query</string>
     <string name="abc_searchview_description_search">Search</string>
@@ -92,14 +92,14 @@
     <string name="sign_version">Signature version</string>
     <string name="sign_version_summary">v1 v2 v3 v4</string>
     <string name="confirm_dir_replace">Confirm directory replace</string>
-    <string name="copied_to_clipboard">â€œ%sâ€ copied to clipboard</string>
+    <string name="copied_to_clipboard">“%s” copied to clipboard</string>
     <string name="copy_error_msg">Copy error message</string>
     <string name="copy_file_path">Copy path</string>
     <string name="current_patch">Current patch:</string>
     <string name="custom_key_setting">Custom key</string>
     <string name="dark_theme">Dark theme</string>
     <string name="dark_theme_desc">Enable dark theme for APK editing</string>
-    <string name="decode_dex_file">Decode DEX file â€¦</string>
+    <string name="decode_dex_file">Decode DEX file …</string>
     <string name="delete">Delete</string>
     <string name="delete_this_line">Delete this Line</string>
     <string name="description">DESCRIPTION:</string>
@@ -111,7 +111,7 @@
     <string name="edit_string_value">Edit the value</string>
     <string name="empty_input_tip">Input cannot be empty</string>
     <string name="empty_key_tip">Key can not be empty</string>
-    <string name="encode_dex_file">Encode DEX file â€¦</string>
+    <string name="encode_dex_file">Encode DEX file …</string>
     <string name="entry_in_apk">Entry in APK</string>
     <string name="errmsg_copied">Error message copied to clipboard</string>
     <string name="error_file_too_big">File is too big to open</string>
@@ -126,7 +126,7 @@
     <string name="failed_create_dir">Failed to create directory: %s</string>
     <string name="failed_format">Strings failed: %d</string>
     <string name="file_added">File added: %s</string>
-    <string name="file_already_exist">â€œ%sâ€ already exists</string>
+    <string name="file_already_exist">“%s” already exists</string>
     <string name="file_replaced">File replaced</string>
     <string name="file_saved">File saved</string>
     <string name="files">Files</string>
@@ -143,11 +143,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="help">Help</string>
     <string name="hide">Hide</string>
-    <string name="hide_smali_tip">Long click at â€œSmaliâ€ button to hide it</string>
+    <string name="hide_smali_tip">Long click at “Smali” button to hide it</string>
     <string name="icon_changed_tip">Icon changed, but it may not take effect until you reboot your device</string>
     <string name="image_summary">Images: %d</string>
     <string name="images_capital">Images</string>
-    <string name="in_progress">Workingâ€¦</string>
+    <string name="in_progress">Working…</string>
     <string name="install">Install</string>
     <string name="install_location">Install location</string>
     <string name="invalid_lang_code">Invalid language code</string>
@@ -163,7 +163,7 @@
     <string name="line_wrap">Line wrap</string>
     <string name="line_wrap_disabled">Line wrapping is disabled. Needs restarting if changed</string>
     <string name="line_wrap_enabled">Line wrapping is enabled. Needs restarting if changed</string>
-    <string name="loading">Loading â€¦</string>
+    <string name="loading">Loading …</string>
     <string name="location_0">Default (not specified)</string>
     <string name="location_1">Auto (OS make decision)</string>
     <string name="location_2">Internal only</string>
@@ -197,7 +197,7 @@
     <string name="patch_capital">PATCH</string>
     <string name="patch_error_cannot_parse" formatted="false">Cannot parse line %d: %s</string>
     <string name="patch_error_invalid_target" formatted="false">Invalid or unsupported target at line %d: %s</string>
-    <string name="patch_error_no_entry">Cannot find â€œ%sâ€ inside the patch</string>
+    <string name="patch_error_no_entry">Cannot find “%s” inside the patch</string>
     <string name="patch_error_no_match">No match found in %s.</string>
     <string name="patch_error_no_match_content">Match content is not specified</string>
     <string name="patch_error_no_source_file">Source file is not specified</string>
@@ -208,8 +208,8 @@
     <string name="patch_error_write_to">Cannot write to %s.</string>
     <string name="patch_examples_copied">Patch examples copied to %s</string>
     <string name="patch_info_num_replaced">%d match(es) replaced</string>
-    <string name="patch_start_apply">Apply patch rule at line %d â€¦</string>
-    <string name="patch_start_parse">Parse rules inside patch.txtâ€¦</string>
+    <string name="patch_start_apply">Apply patch rule at line %d …</string>
+    <string name="patch_start_parse">Parse rules inside patch.txt…</string>
     <string name="path">Path</string>
     <string name="pkg_rename_as_plugin">Make it as a plugin</string>
     <string name="pkg_rename_cheat">Cheat the package name</string>
@@ -226,7 +226,7 @@
     <string name="previous">Back</string>
     <string name="private_key_label">Private key (.pk8)</string>
     <string name="pro_mode">PRO</string>
-    <string name="promote_msg">Editing is only supported in pro version. Click â€œView Pro Versionâ€ to get the pro version?</string>
+    <string name="promote_msg">Editing is only supported in pro version. Click “View Pro Version” to get the pro version?</string>
     <string name="public_key_label">Public key (.x509.pem)</string>
     <string name="rebuild_confirm_d_summary">Disabled. Will directly rebuild and sign the APK when save button is clicked</string>
     <string name="rebuild_confirm_e_summary">Enabled. Will show rebuild confirmation dialog when save button is clicked. We can make a choice of not signing the APK in the dialog</string>
@@ -256,7 +256,7 @@
     <string name="search">Search</string>
     <string name="search_file_content">Search in file content</string>
     <string name="search_file_names">Search in file name</string>
-    <string name="searching">Searchingâ€¦</string>
+    <string name="searching">Searching…</string>
     <string name="section_undeletable">This section can not be deleted</string>
     <string name="select_apk_file">Select an APK file</string>
     <string name="select_apk_from_app">Select an application</string>
@@ -280,8 +280,8 @@
     <string name="simple_edit">Simple edit</string>
     <string name="size">Size</string>
     <string name="smali_copied">Smali code copied to clipboard</string>
-    <string name="smali_edit_disabled_summary">Disabled. The â€œsmaliâ€ button will not shown in full edit mode</string>
-    <string name="smali_edit_summary">Enabled. The â€œsmaliâ€ button will be shown in full edit mode</string>
+    <string name="smali_edit_disabled_summary">Disabled. The “smali” button will not shown in full edit mode</string>
+    <string name="smali_edit_summary">Enabled. The “smali” button will be shown in full edit mode</string>
     <string name="smali_editing">Smali editing</string>
     <string name="step">Step</string>
     <string name="stop">Stop</string>
@@ -305,7 +305,7 @@
     <string name="translate_plugin_notfound_tip">Cannot find any translate plugin</string>
     <string name="translated">Translated</string>
     <string name="translated_format">%d strings translated</string>
-    <string name="translating">Translating â€¦</string>
+    <string name="translating">Translating …</string>
     <string name="unhackable">Not hacked</string>
     <string name="unknown_error">Unknown error</string>
     <string name="untranslated_format">%d strings untranslated</string>
@@ -444,7 +444,7 @@
     <string name="patch_code_cache_done">Patch applied to %s</string>
     <string name="patch_code_cache_tip">Try to patch the ODEX file without installation? (need ROOT access)</string>
     <string name="patch_err_odex_not_found1">Cannot find target ODEX file. Please make sure ROOT access is granted. Try again?</string>
-    <string name="patch_error_goto_target_notfound">Cannot find the GOTO target â€œ%sâ€</string>
+    <string name="patch_error_goto_target_notfound">Cannot find the GOTO target “%s”</string>
     <string name="patch_error_no_goto_target">GOTO is not specified for [MATCH_GOTO]/[GOTO] rule</string>
     <string name="patch_error_regex_not_true">REGEX must be true in MATCH_ASSIGN rule</string>
     <string name="patch_error_regex_syntax">Regular Expression Syntax error: %s</string>
@@ -468,10 +468,10 @@
     <string name="str_fix_failed">Sorry, failed to fix the issue</string>
     <string name="str_num_renamed_file">%d file(s) renamed</string>
     <string name="str_rename_failed">Sorry, failed to rename the file</string>
-    <string name="str_replace_with">Replace â€œ%sâ€ with</string>
-    <string name="str_replaced">â€œ%sâ€ replaced</string>
+    <string name="str_replace_with">Replace “%s” with</string>
+    <string name="str_replaced">“%s” replaced</string>
     <string name="APKTOOL_CARLOS_1d8">false</string>
-    <string name="sure_to_replace_all" formatted="false">Are you sure to replace all â€œ%sâ€ with â€œ%sâ€?</string>
+    <string name="sure_to_replace_all" formatted="false">Are you sure to replace all “%s” with “%s”?</string>
     <string name="APKTOOL_CARLOS_1da">false</string>
     <string name="APKTOOL_CARLOS_1db">false</string>
     <string name="APKTOOL_CARLOS_1dc">false</string>
@@ -513,10 +513,10 @@
     <string name="APKTOOL_CARLOS_201">false</string>
     <string name="APKTOOL_CARLOS_202">false</string>
     <string name="APKTOOL_CARLOS_203">false</string>
-    <string name="entry_modified">â€œ%sâ€ modified</string>
+    <string name="entry_modified">“%s” modified</string>
     <string name="err_from_greater_than_to">Error: \"From Line NO\" is greater than \"To Line NO\"</string>
     <string name="error">Error</string>
-    <string name="error_path_xxx_not_exist">Error: path â€œ%sâ€ does not exist</string>
+    <string name="error_path_xxx_not_exist">Error: path “%s” does not exist</string>
     <string name="ext_sd_card">Ext SD card</string>
     <string name="failed_create_file">Failed to create the file</string>
     <string name="failed_to_parse_xml">Failed to parse xml entry: %s.</string>
@@ -644,8 +644,8 @@
     <string name="action_info">Git Status</string>
     <string name="action_sett">Settings</string>
     <string name="action_exit">Exit</string>
-    <string name="action_apk_desc">Select APK file to editing</string>
-    <string name="action_app_desc">Select an installed app to editing</string>
+    <string name="action_apk_desc">Select APK file to edit</string>
+    <string name="action_app_desc">Select an installed app to edit</string>
     <string name="action_prj_desc">List of your projects</string>
     <string name="action_info_desc">Credits and developer information</string>
     <string name="action_sett_desc">Appearance, decoding, assembly, etc</string>
@@ -655,7 +655,7 @@
     <string name="default_res_0x7f070291">Default</string>
     <string name="sort_name">By name</string>
     <string name="sort_date">By date</string>
-    <string name="decode">Decodeâ€¦</string>
+    <string name="decode">Decode…</string>
     <string name="ask">Ask</string>
     <string name="compression_0">0 (No compression)</string>
     <string name="compression_1">1 (Best speed)</string>
@@ -665,11 +665,11 @@
     <string name="sign_apkeditor">Editorkey</string>
     <string name="sign_custom">Custom</string>
     <string name="cpv_title">Color picker</string>
-    <string name="hide_changelogs">Hide â€œChangelogâ€</string>
+    <string name="hide_changelogs">Hide “Changelog”</string>
     <string name="mf_manifest">The root element of the AndroidManifest.xml file. It must contain an &lt;application&gt; element and specify xmlns:android and package attributes</string>
-    <string name="mf_application">The declaration of the application. This element contains subelements that declare each of the application\'s components and has attributes that can affect all the components. Many of these attributes (such asÂ icon,Â label,Â permission,Â process,Â taskAffinity, andÂ allowTaskReparenting) set default values for corresponding attributes of the component elements. Others (such asÂ debuggable,Â enabled,Â description, andÂ allowClearUserData) set values for the application as a whole and cannot be overridden by the components</string>
+    <string name="mf_application">The declaration of the application. This element contains subelements that declare each of the application\'s components and has attributes that can affect all the components. Many of these attributes (such as icon, label, permission, process, taskAffinity, and allowTaskReparenting) set default values for corresponding attributes of the component elements. Others (such as debuggable, enabled, description, and allowClearUserData) set values for the application as a whole and cannot be overridden by the components</string>
     <string name="mf_activity">Declares an activity (an Activity subclass) that implements part of the application\'s visual user interface. All activities must be represented by &lt;activity&gt; elements in the manifest file. Any that are not declared there will not be seen by the system and will never be run</string>
-    <string name="mf_intent_filter">Specifies the types of intents that an activity, service, or broadcast receiver can respond to. An intent filter declares the capabilities of its parent component â€” what an activity or service can do and what types of broadcasts a receiver can handle. It opens the component to receiving intents of the advertised type, while filtering out those that are not meaningful for the component.\nMost of the contents of the filter are described by its &lt;action&gt;, &lt;category&gt;, and &lt;data&gt; subelements.\n\nFor a more detailed discussion of filters, see the separate Intents and Intent Filters document, as well as the Intents Filters section in the introduction</string>
+    <string name="mf_intent_filter">Specifies the types of intents that an activity, service, or broadcast receiver can respond to. An intent filter declares the capabilities of its parent component — what an activity or service can do and what types of broadcasts a receiver can handle. It opens the component to receiving intents of the advertised type, while filtering out those that are not meaningful for the component.\nMost of the contents of the filter are described by its &lt;action&gt;, &lt;category&gt;, and &lt;data&gt; subelements.\n\nFor a more detailed discussion of filters, see the separate Intents and Intent Filters document, as well as the Intents Filters section in the introduction</string>
     <string name="mf_action">Adds an action to an intent filter. An &lt;intent-filter&gt; element must contain one or more &lt;action&gt; elements. If there are no &lt;action&gt; elements in an intent filter, the filter doesn\'t accept any Intent objects. See Intents and Intent Filters for details on intent filters and the role of action specifications within a filter</string>
     <string name="mf_category">Adds a category name to an intent filter. See Intents and Intent Filters for details on intent filters and the role of category specifications within a filter</string>
     <string name="mf_data">Adds a data specification to an intent filter. The specification can be just a data type (the mimeType attribute), just a URI, or both a data type and a URI</string>
@@ -678,7 +678,7 @@
     <string name="mf_activity_alias">An alias for an activity, named by the targetActivity attribute. The target must be in the same application as the alias and it must be declared before the alias in the manifest.</string>
     <string name="mf_service">Declares a service (a Service subclass) as one of the application\'s components. Unlike activities, services lack a visual user interface. They\'re used to implement long-running background operations or a rich communications API that can be called by other applications</string>
     <string name="mf_receiver">Declares a broadcast receiver (a BroadcastReceiver subclass) as one of the application\'s components. Broadcast receivers enable applications to receive intents that are broadcast by the system or by other applications, even when other components of the application are not running</string>
-    <string name="mf_profileable">Specifies how the following tools can access profiling information:\nâ€¢  android.os.Trace tracing APIs\nâ€¢  simpleperf\nâ€¢  am profile commands\nUnless this element is declared, and the &lt;shell&gt; tag set to true, the above tools and APIs will work only when an app is debuggable</string>
+    <string name="mf_profileable">Specifies how the following tools can access profiling information:\n•  android.os.Trace tracing APIs\n•  simpleperf\n•  am profile commands\nUnless this element is declared, and the &lt;shell&gt; tag set to true, the above tools and APIs will work only when an app is debuggable</string>
     <string name="mf_provider">Declares a content provider component. A content provider is a subclass of ContentProvider that supplies structured access to data managed by the application. All content providers in your application must be defined in a &lt;provider&gt; element in the manifest file; otherwise, the system is unaware of them and doesn\'t run them</string>
     <string name="mf_grant_uri_permission">Specifies the subsets of app data that the parent content provider has permission to access. Data subsets are indicated by the path part of a content: URI. (The authority part of the URI identifies the content provider.) Granting permission is a way of enabling clients of the provider that don\'t normally have permission to access its data to overcome that restriction on a one-time basis</string>
     <string name="mf_path_permission">Defines the path and required permissions for a specific subset of data within a content provider. This element can be specified multiple times to supply multiple paths</string>
@@ -709,14 +709,14 @@
     <string name="templates_delete_all">Delete all</string>
     <string name="templates_label">Label</string>
     <string name="templates_content">Content</string>
-    <string name="show_info">Show â€œHelpâ€</string>
-    <string name="hide_projects">Hide â€œProjectsâ€</string>
-    <string name="hide_exit">Hide â€œExitâ€</string>
-    <string name="hide_mod">Hide â€œAboutâ€</string>
+    <string name="show_info">Show “Help”</string>
+    <string name="hide_projects">Hide “Projects”</string>
+    <string name="hide_exit">Hide “Exit”</string>
+    <string name="hide_mod">Hide “About”</string>
     <string name="main_screen">Manage buttons</string>
     <string name="action_tools">Update tools</string>
-    <string name="show_verify">Show â€œVerify signatureâ€</string>
-    <string name="show_sign">Show â€œSign APKâ€</string>
+    <string name="show_verify">Show “Verify signature”</string>
+    <string name="show_sign">Show “Sign APK”</string>
     <string name="toast_reset_tools">Reset tools</string>
     <string name="action_sign_desc">Select and sign APK file</string>
     <string name="path_info">Path: </string>
@@ -728,10 +728,10 @@
     <string name="about_card_6">The icons are based on the core Material Design principles and metrics</string>
     <string name="attribute">Attribute</string>
     <string name="scale">Scale: </string>
-    <string name="hide_tools">Hide â€œUpdate toolsâ€</string>
+    <string name="hide_tools">Hide “Update tools”</string>
     <string name="action_verify">Verify signature</string>
     <string name="action_verify_desc">View signature Information</string>
-    <string name="show_db">Show â€œData baseâ€</string>
+    <string name="show_db">Show “Data base”</string>
     <string name="action_db_desc">Manage your JKS keys</string>
     <string name="msg_delete_record">Are you sure to delete the record?</string>
     <string name="reset">Reset</string>
@@ -747,7 +747,7 @@
     <string name="md_str_regex_on">Regex ON</string>
     <string name="md_str_register_off">Register OFF</string>
     <string name="md_str_register_on">Register ON</string>
-    <string name="build_resources">Smali: V2.5.2 â€¢ Android Jar: Android API 33</string>
+    <string name="build_resources">Smali: V2.5.2 • Android Jar: Android API 33</string>
     <string name="action_edit_desc">Settings, syntax colors</string>
     <string name="zeratul">Original creator for APK Editor</string>
     <string name="galahad">Monet theming and design corrections</string>
@@ -804,8 +804,8 @@
     <string name="nothing_found">No keys found</string>
     <string name="certificate_info">Certificate Information</string>
     <string name="processing_signature">Processing Signature</string>
-    <string name="please_wait">Please waitâ€¦</string>
-    <string name="starting">Startingâ€¦</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="starting">Starting…</string>
     <string name="view_output_file">View Output File</string>
     <string name="finish">Finish</string>
     <string name="create">Create</string>
@@ -815,13 +815,13 @@
     <string name="confirm_delete_key">Do you really want to delete %s?</string>
     <string name="deleted">Deleted</string>
     <string name="path_label">Path: %s</string>
-    <string name="signing_started">Starting processâ€¦</string>
+    <string name="signing_started">Starting process…</string>
     <string name="success_apk_signed">Success! APK signed.</string>
     <string name="error_label">Error: %s</string>
     <string name="signing_failed">Signing Failed</string>
     <string name="signing_completed">Signing Completed</string>
-    <string name="rebuilding_apk">Rebuilding APKâ€¦</string>
-    <string name="signing_apk">Signing APKâ€¦</string>
+    <string name="rebuilding_apk">Rebuilding APK…</string>
+    <string name="signing_apk">Signing APK…</string>
     <string name="apk_generated_success">APK successfully generated at:\n%s</string>
     <string name="signing_failed_check_keys">Signing failed. Check if you have a key configured in \'Signature Keys\'.</string>
     <string name="error_during_build">Error during build: %s</string>
@@ -856,12 +856,12 @@
     <string name="io_error">I/O Error</string>
     <string name="apk_path_not_found">APK path not found</string>
     <string name="error_loading_apk_info">Error loading APK info: %s</string>
-    <string name="saving_changes">Saving changesâ€¦</string>
-    <string name="axml_modified_rebuild">AXML modified. Starting rebuildâ€¦</string>
-    <string name="menu_share_app">Compartilhar app</string>
-    <string name="menu_telegram_group">Telegram grupo</string>
-    <string name="menu_about">Ã‰ sobre</string>
-    <string name="about_message">Este Ã© um projeto open source e qualquer um pode editar e melhorar.</string>
+    <string name="saving_changes">Saving changes…</string>
+    <string name="axml_modified_rebuild">AXML modified. Starting rebuild…</string>
+    <string name="menu_share_app">Compartilhar aplicativo</string>
+    <string name="menu_telegram_group">Grupo do Telegram</string>
+    <string name="menu_about">Sobre</string>
+    <string name="about_message">Este é um projeto open source e qualquer pessoa pode editar e melhorar.</string>
     <string name="simple_edit_summary_format">%1$s: %2$d • Replaced: %3$d</string>
 </resources>
 

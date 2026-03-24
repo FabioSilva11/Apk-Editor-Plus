@@ -16,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.saas.apkeditorplus.FullEditActivity
@@ -30,7 +31,6 @@ class FilesFragment : Fragment() {
     private lateinit var keywordEdit: EditText
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyView: TextView
-    private lateinit var modeView: TextView
 
     private var currentArchivePath: String = ""
     private var currentSmaliPath: String = ""
@@ -81,7 +81,6 @@ class FilesFragment : Fragment() {
         keywordEdit = view.findViewById(R.id.keyword_edit)
         progressBar = view.findViewById(R.id.progress_bar)
         emptyView = view.findViewById(R.id.empty_view)
-        modeView = view.findViewById(R.id.mode_label)
 
         listView.emptyView = emptyView
         listView.adapter = FilesAdapter()
@@ -137,11 +136,6 @@ class FilesFragment : Fragment() {
                     val currentPathLabel = buildCurrentPathLabel(smaliWorkspace)
                     pathView.text = currentPathLabel
                     pathView.isVisible = currentPathLabel.isNotBlank()
-                    modeView.text = if (smaliWorkspace != null) {
-                        getString(R.string.smali)
-                    } else {
-                        getString(R.string.files)
-                    }
                     applyFilter(keywordEdit.text.toString())
                     emptyView.setText(R.string.not_found)
                 }.onFailure { error ->
@@ -330,22 +324,27 @@ class FilesFragment : Fragment() {
             val detailView = rowView.findViewById<TextView>(R.id.detail1)
             detailView.text = ""
             detailView.visibility = View.GONE
-            rowView.findViewById<View>(R.id.menu_edit).visibility = View.GONE
-            rowView.findViewById<View>(R.id.menu_save).visibility = View.GONE
             rowView.findViewById<View>(R.id.selection_indicator).visibility =
                 if (item.displayName == "..") View.INVISIBLE else View.VISIBLE
 
+            val iconBadge = rowView.findViewById<View>(R.id.file_icon_badge)
             val icon = rowView.findViewById<ImageView>(R.id.file_icon)
-            icon.setImageResource(
-                when {
-                    item.isDirectory && item.displayName == ".." -> R.drawable.ic_file_up
-                    item.isDirectory -> R.drawable.ic_folder
-                    item.entryName.endsWith(".xml", ignoreCase = true) -> R.drawable.ic_edit_1
-                    item.entryName.endsWith(".smali", ignoreCase = true) -> R.drawable.ic_edit_1
-                    item.entryName.endsWith(".dex", ignoreCase = true) -> R.drawable.ic_edit_3
-                    else -> R.drawable.ic_file_unknown
-                }
-            )
+            val iconRes = when {
+                item.isDirectory && item.displayName == ".." -> R.drawable.ic_back
+                item.isDirectory -> R.drawable.ic_folder
+                item.entryName.endsWith(".xml", ignoreCase = true) -> R.drawable.ic_edit_4
+                item.entryName.endsWith(".smali", ignoreCase = true) -> R.drawable.ic_characters
+                item.entryName.endsWith(".dex", ignoreCase = true) -> R.drawable.ic_edit_3
+                else -> R.drawable.ic_edit_2
+            }
+            val badgeRes = when {
+                item.isDirectory -> R.drawable.full_edit_badge_folder
+                item.entryName.endsWith(".xml", ignoreCase = true) -> R.drawable.full_edit_badge_manifest
+                item.entryName.endsWith(".dex", ignoreCase = true) -> R.drawable.full_edit_badge_dex
+                else -> R.drawable.full_edit_badge_generic
+            }
+            iconBadge.background = ContextCompat.getDrawable(requireContext(), badgeRes)
+            icon.setImageResource(iconRes)
 
             rowView.setOnClickListener { openItem(item) }
             return rowView

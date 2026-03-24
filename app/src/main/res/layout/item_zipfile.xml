@@ -3,27 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:minHeight="68dp"
     android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingTop="0dp"
-    android:paddingEnd="8dp"
-    android:paddingBottom="0dp">
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp">
 
-    <ImageView
-        android:id="@+id/file_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="8dp"
+    <FrameLayout
+        android:id="@+id/file_icon_badge"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"
-        android:scaleType="fitCenter" />
+        android:background="@drawable/full_edit_badge_generic">
+
+        <ImageView
+            android:id="@+id/file_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_edit_2"
+            android:tint="#001DFF" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -31,14 +38,16 @@
             android:id="@+id/filename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:lineSpacingExtra="1dp"
             android:maxLines="2"
             android:textColor="@color/full_edit_text_primary"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/detail1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:textColor="@color/full_edit_text_secondary"
             android:textSize="12sp" />
@@ -46,9 +55,9 @@
 
     <ImageView
         android:id="@+id/selection_indicator"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="12dp"
         android:background="@drawable/full_edit_checkbox_outline"
         android:contentDescription="@null" />
 
@@ -64,7 +73,7 @@
             android:layout_height="24dp"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_replace"
-            android:tint="?attr/iconSecondary" />
+            android:tint="#001EFF" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -78,7 +87,7 @@
             android:layout_height="24dp"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_res_extract"
-            android:tint="?attr/iconSecondary" />
+            android:tint="#001BFF" />
     </RelativeLayout>
 
 </LinearLayout>
